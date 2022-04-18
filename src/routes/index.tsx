@@ -1,6 +1,8 @@
+import React from "react";
 import { RouteObject } from 'react-router-dom'
 import Dashboard from '../pages/dashboard';
 import Intro from '../pages/intro';
+import Template from "@/pages/template";
 
 const routes: RouteObject[] = [
     {
@@ -22,7 +24,11 @@ const routes: RouteObject[] = [
     {
       path: '/dashboard',
       element: <Dashboard />
-    }
+    },
+    {
+      path: '/template',
+      element: <Template />
+    },
   ];
 
 export default routes

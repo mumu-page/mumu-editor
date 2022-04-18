@@ -1,8 +1,14 @@
 const { loaderByName } = require("@craco/craco");
 const CracoLessPlugin = require('craco-less')
+const path = require('path')
 const lessModuleRegex = /\.module\.less$/;
 
 module.exports = {
+  webpack: {
+    alias: {
+      "@": path.resolve('src')
+    }
+  },
   plugins: [
     {
       plugin: CracoLessPlugin,
@@ -13,7 +19,6 @@ module.exports = {
             javascriptEnabled: true,
           },
         },
-
         modifyLessModuleRule: (lessModuleRule, context) => {
           lessModuleRule.test = lessModuleRegex;
           lessModuleRule.exclude = /node_modules|antd.*?\.css/;
