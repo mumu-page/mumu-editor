@@ -1,0 +1,114 @@
+body {
+  padding-top: 60px;
+}
+
+.el-menu.el-menu--horizontal {
+  border: none;
+}
+
+.header {
+  width: 100%;
+  height: 60px;
+  background: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  overflow: hidden;
+  box-shadow: 0 0 2px #ccc;
+
+  .left {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color 100ms linear;
+    padding: 0 20px;
+    height: 60px;
+
+    .ant-menu {
+      display: flex;
+      align-items: center;
+
+      .ant-menu-item {
+        padding: 0 10px;
+
+        &-active {
+          border-bottom: 2px solid rgba(0, 0, 0, 0);
+        }
+      }
+    }
+
+    &.default {
+      background-color: #615fe1;
+
+      .ant-menu {
+        background: #615fe1;
+        border: none;
+        transition: background-color 100ms linear !important;
+
+        .ant-menu-item {
+          transition: background-color 100ms linear !important;
+          border: none;
+          color: #fff;
+
+          a {
+            color: #fff;
+
+            &:hover,
+            &:focus {
+              background: #615fe1;
+            }
+          }
+        }
+      }
+    }
+
+    &.white {
+      background-color: #fff;
+
+      .ant-menu {
+        border: none;
+        background: #fff;
+        transition: background-color 100ms linear !important;
+
+        .ant-menu-item {
+          transition: background-color 100ms linear !important;
+          color: #615fe1;
+
+          a {
+            color: #615fe1;
+
+            &:hover,
+            &:focus {
+              background: #fff;
+              color: #615fe1;
+            }
+          }
+        }
+      }
+
+      .logo-container {
+        height: 50px;
+        width: 100px;
+        background: url('../../assets/image/logo.svg') no-repeat center center;
+        background-size: 110%;
+      }
+    }
+  }
+
+  .logo {
+    height: 50px;
+
+    .logo-container {
+      height: 50px;
+      width: 100px;
+      background: url('../../assets/image/logo.svg') no-repeat center center;
+      background-size: 110%;
+    }
+  }
+}
