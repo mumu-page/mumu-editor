@@ -11,27 +11,19 @@ import 'antd/lib/popover/style/index.css'
 import 'antd/lib/input/style/index.css'
 import 'antd/lib/spin/style/index.css'
 import style from "./list.module.less";
-
-interface ItemState {
-    pageConfig: Record<string, any>;
-    desc: string;
-    id: string | number;
-    updatedAt: string
-    createdAt: string
-    gitConfig: Record<string, any>;
-}
+import { Project } from '@/api/list/project';
 
 function List() {
-    const [list, setList] = useState<ItemState[]>([])
+    const [list, setList] = useState<Project[]>([])
     const [visible, setVisible] = useState<boolean | number | string | null>(false)
     const [desc, setDesc] = useState('')
     const { loading, loadFn } = useLoadList();
-    const editDesc = (item: ItemState) => {
+    const editDesc = (item: Project) => {
         setDesc(item.desc)
         setVisible(item.id)
     }
 
-    const saveDesc = async (item: ItemState) => {
+    const saveDesc = async (item: Project) => {
         if (!desc) return message.error('请填写描述信息！')
         await project.updateOtherConfig({
             data: {
@@ -44,7 +36,7 @@ function List() {
         message.success('更新成功！');
     }
 
-    const renderDescription = (item: ItemState) => {
+    const renderDescription = (item: Project) => {
         return <div className={style.desc}>
             <div>
                 描述：

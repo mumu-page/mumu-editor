@@ -1,6 +1,6 @@
-import market from './list/market';
-import project from './list/project';
-import component from './list/component';
+import * as market from './list/market';
+import * as project from './list/project';
+import * as component from './list/component';
 
 export {
   market,

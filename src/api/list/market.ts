@@ -13,17 +13,14 @@ export interface TemplateData extends BaseModel {
   version: string,
 }
 
-interface pageConfig {
-
+async function queryAll() {
+  const result = await instance.get<TemplateData[], Response<TemplateData[]>>('/template/list');
+  return result.data;
 }
 
-export default {
-  async queryAll() {
-    const result = await instance.get<TemplateData[], Response<TemplateData[]>>('/template/list');
-    return result.data;
-  },
-  async queryInfo(params: any): Promise<Response<TemplateData>> {
-    const result = await instance.get('/template/detail', { params });
-    return result.data;
-  }
+async function queryInfo(params: any): Promise<Response<TemplateData>> {
+  const result = await instance.get('/template/detail', { params });
+  return result.data;
 }
+
+export { queryAll, queryInfo }
