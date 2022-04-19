@@ -1,14 +1,15 @@
-import React, {useEffect, useState} from 'react'
-import {Empty, Button, List as ListAD, Col, Row, Popover, Input, message, Spin} from 'antd'
-import {Link} from "react-router-dom";
-import {EditOutlined} from '@ant-design/icons';
-import {project} from '@/api';
-import {useLoadList} from "./hooks";
+import React, { useEffect, useState } from 'react'
+import { Empty, Button, List as ListAD, Col, Row, Popover, Input, message } from 'antd'
+import { Link } from "react-router-dom";
+import { EditOutlined } from '@ant-design/icons';
+import { project } from '@/api';
+import { useLoadList } from "./hooks";
 import 'antd/lib/list/style/index.css'
 import 'antd/lib/button/style/index.css'
 import 'antd/lib/empty/style/index.css'
 import 'antd/lib/popover/style/index.css'
 import 'antd/lib/input/style/index.css'
+import 'antd/lib/spin/style/index.css'
 import style from "./list.module.less";
 
 interface ItemState {
@@ -24,7 +25,7 @@ function List() {
     const [list, setList] = useState<ItemState[]>([])
     const [visible, setVisible] = useState<boolean | number | string | null>(false)
     const [desc, setDesc] = useState('')
-    const {loading, loadFn} = useLoadList();
+    const { loading, loadFn } = useLoadList();
     const editDesc = (item: ItemState) => {
         setDesc(item.desc)
         setVisible(item.id)
@@ -52,11 +53,11 @@ function List() {
                     content={<Input.Group size="large">
                         <Row gutter={8} justify={'end'}>
                             <Col span={10}>
-                                <Input.TextArea autoSize={{minRows: 2}} style={{"height": '32px'}} value={desc}/>
+                                <Input.TextArea autoSize={{ minRows: 2 }} style={{ "height": '32px' }} value={desc} />
                             </Col>
                             <Col span={5}>
-                                <Button type="primary" style={{marginTop: 10}}
-                                        onClick={() => saveDesc(item)}>确定</Button>
+                                <Button type="primary" style={{ marginTop: 10 }}
+                                    onClick={() => saveDesc(item)}>确定</Button>
                             </Col>
                         </Row>
                     </Input.Group>}
@@ -65,7 +66,7 @@ function List() {
                     }}
                     visible={visible === item.id} trigger="click">
                     <EditOutlined onClick={() => editDesc(item)}
-                                  style={{"cursor": 'pointer'}}/>
+                        style={{ "cursor": 'pointer' }} />
                 </Popover>
             </div>
             <div>
@@ -81,22 +82,24 @@ function List() {
         setList(await loadFn())
     }
 
+    const emptyElement = <Empty description={<span> 暂无页面，快去创建吧 </span>}>
+        <Button type="primary">
+            <Link to="/template">创建页面</Link>
+        </Button>
+    </Empty>
+
     useEffect(() => {
-        loadData().finally(() => {});
+        loadData().finally(() => { });
     }, [])
 
     return <div className={style['user-page-list']}>
-        {loading && <Spin />}
-        {!list.length && !loading ? <div className={style["empty-list"]}>
-            <Empty description={<span> 暂无页面，快去创建吧 </span>}>
-                <Button type="primary">
+        <div className={style.list}>
+            <div className={style.top}>
+                {list.length > 0 && <Button>
                     <Link to="/template">创建页面</Link>
-                </Button>
-            </Empty>
-        </div> : <div className={style.list}>
-            <Button className={style.top}>
-                <Link to="/template">创建页面</Link>
-            </Button>
+                </Button>}
+            </div>
+
             <ListAD
                 className={style["demo-loadmore-list"]}
                 loading={loading}
@@ -110,9 +113,10 @@ function List() {
                         </ListAD.Item.Meta>
                     </ListAD.Item>
                 }}
+                locale={{ emptyText: emptyElement }}
                 dataSource={list}>
             </ListAD>
-        </div>}
+        </div>
     </div>
 }
 

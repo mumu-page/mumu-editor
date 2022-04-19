@@ -1,7 +1,32 @@
 import instance from '../request';
 
+interface Config {
+  templateId: string | number
+  templateGit: string
+  templateName: string
+  projectName: string
+  gitName: string
+  version: string
+}
+
+export interface CreateProjectParams {
+  pageConfig: {
+    config: Config
+    userSelectComponents: Array<Record<string, any>>
+    components: Array<Record<string, any>>
+  }
+  // id: number
+  // templateId: number
+  // name: string
+  // pageConfig: Config
+  // gitConfig: string
+  // releaseInfo: string
+  // version: string
+  // desc: string
+}
+
 export default {
-  async createProject(params: any) {
+  async createProject(params: CreateProjectParams) {
     const result = await instance.post('/project/createProject', params);
     return result.data;
   },

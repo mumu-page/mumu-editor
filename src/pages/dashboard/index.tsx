@@ -12,7 +12,6 @@ export default function Dashboard() {
         <div>
             <Header className={style["edit-menu"]}/>
             <List />
-            <Spin />
         </div>
     )
 }
