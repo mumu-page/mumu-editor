@@ -3,8 +3,12 @@ import { Link } from 'react-router-dom'
 import Header from '../../components/Header'
 import styles from './index.module.less'
 import classNames from 'classnames'
+import { useStore } from '@/store'
 
 function Intro() {
+    const store = useStore()
+    console.log('store', store);
+    
     const style = {
         'transform': 'translate(0px, 0px)',
         'opacity': 1

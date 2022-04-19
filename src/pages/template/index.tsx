@@ -7,6 +7,8 @@ import 'antd/lib/modal/style/index.css'
 import 'antd/lib/form/style/index.css'
 import style from './index.module.less'
 
+const ModalAntd: any = Modal
+
 interface TemplateState {
     id: string;
     templateName: string;
@@ -91,7 +93,7 @@ export default function Template() {
                   })}
               </div>
             </>}
-            <Modal
+            <ModalAntd
                 visible={createDialog}
                 title="请填写页面信息"
                 okText="确定"
@@ -119,7 +121,7 @@ export default function Template() {
                         </Input.Group>
                     </Form.Item>
                 </Form>
-            </Modal>
+            </ModalAntd>
         </>
     )
 }
