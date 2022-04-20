@@ -3,6 +3,7 @@ import { RouteObject } from 'react-router-dom'
 import Dashboard from '../pages/dashboard';
 import Intro from '../pages/intro';
 import Template from "@/pages/template";
+import Edit from "../pages/edit";
 
 const routes: RouteObject[] = [
     {
@@ -28,6 +29,10 @@ const routes: RouteObject[] = [
     {
       path: '/template',
       element: <Template />
+    },
+    {
+      path: '/edit',
+      element: <Edit />
     },
   ];
 
