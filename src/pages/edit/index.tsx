@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header'
-import { Button, Drawer, Form, Input, Menu, Spin } from "antd";
+import { Button, Drawer, Form, Input, Menu, message, Spin } from "antd";
 import { SettingOutlined, UndoOutlined, RedoOutlined, SaveOutlined, LinkOutlined, CopyOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 import { EyeOutlined } from "@ant-design/icons/lib";
 import { component, project } from "@/api";
@@ -11,9 +11,13 @@ import classNames from 'classnames';
 import ComponentSelect from './components/ComponentSelect';
 import { useStore } from 'react-redux';
 import { RootStore } from '@/store';
+import { useEditor } from './hooks';
+import { postMsgToChild } from '@/utils/utils';
+import { addComponent, returnConfig, setDragStart, setIsSave } from '@/store/edit';
 
 export default function Edit() {
   const [spinning, setSpinning] = useState(true)
+  const [current, setCurrent] = useState(0)
   const [visible, setVisible] = useState(true)
   const [data, setData] = useState({})
   const [name, setName] = useState('')
@@ -22,7 +26,8 @@ export default function Edit() {
   const [containerHeight, setContainerHeight] = useState()
   const { getState, dispatch } = useStore<RootStore>();
   const { edit: editState, user } = getState()
-  
+  const { editorState, eventInit, init, getIndex, setFixedStyle } = useEditor();
+
   const params = useParams()
   console.log('params', params);
 
@@ -56,19 +61,18 @@ export default function Edit() {
     // window.open(`http://localhost:8081/?isPreview=true&pageId=${router.query.id}&env=development`)
   }
   const setRelease = () => {
-    // project.release({id: router.query.id}).then(res => {
-    //     if(res.success) {
-    //         message.success('发布成功！')
-    //     } else {
-    //         message.error('发布失败！')
-    //     }
-    //
-    // })
+    project.release({ id: 'router.query.id' }).then(res => {
+      if (res.success) {
+        message.success('发布成功！')
+      } else {
+        message.error('发布失败！')
+      }
+    })
   }
 
-  const deleteComponent = (/* index */) => {
-    // postMsgToChild({type: 'deleteComponent', data: index !== undefined ? index : editorState.current});
-    // commit('setIsSave', true)
+  const deleteComponent = (index?: undefined | number) => {
+    postMsgToChild({ type: 'deleteComponent', data: index !== undefined ? index : editorState.current });
+    dispatch(setIsSave(true))
   }
 
   const onClose = (flag: boolean | ((prevState: boolean) => boolean)) => {
@@ -76,59 +80,62 @@ export default function Edit() {
   }
 
   const initConfig = () => {
-    // eventInit((index) => {
-    //   state.current = index;
-    //   postMsgToChild({type: 'changeIndex', data: state.current});
-    // });
-    // watch(() => editState.editConfig.currentIndex, () => {
-    //   state.visible = true;
-    // });
-    // watch([
-    //   () => editState.pageConfig.userSelectComponents,
-    //   () => editState.editConfig.currentIndex
-    // ], () => {
-    //   init(editState.editConfig.currentIndex);
-    //   setFixedStyle(editState.editConfig.currentIndex);
-    // });
-    // state.spinning = false;
-    // // 初始化页面
-    // postMsgToChild({type: 'getConfig'});
-    // // if (editState.pageConfig.components.length) {
-    // //   // 编辑
-    // //   let data = JSON.parse(JSON.stringify(editState.pageConfig))
-    // //   postMsgToChild({type: 'setConfig', data})
-    // // }
-    // // postMsgToChild({type: 'changeIndex', data: editState.editConfig.currentIndex})
-    // commit('setIsSave', true)
+    eventInit((index) => {
+      setCurrent(index)
+      postMsgToChild({ type: 'changeIndex', data: current });
+    });
+    if (typeof editState?.editConfig?.currentIndex === 'number') {
+      init(editState.editConfig.currentIndex);
+    }
+    setSpinning(false)
+    // 初始化页面
+    postMsgToChild({ type: 'getConfig' });
+    // if (editState.pageConfig.components.length) {
+    //   // 编辑
+    //   let data = JSON.parse(JSON.stringify(editState.pageConfig))
+    //   postMsgToChild({type: 'setConfig', data})
+    // }
+    postMsgToChild({ type: 'changeIndex', data: editState.editConfig.currentIndex })
+    dispatch(setIsSave(true))
   }
 
   const dragover_handler = (ev: { preventDefault: () => void; }) => {
     ev.preventDefault();
   }
 
-  const drop_handler = (/* ev */) => {
-    // ev.preventDefault();
-    // const data = ev.dataTransfer.getData("text/plain");
-    // const {layerY} = ev;
-    // const index = getIndex(layerY);
-    // commit('addComponent', {data: JSON.parse(data), index});
-    // commit('setDragStart', {
-    //   v: false
-    // });
-    // commit('setIsSave', true)
+  const drop_handler = (ev: { preventDefault?: any; dataTransfer?: any; layerY?: any; }) => {
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text/plain");
+    const { layerY } = ev;
+    const index = getIndex(layerY);
+    dispatch(addComponent({ data: JSON.parse(data), index }))
+    dispatch(setDragStart({
+      v: false
+    }))
+    dispatch(setIsSave(true))
   }
 
   const changeIndex = (op: number) => {
     console.log(op);
-
-    // postMsgToChild({type: 'sortComponent', data: {op, index: editorState.current}});
-    // commit('setIsSave', true)
+    postMsgToChild({ type: 'sortComponent', data: { op, index: editorState.current } });
+    dispatch(setIsSave(true))
   }
 
   const copyComponent = () => {
-    // postMsgToChild({type: 'copyComponent', data: editorState.current});
-    // commit('setIsSave', true)
+    postMsgToChild({ type: 'copyComponent', data: editorState.current });
+    dispatch(setIsSave(true))
   }
+
+  useEffect(() => {
+    setVisible(true)
+  }, [editState.editConfig.currentIndex,]);
+
+  useEffect(() => {
+    // if (typeof editState?.editConfig?.currentIndex === 'number') {
+    //   init(editState.editConfig.currentIndex);
+    // }
+    setFixedStyle(editState.editConfig.currentIndex);
+  }, [editState.pageConfig.userSelectComponents, editState.editConfig.currentIndex, init, setFixedStyle]);
 
   useEffect(() => {
     Promise.all([
@@ -138,14 +145,14 @@ export default function Edit() {
       setData(result[0])
       const targetConfig = result[0].pageConfig;
       setName(result[0].name)
-      setUrl(`http://localhost:8080/dist/index.html?isEdit=true`)
-      setShowUrl(`http://localhost:8080/dist/index.html`)
-      // dispatch('returnConfig', {
-      //   targetConfig: targetConfig,
-      //   pageData: state.data,
-      //   releaseStatus: result[0].releaseInfo,
-      //   commonComponents: componentRes,
-      // });
+      setUrl(`http://localhost:3000/mumu-editor/dist/index.html?isEdit=true`)
+      setShowUrl(`http://localhost:3000/mumu-editor/dist/index.html`)
+      dispatch(returnConfig({
+        targetConfig,
+        pageData: data,
+        releaseStatus: result[0].releaseInfo,
+        commonComponents: componentRes,
+      }));
     });
   }, [])
 
@@ -219,6 +226,7 @@ export default function Edit() {
             <div className={style["preview-container"]}>
               <Spin spinning={spinning}>
                 <iframe
+                  cross-origin="true"
                   onLoad={initConfig}
                   id="frame"
                   frameBorder="0"
