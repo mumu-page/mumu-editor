@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import Header from '../../components/Header'
 import { Button, Drawer, Form, Input, Menu, message, Spin } from "antd";
 import { SettingOutlined, UndoOutlined, RedoOutlined, SaveOutlined, LinkOutlined, CopyOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 import { EyeOutlined } from "@ant-design/icons/lib";
 import { component, project } from "@/api";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import style from './index.module.less'
 import classNames from 'classnames';
 import ComponentSelect from './components/ComponentSelect';
@@ -15,7 +15,7 @@ import { useEditor } from './hooks';
 import { postMsgToChild } from '@/utils/utils';
 import { addComponent, returnConfig, setDragStart, setIsSave } from '@/store/edit';
 
-export default function Edit() {
+function Edit() {
   const [spinning, setSpinning] = useState(true)
   const [current, setCurrent] = useState(0)
   const [visible, setVisible] = useState(true)
@@ -28,10 +28,7 @@ export default function Edit() {
   const { edit: editState, user } = getState()
   const { editorState, eventInit, init, getIndex, setFixedStyle } = useEditor();
 
-  const params = useParams()
-  console.log('params', params);
-
-  // const onSearch = () => {};
+  const [params] = useSearchParams()
 
   const getPageSchema = () => {
   }
@@ -139,7 +136,7 @@ export default function Edit() {
 
   useEffect(() => {
     Promise.all([
-      project.query({ id: (params?.query as any)?.id }),
+      project.query({ id: params.get('id') }),
       component.query({})
     ]).then(([result, { result: componentRes }]) => {
       setData(result[0])
@@ -243,20 +240,20 @@ export default function Edit() {
                 />}
               </Spin>
             </div>
-            <div className={style["se-view-hover-tip"]}></div>
-            <div className={style["se-view-active-tip"]}></div>
+            <div style={editorState.hoverStyle} className={style["se-view-hover-tip"]}></div>
+            <div style={editorState.activeStyle} className={style["se-view-active-tip"]}></div>
             <div
-              // v-show="toolStyle.top"
               style={{
-                // top: toolStyle.top
+                display: !!editorState.toolStyle?.top ? 'block' : 'none',
+                top: editorState.toolStyle?.top
               }}
               className={style["se-view-tools"]}
               id="se-view-tools"
             >
-              {/* <div className={classNames(style['sev-tools-move'], style[(isTop || isBottom) && 'sev-tools-move-single'])}>
-                {!isTop && <ArrowUpOutlined onClick={changeIndex(-1)} className="fd-iconfont" />}
-                {!isBottom && <ArrowDownOutlined onClick={changeIndex(1)} className="fd-iconfont" />}
-              </div> */}
+              <div className={classNames(style['sev-tools-move'], (editorState.isTop || editorState.isBottom) && style['sev-tools-move-single'])}>
+                {!editorState.isTop && <ArrowUpOutlined onClick={() => changeIndex(-1)} className="fd-iconfont" />}
+                {!editorState.isBottom && <ArrowDownOutlined onClick={() => changeIndex(1)} className="fd-iconfont" />}
+              </div>
               <div className={style["sev-tools-copy"]}>
                 <CopyOutlined onClick={copyComponent} className={style["fd-iconfont"]} />
               </div>
@@ -295,3 +292,5 @@ export default function Edit() {
     </div >
   )
 }
+
+export default memo(Edit)

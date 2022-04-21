@@ -14,7 +14,7 @@ function getElementTop(element: { offsetTop: any; offsetParent: any; }) {
 
 export function useEditor() {
   const [state, setState] = useState({
-    toolStyle: {},
+    toolStyle: {} as any,
     activeStyle: {},
     hoverStyle: {},
     isBottom: false,
@@ -39,13 +39,15 @@ export function useEditor() {
     }
     setState(state2)
 
-    setTimeout(() => {
+    requestIdleCallback(() => {
       const toolND = document.getElementById('se-view-tools');
       if (!toolND) return
       const toolHeight = parseInt(getComputedStyle(toolND).height, 10);
-      state.toolStyle = {
+      const state3 = JSON.parse(JSON.stringify(state))
+      state3.toolStyle = {
         top: `${top + 10 + toolHeight > state.containerHeight ? top - toolHeight + parseInt(height, 10) : top + 10}px`,
       };
+      setState(state3)
     })
   }
 
