@@ -40,7 +40,6 @@ async function query(params: {}) {
   const result = await instance.get<Project[], Response<Project[]>>(`/project/findAll`, {
     params,
   });
-  console.log('result', result);
   return result.data;
 }
 async function save(params: any) {

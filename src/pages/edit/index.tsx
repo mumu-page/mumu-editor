@@ -8,8 +8,9 @@ import { component, project } from "@/api";
 import { Link, useParams } from "react-router-dom";
 import style from './index.module.less'
 import classNames from 'classnames';
-import { useStore } from '@/store';
 import ComponentSelect from './components/ComponentSelect';
+import { useStore } from 'react-redux';
+import { RootStore } from '@/store';
 
 export default function Edit() {
   const [spinning, setSpinning] = useState(true)
@@ -19,7 +20,9 @@ export default function Edit() {
   const [url, setUrl] = useState('')
   const [showUrl, setShowUrl] = useState('')
   const [containerHeight, setContainerHeight] = useState()
-  const { state: { edit: editState }, dispatch, commit } = useStore();
+  const { getState, dispatch } = useStore<RootStore>();
+  const { edit: editState, user } = getState()
+  
   const params = useParams()
   console.log('params', params);
 
@@ -154,7 +157,7 @@ export default function Edit() {
           <SettingOutlined onClick={getPageSchema} style={{ "marginRight": "10px", "cursor": "pointer" }} />
           <Input
             className={style["title-content"]}
-            value="editState.pageConfig.config.projectName"
+            value={editState.pageConfig.config.projectName}
             onInput={changeProjectName}
           />
         </div>}

@@ -4,13 +4,8 @@ import { Spin, Card, Modal, Form, Input, Select, InputNumber } from "antd";
 import { market, project } from "@/api";
 import { TemplateData } from "@/api/list/market";
 import { useNavigate } from 'react-router-dom';
-import 'antd/lib/card/style/index.css'
-import 'antd/lib/modal/style/index.css'
-import 'antd/lib/form/style/index.css'
-import 'antd/lib/select/style/index.css'
-import 'antd/lib/input/style/index.css'
-import 'antd/lib/input-number/style/index.css'
 import style from './index.module.less'
+
 const ModalAntd = Modal as any
 
 interface FormDataState {
@@ -103,6 +98,8 @@ export default function Template(props: any) {
         </div>
       </Spin>
       <ModalAntd
+        // transitionName=""
+        // maskTransitionName=""
         visible={createDialog}
         title="请填写页面信息"
         okText="确定"

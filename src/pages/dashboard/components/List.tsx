@@ -4,14 +4,8 @@ import { Link } from "react-router-dom";
 import { EditOutlined } from '@ant-design/icons';
 import { project } from '@/api';
 import { useLoadList } from "./hooks";
-import 'antd/lib/list/style/index.css'
-import 'antd/lib/button/style/index.css'
-import 'antd/lib/empty/style/index.css'
-import 'antd/lib/popover/style/index.css'
-import 'antd/lib/input/style/index.css'
-import 'antd/lib/spin/style/index.css'
-import style from "./list.module.less";
 import { Project } from '@/api/list/project';
+import style from "./list.module.less";
 
 function List() {
     const [list, setList] = useState<Project[]>([])

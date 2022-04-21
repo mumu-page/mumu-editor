@@ -1,11 +1,30 @@
-import { createReducerFunction } from "immer-reducer";
-import { TodoReducer } from "./actions";
-import { initialEditState } from "./state";
-import { editSaga } from "./sagas";
+import { createSlice } from '@reduxjs/toolkit'
+import { initialEditState } from './state'
 
-const editReducer = createReducerFunction(TodoReducer, initialEditState)
+export const editSlice = createSlice({
+  name: 'edit',
+  initialState: initialEditState,
+  reducers: {
+    increment: (state) => {
+      // state.id += 1
+    },
+    decrement: (state) => {
+      // state.id -= 1
+    },
+    incrementByAmount: (state, action) => {
+      // state.id += action.payload
+    },
+  },
+})
 
-export {
-    editReducer,
-    editSaga
+export const { increment, decrement, incrementByAmount } = editSlice.actions
+
+export const incrementAsync = (amount: any) => (dispatch: (arg0: { payload: any; type: string }) => void) => {
+  setTimeout(() => {
+    dispatch(incrementByAmount(amount))
+  }, 1000)
 }
+
+export const selectCount = (state: { counter: { value: any } }) => state.counter.value
+
+export default editSlice.reducer

@@ -5,43 +5,60 @@ export interface TodoItem {
     saveState: "saved" | "dirty" | "saving";
 }
 
+export interface PageConfig {
+    userSelectComponents: any[]
+    components: any[]
+    config: Record<string, any>
+    page: Record<string, any>
+}
+
+export interface EditConfig {
+    componentConfig: Record<string, any>
+    currentIndex: null | number | string
+    currentComponent: any
+}
+
+export interface UIConfig {
+    commonComponents: any[] // 远程组件列表
+    showEdit: boolean
+    releaseStatus: string
+    showRelease: boolean
+    pageData: Record<string, any> // 页面数据
+    dragStart: boolean
+}
+
 export interface EditState {
-    todos: {[id: string]: TodoItem};
+    pageConfig: PageConfig;
+    editConfig: EditConfig
+    uiConfig: UIConfig
+    defaultConfig: any
+    isSave: boolean
 }
 
 export const initialEditState: EditState = {
-    todos: {},
-};
+    pageConfig: {
+        userSelectComponents: [],
+        components: [],
+        config: {}, // 模板信息
+        page: {}, // 页面样式&全局配置
+    },
 
-/**
- * Some state selection helpers. Using helper like makes it easier to refactor
- * the the state structure when required. This selector helper can be used in
- * both the render prop connect and the Immer Reducer.
- */
-export class Selectors {
-    state: EditState;
+    editConfig: {
+        componentConfig: {},
+        currentIndex: null,
+        currentComponent: null,
+    },
 
-    constructor(state: EditState) {
-        this.state = state;
-    }
+    uiConfig: {
+        commonComponents: [], // 远程组件列表
+        showEdit: true,
+        releaseStatus: '',
+        showRelease: false,
+        pageData: {}, // 页面数据
+        dragStart: false,
+    },
 
-    getTodoIDs() {
-        return Object.values(this.state.todos)
-            .filter(todo => !todo.completed)
-            .map(todo => todo.id);
-    }
-
-    getComletedIDs() {
-        return Object.values(this.state.todos)
-            .filter(todo => todo.completed)
-            .map(todo => todo.id);
-    }
-
-    getTodo(id: string) {
-        const maybeTodo = this.state.todos[id];
-        if (!maybeTodo) {
-            throw new Error("Cannot find todo with id: " + id);
-        }
-        return maybeTodo;
-    }
+    defaultConfig: null,
+    isSave: true,
 }
+
