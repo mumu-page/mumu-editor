@@ -52,76 +52,81 @@ export function useEditor() {
   }
 
   const eventInit = (selectCb: (arg0: number) => void) => {
-    const componentsPND = getIframeElement();
-    if (!componentsPND) return;
-    componentsPND.addEventListener('click', (e: { target: any; }) => {
-      let node = e.target as any;
-      while (node?.tagName !== 'HTML') {
-        let currentId = node?.getAttribute('id') || '';
-        if (currentId.indexOf('coco-render-id-_component_') >= 0) {
-          const top = getElementTop(node);
-          const { height } = getComputedStyle(node);
-          restStyle(height, top, 'activeStyle');
-          const pids = Array.from(componentsPND.childNodes).map((nd: any) => nd.getAttribute('id'))
-          pids.forEach((id, index) => {
-            if (id === currentId) {
-              state.isTop = index === 0;
-              state.isBottom = index === pids.length - 1;
-              state.current = index;
-              selectCb(index);
-            }
-          });
-        }
-        node = node.parentNode;
-      }
-    });
-    componentsPND.addEventListener('mouseover', (e: { target: any; }) => {
-      let node = e.target;
-      while (node.tagName !== 'HTML') {
-        let currentId = node?.getAttribute('id') || '';
-        if (currentId.indexOf('coco-render-id-_component_') >= 0) {
-          try {
+    requestIdleCallback(() => {
+      const componentsPND = getIframeElement();
+      if (!componentsPND) return;
+      componentsPND.addEventListener('click', (e: { target: any; }) => {
+        let node = e.target as any;
+        while (node?.tagName !== 'HTML') {
+          let currentId = node?.getAttribute('id') || '';
+          if (currentId.indexOf('mumu-render-id-_component_') >= 0) {
             const top = getElementTop(node);
             const { height } = getComputedStyle(node);
-            restStyle(height, top, 'hoverStyle');
+            restStyle(height, top, 'activeStyle');
             const pids = Array.from(componentsPND.childNodes).map((nd: any) => nd.getAttribute('id'))
             pids.forEach((id, index) => {
               if (id === currentId) {
                 state.isTop = index === 0;
                 state.isBottom = index === pids.length - 1;
                 state.current = index;
+                selectCb(index);
               }
-            })
-          } catch (e) {
-            // ignore
+            });
           }
-
+          node = node.parentNode;
         }
-        node = node.parentNode;
-      }
-    });
+      });
+      componentsPND.addEventListener('mouseover', (e: { target: any; }) => {
+        let node = e.target;
+        while (node.tagName !== 'HTML') {
+          let currentId = node?.getAttribute('id') || '';
+          if (currentId.indexOf('mumu-render-id-_component_') >= 0) {
+            try {
+              const top = getElementTop(node);
+              const { height } = getComputedStyle(node);
+              restStyle(height, top, 'hoverStyle');
+              const pids = Array.from(componentsPND.childNodes).map((nd: any) => nd.getAttribute('id'))
+              pids.forEach((id, index) => {
+                if (id === currentId) {
+                  state.isTop = index === 0;
+                  state.isBottom = index === pids.length - 1;
+                  state.current = index;
+                }
+              })
+            } catch (e) {
+              // ignore
+            }
+  
+          }
+          node = node.parentNode;
+        }
+      });
+    })
   }
 
   const init = (index: number) => {
-    const componentsPND = getIframeElement();
-    if (!componentsPND) return;
-    const container = getIframeElement('html')
-    if (!container) return;
-    const containerHeight = Math.ceil(parseFloat(getComputedStyle(container).height) + componentsPND.offsetTop);
-    state.containerHeight = containerHeight > 667 ? containerHeight : 667;
-    if (index === -1) return;
-    const node = componentsPND.childNodes[index];
-    let currentId = node?.getAttribute('id') || '';
-    const top = getElementTop(node);
-    const { height } = getComputedStyle(node);
-    restStyle(height, top, 'activeStyle');
-    const pids = Array.from(componentsPND.childNodes).map((nd: any) => nd.getAttribute('id'))
-    pids.forEach((id, index) => {
-      if (id === currentId) {
-        state.isTop = index === 0;
-        state.isBottom = index === pids.length - 1;
-        state.current = index;
-      }
+    requestIdleCallback(() => {
+      const componentsPND = getIframeElement();
+      if (!componentsPND) return;
+      const container = getIframeElement('html')
+      if (!container) return;
+      const containerHeight = Math.ceil(parseFloat(getComputedStyle(container).height) + componentsPND.offsetTop);
+      state.containerHeight = containerHeight > 667 ? containerHeight : 667;
+      if (index === -1) return;
+      const node = componentsPND.childNodes?.[index];
+      if(!node) return
+      let currentId = node?.getAttribute('id') || '';
+      const top = getElementTop(node);
+      const { height } = getComputedStyle(node);
+      restStyle(height, top, 'activeStyle');
+      const pids = Array.from(componentsPND.childNodes).map((nd: any) => nd.getAttribute('id'))
+      pids.forEach((id, index) => {
+        if (id === currentId) {
+          state.isTop = index === 0;
+          state.isBottom = index === pids.length - 1;
+          state.current = index;
+        }
+      })
     })
   }
 

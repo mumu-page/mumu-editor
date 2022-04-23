@@ -1,3 +1,5 @@
+import { Schema } from "form-render";
+
 export interface TodoItem {
   id: string;
   text: string;
@@ -10,13 +12,23 @@ export interface PageConfig {
   userSelectComponents: any[]
   components: any[]
   config: Record<string, any>
-  page: Record<string, any>
+  page: any
+}
+
+export interface CurrentComponentSchema {
+  schema: Schema
+}
+
+export interface CurrentComponent {
+  component: any;
+  currentComponentSchema: CurrentComponentSchema;
+  type?: any;
 }
 
 export interface EditConfig {
   componentConfig: Record<string, any>
   currentIndex: null | number | string
-  currentComponent: any
+  currentComponent: CurrentComponent
 }
 
 export interface ReleaseStatus {
@@ -56,7 +68,11 @@ export const initialEditState: EditState = {
   editConfig: {
     componentConfig: {},
     currentIndex: null,
-    currentComponent: null,
+    currentComponent: {
+      component: null,
+      type: null,
+      currentComponentSchema: { schema: {} }
+    },
   },
 
   uiConfig: {

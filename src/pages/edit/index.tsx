@@ -14,6 +14,7 @@ import { RootStore } from '@/store';
 import { useEditor } from './hooks';
 import { postMsgToChild } from '@/utils/utils';
 import { addComponent, returnConfig, setDragStart, setIsSave } from '@/store/edit';
+import FormConfig from './components/FormConfig';
 
 function Edit() {
   const [spinning, setSpinning] = useState(true)
@@ -142,8 +143,8 @@ function Edit() {
       setData(result[0])
       const targetConfig = result[0].pageConfig;
       setName(result[0].name)
-      setUrl(`http://localhost:3000/mumu-editor/dist/index.html?isEdit=true`)
-      setShowUrl(`http://localhost:3000/mumu-editor/dist/index.html`)
+      setUrl(`http://localhost:3000/mumu-editor/build/index.html?isEdit=true`)
+      setShowUrl(`http://localhost:3000/mumu-editor/build/index.html`)
       dispatch(returnConfig({
         targetConfig,
         pageData: data,
@@ -167,35 +168,37 @@ function Edit() {
         </div>}
         menus={[
           {
-            key: 'rollback',
+            key: 'radio',
             label: <><UndoOutlined /> 撤销</>,
-            onClick: rollback
-          },
-          {
-            key: 'next',
-            label: <><RedoOutlined /> 前进</>,
-            onClick: next
-          },
-          {
-            key: 'saveConfig',
-            label: <><EyeOutlined /> 保存</>,
-            onClick: saveConfig
+            onClick: rollback,
+            children: [
+              {
+                key: 'rollback',
+                label: <><UndoOutlined /> 撤销</>,
+                onClick: rollback
+              },
+              {
+                key: 'next',
+                label: <><RedoOutlined /> 前进</>,
+                onClick: next
+              },
+              {
+                key: 'saveConfig',
+                label: <><EyeOutlined /> 保存</>,
+                onClick: saveConfig
+              },
+            ]
           },
           {
             key: 'setPreview',
             label: <><EyeOutlined /> 预览</>,
-            onClick: setPreview
+            onClick: setPreview,
           },
           {
             key: 'setRelease',
-            label: <Button type="primary">发布</Button>,
-            onClick: setRelease
-          },
-          {
-            key: 'line',
-            label: <div className={style.line} />,
+            label: '发布',
             onClick: setRelease,
-            className: style.dash
+            type: 'primary'
           },
           {
             key: 'dashboard',
@@ -265,14 +268,16 @@ function Edit() {
         </div >
 
         <div
-          style={{
-            position: 'relative',
-            width: visible ? '350px' : ''
-          }}
+          // style={{
+          //   position: 'relative',
+          //   width: visible ? '350px' : ''
+          // }}
           className={style["form-container-main"]}
         >
-          <Drawer
-            mask={false}
+          <FormConfig />
+          {/* <Drawer
+            // mask={false}
+            title="Basic Drawer"
             placement="right"
             closable={false}
             visible={visible}
@@ -285,8 +290,8 @@ function Edit() {
               {visible && <DoubleRightOutlined onClick={() => onClose(false)} className={style["draw-op"]} />}
             </>}
           >
-            <Form />
-          </Drawer>
+            <FormConfig />
+          </Drawer> */}
         </div >
       </div >
     </div >

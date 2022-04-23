@@ -3,12 +3,16 @@ import logo from '../../assets/image/logo.svg';
 import { Link } from 'react-router-dom'
 import classNames from 'classnames';
 import style from './index.module.less'
+import { Button, Radio } from 'antd';
 
 interface MenuItem {
   key: string;
   label: string | React.ReactNode
   onClick?: (menu: MenuItem) => void
   className?: string
+  type?: "link" | "text" | "ghost" | "default" | "primary" | "dashed" | undefined
+  style?: Record<string, any>,
+  children?: MenuItem[]
 }
 
 interface HeaderProps {
@@ -22,6 +26,10 @@ function Header(props: HeaderProps) {
   const handleSelect = (menu: MenuItem) => {
     menu?.onClick?.(menu)
     props?.handleSelect?.(menu)
+  }
+
+  const handleSizeChange = () => {
+
   }
 
   const renderMenuItem = (menus: MenuItem[] | undefined) => {
@@ -40,11 +48,28 @@ function Header(props: HeaderProps) {
       }
     ]
     const render = (menus: MenuItem[]) => {
-      return <div className={style.menu}>
-        {Array.isArray(menus) && menus.map(item => {
-          return <div key={item?.key} className={classNames(item.className, style.menuItem)} onClick={() => handleSelect(item)}>{item.label}</div>
-        })}
-      </div>
+      return Array.isArray(menus) && menus.map(item => {
+        if (item.children?.length) {
+          return <Radio.Group key={item.key} className={style.menu} onChange={handleSizeChange}>
+            {item.children.map(child => {
+              return <Radio.Button
+                value="large"
+                type="primary"
+                key={child?.key}
+                style={child.style}
+                className={classNames(child.className, style.menuItem)}
+                onClick={() => handleSelect(child)}>{child.label}
+              </Radio.Button>
+            })}
+          </Radio.Group>
+        }
+        return <Button
+          type={item.type}
+          key={item?.key}
+          style={item.style || { marginLeft: 10 }}
+          className={classNames(item.className, style.menuItem)}
+          onClick={() => handleSelect(item)}>{item.label}</Button>
+      })
     }
     if (Array.isArray(menus)) return render(menus)
     return render(defaultMenus)
@@ -56,12 +81,14 @@ function Header(props: HeaderProps) {
         <div className={style["left"]}>
           <div className={style["logo"]}>
             <Link to="/">
-              <img src={logo} alt="" height={60} style={{ transform: 'scale(2.2) translate(15px, 0)' }} />
+              <img className={style["logo-container"]} src={logo} alt="" height={60} />
             </Link>
           </div>
           {props.pageTitle}
         </div>
-        {renderMenuItem(props.menus)}
+        <div>
+          {renderMenuItem(props.menus)}
+        </div>
       </div>
     </div>
   )

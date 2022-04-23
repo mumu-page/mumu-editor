@@ -16,6 +16,6 @@ export const editSlice = createSlice({
 
 export const selectCount = (state: { counter: { value: any } }) => state.counter.value
 
-export const { returnConfig, setIsSave, addComponent, setDragStart } = editSlice.actions
+export const { returnConfig, setIsSave, addComponent, setDragStart, changeProps } = editSlice.actions
 
 export default editSlice.reducer

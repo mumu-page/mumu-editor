@@ -12,6 +12,10 @@ function addComponent(state: EditState, action: PayloadAction<any>) {
   postMsgToChild({ type: 'addComponent', data: JSON.parse(JSON.stringify({ data, index })) });
 }
 
+function changeProps(state: EditState, action: PayloadAction<any>) {
+  postMsgToChild({type: 'changeProps', data: action.payload});
+}
+
 function setDragStart(state: EditState, action: PayloadAction<any>) {
   const {ev, v, data} = action.payload
   state.uiConfig.dragStart = v;
@@ -24,7 +28,8 @@ const reducers = {
   returnConfig,
   setIsSave,
   addComponent,
-  setDragStart
+  setDragStart,
+  changeProps
 }
 
 export default reducers

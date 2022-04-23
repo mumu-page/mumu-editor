@@ -1,0 +1,28 @@
+.title {
+  padding: 14px 7px;
+  color: var(--dn-composite-panel-tabs-header-color);
+  line-height: 18px;
+  font-size: 20px;
+  border-bottom: 1px solid var(--dn-panel-border-color);
+  display: flex;
+  justify-content: space-between;
+  height: 48px;
+  .action {
+    .action-item {
+      margin-left: 6px;
+      cursor: pointer;
+    }
+    .action-item-guding {
+      transition: all .3s;
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+    .action-item-close {
+      transition: all .3s;
+      &:hover {
+        transform: rotate(90deg);
+      }
+    }
+  }
+}

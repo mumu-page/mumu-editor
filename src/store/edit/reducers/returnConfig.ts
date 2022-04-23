@@ -4,9 +4,9 @@ import { EditState } from "../state";
 
 interface ReturnConfigPlayload {
   targetConfig: any
-  pageData: any
-  releaseStatus: any
-  commonComponents: any
+  pageData?: any
+  releaseStatus?: any
+  commonComponents?: any
   save?: boolean
 }
 

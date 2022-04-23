@@ -5,10 +5,17 @@ import Intro from '../pages/intro';
 import Template from "@/pages/template";
 import Edit from "../pages/edit";
 
+function NoMatch() {
+  return (
+    <div>NoMatch</div>
+  )
+}
+
 const routes: RouteObject[] = [
-    {
-      path: "/",
-      element: <Intro />,
+  {
+    path: "/",
+    element: <Intro />,
+    index: true,
     //   children: [
     //     { index: true, element: <Home /> },
     //     {
@@ -21,19 +28,23 @@ const routes: RouteObject[] = [
     //     },
     //     { path: "*", element: <NoMatch /> },
     //   ],
-    },
-    {
-      path: '/dashboard',
-      element: <Dashboard />
-    },
-    {
-      path: '/template',
-      element: <Template />
-    },
-    {
-      path: '/edit',
-      element: <Edit />
-    },
-  ];
+  },
+  {
+    path: '/dashboard',
+    element: <Dashboard />
+  },
+  {
+    path: '/template',
+    element: <Template />
+  },
+  {
+    path: '/edit',
+    element: <Edit />
+  },
+  {
+    path: '*',
+    element: <NoMatch />
+  }
+];
 
 export default routes

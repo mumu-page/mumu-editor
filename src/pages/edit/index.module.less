@@ -9,9 +9,10 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  background: #f5f5f5;
+  background-color: var(--dn-mobile-simulator-bg-color);
   position: relative;
   z-index: 2;
+  height: calc(100vh - 53px);
 
   .se-page-path-container {
     position: relative;
@@ -154,9 +155,18 @@
     }
   }
 
+  .component-container {
+    width: 350px;
+    border-right: 1px solid var(--dn-panel-border-color);
+  }
+
+  .form-container-main {
+    width: 301px;
+  }
+
   .component-container,
   .form-container-main {
-    height: calc(~ '100vh - 60px');
+    height: 100%;
   }
 
   .editor-view {
@@ -194,6 +204,9 @@
   .form-container-main {
     display: flex;
     justify-content: flex-end;
+    position: relative;
+    box-shadow: 3px 0 16px rgb(0 0 0 / 6%);
+    border-left: 1px solid var(--dn-panel-border-color);
   }
 }
 
@@ -247,7 +260,7 @@
     line-height: 30px;
     text-align: center;
     background: #f9f9f9;
-    margin-left: 20px;
+    margin-left: 40px;
     color: #000;
     display: flex;
     align-items: center;

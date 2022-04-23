@@ -3,21 +3,34 @@ import userReducer from './user/index';
 import editReducer from './edit/index';
 import { EditState } from './edit/state';
 import { UserState } from './user/state';
+import { useStore } from 'react-redux';
 
 export interface RootStore {
   user: UserState,
   edit: EditState
 }
 
-export default configureStore({
+export const store = configureStore({
   reducer: {
     user: userReducer,
     edit: editReducer
   },
 });
 
-// export const useStore = () => {
-//   const { getState } = useStoreRD<GlobalState>()
-//   const store = getState()
-//   return store
-// }
+export const useStoreMM = () => {
+  const { getState, dispatch } = useStore<RootStore>()
+  const store = getState()
+  return { store, dispatch }
+}
+
+export const useEditState = () => {
+  const { getState } = useStore<RootStore>()
+  const store = getState()
+  return store.edit
+}
+
+export const useUserState = () => {
+  const { getState } = useStore<RootStore>()
+  const store = getState()
+  return store.user
+}
