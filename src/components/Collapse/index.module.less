@@ -1,0 +1,23 @@
+.collapse {
+  // border-bottom: 1px solid var(--dn-panel-border-color);
+  border-radius: 0 !important;
+  border: 0 !important;
+  .panel {
+    background-color: var(--dn-panel-active-bg-color);
+    color: var(--dn-collapse-header-color);
+  }
+
+}
+
+:global {
+  .mumu-panel .ant-collapse-header {
+    padding: 5px 8px !important;
+
+    .anticon.anticon-right.ant-collapse-arrow {
+      margin-right: 3px !important;
+    }
+  }
+  .mumu-panel .ant-collapse-content-box {
+    padding: 0 !important;
+  }
+}

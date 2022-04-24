@@ -11,13 +11,13 @@ function Title(props: TitleProps) {
   const {title} = props
 
   return (
-    <h2 className={style["title"]}>
+    <div className={style["title"]}>
       <p>{title}</p>
       <div className={style['action']}>
         <Iconfont className={classNames(style['action-item'], style['action-item-guding'])} type='icon-guding' />
         <Iconfont className={classNames(style['action-item'], style['action-item-close'])} type='icon-close' />
       </div>
-    </h2>
+    </div>
   )
 }
 

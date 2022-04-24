@@ -5,6 +5,7 @@ import { useStore } from 'react-redux';
 import { RootStore } from '@/store';
 import { changeProps } from '@/store/edit';
 import Title from '@/components/Title';
+import Collapse from '@/components/Collapse';
 
 interface FormConfigProps {
 }
@@ -33,7 +34,13 @@ function FormConfig(props: FormConfigProps) {
   return (
     <div className={style["form-menu"]}>
       <Title title='属性配置' />
-      <FormRender onMount={onMount} form={form} schema={currentComponentSchema.schema} onValuesChange={onValuesChange} onFinish={onFinish} />
+      <Collapse options={[
+        {
+          key: '1',
+          title: '字段属性',
+          node: <FormRender className={style['form-render']} onMount={onMount} form={form} schema={currentComponentSchema.schema} onValuesChange={onValuesChange} onFinish={onFinish} />
+        },
+      ]} />
     </div>
   )
 }

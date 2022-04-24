@@ -1,10 +1,12 @@
-import { AppstoreOutlined, MailOutlined } from '@ant-design/icons'
-import { Menu, Image, Button, Tooltip } from 'antd'
-import React, { useState } from 'react'
+import { Image, Tooltip } from 'antd'
+import React, { memo, useState } from 'react'
 import Iconfont from "@/assets/iconfont";
 import style from './index.module.less'
 import classNames from 'classnames';
 import Title from '@/components/Title';
+import { useEditState } from '@/store';
+import Collapse from '@/components/Collapse';
+import uniqueid from "lodash.uniqueid";
 
 interface LeftMenu {
   key: string;
@@ -15,14 +17,14 @@ interface LeftMenu {
 
 function ComponentSelect() {
   const [selectedKeys] = useState([])
-  const [canSelects] = useState([]) // editState.pageConfig.components
   const [current, setCurrent] = useState('组件')
   const selectMenu = () => { }
+  const editState = useEditState()
   const setDragStart = (e: any, flag: any, item?: any) => { }
-
   const handleMenuChange = (title: string) => {
     setCurrent(title)
   }
+  console.log('editState', editState)
 
   const leftMenus: LeftMenu[] = [
     {
@@ -36,6 +38,37 @@ function ComponentSelect() {
       icon: 'icon-lishi',
     },
   ]
+
+  const renderComponents = (components: any[]) => {
+    // store
+    // if (components.length % 3 !== 0) {
+    //   const len = components.length % 3
+    //   for (let index = 0; index < (3 - len); index++) {
+    //     components.push({ placeholder: true, key: uniqueid() })
+    //   }
+    // }
+    return <div className={style["components"]}>
+      {components.map(item => {
+        if (item.placeholder) return <div
+          className={style["mumu-item"]}
+          key={item.key}
+        />
+        return <div
+          onDragStart={(e) => setDragStart(e, true, item)}
+          onDragEnd={(e) => setDragStart(e, false)}
+          draggable
+          className={style["mumu-item"]}
+          key={item.name}
+        >
+          <Image
+            rootClassName={classNames(style["preview-item"], 'mumu-image')}
+            src={item.snapshot}
+            preview={{ mask: <div className="mumu-title">{item.description}</div> }}
+          />
+        </div>
+      })}
+    </div>
+  }
 
   return (
     <div className={style["select-menu"]}>
@@ -88,26 +121,22 @@ function ComponentSelect() {
         </div>
         <div className={style["list-view"]}>
           <Title title={current} />
-          {canSelects.map(item => {
-            return <div
-              onDragStart={(e) => setDragStart(e, true, item)}
-              onDragEnd={(e) => setDragStart(e, false)}
-              draggable
-              className={style["co-item"]}
-            // key={item.id}
-            // v-for="(item, index) in canSelects.length ? canSelects : editState.pageConfig.components"
-            >
-              {/* <Image
-                className="preview-item"
-                src={item.snapshot}
-              /> */}
-              {/* <div className="co-title">{{ item.description }}</div> */}
-            </div>
-          })}
+          <Collapse options={[
+            {
+              key: '1',
+              title: '模板组件',
+              node: renderComponents(editState.pageConfig.components)
+            },
+            {
+              key: '2',
+              title: '系统组件',
+              node: renderComponents(editState.uiConfig.commonComponents)
+            }
+          ]} />
         </div >
       </div >
     </div >
   )
 }
 
-export default ComponentSelect 
+export default (ComponentSelect) 
