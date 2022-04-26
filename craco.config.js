@@ -1,4 +1,3 @@
-// const { loaderByName } = require("@craco/craco");
 const path = require('path')
 const CracoLessPlugin = require('craco-less')
 const lessModuleRegex = /\.module\.less$/;
@@ -51,13 +50,21 @@ module.exports = {
         modifyLessModuleRule: (lessModuleRule, context) => {
           lessModuleRule.test = lessModuleRegex;
           // lessModuleRule.exclude = /node_modules|antd.*?\.css/;
-          // const cssLoader = lessModuleRule.use.find(loaderByName("css-loader"));
-          // cssLoader.options.modules = {
-          //   localIdentName: "[local]_[hash:base64:5]"
-          // }
           return lessModuleRule;
         },
       },
     },
   ],
+  babel: {//支持装饰器
+    plugins: [
+      [
+        "import",
+        {
+          "libraryName": "antd",
+          "libraryDirectory": "es",
+          "style": 'css' //设置为true即是less 这里用的是css
+        }
+      ]
+    ]
+  },
 }

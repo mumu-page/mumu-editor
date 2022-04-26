@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './user/index';
-import editReducer from './edit/index';
+import userReducer, { decrement, increment, incrementByAmount } from './user/index';
+import editReducer, { addComponent, changeProps, returnConfig, setDragStart, setIsSave } from './edit/index';
 import { EditState } from './edit/state';
 import { UserState } from './user/state';
 import { useStore } from 'react-redux';
@@ -33,4 +33,9 @@ export const useUserState = () => {
   const { getState } = useStore<RootStore>()
   const store = getState()
   return store.user
+}
+
+export const actions = {
+  returnConfig, setIsSave, addComponent, setDragStart, changeProps,
+  increment, decrement, incrementByAmount
 }

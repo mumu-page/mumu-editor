@@ -6,8 +6,6 @@ import { TemplateData } from "@/api/list/market";
 import { useNavigate } from 'react-router-dom';
 import style from './index.module.less'
 
-const ModalAntd = Modal as any
-
 interface FormDataState {
   projectName: string;
   gitName: Record<string, string>
@@ -97,9 +95,7 @@ export default function Template(props: any) {
           })}
         </div>
       </Spin>
-      <ModalAntd
-        // transitionName=""
-        // maskTransitionName=""
+      <Modal
         visible={createDialog}
         title="请填写页面信息"
         okText="确定"
@@ -148,7 +144,7 @@ export default function Template(props: any) {
             </Input.Group>
           </Form.Item>
         </Form>
-      </ModalAntd>
+      </Modal>
     </>
   )
 }

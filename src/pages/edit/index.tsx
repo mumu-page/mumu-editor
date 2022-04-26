@@ -18,16 +18,14 @@ import FormConfig from './components/FormConfig';
 
 function Edit() {
   const [spinning, setSpinning] = useState(true)
-  const [current, setCurrent] = useState(0)
   const [visible, setVisible] = useState(true)
   const [data, setData] = useState({})
-  const [name, setName] = useState('')
   const [url, setUrl] = useState('')
   const [showUrl, setShowUrl] = useState('')
-  const [containerHeight, setContainerHeight] = useState()
   const { getState, dispatch } = useStore<RootStore>();
-  const { edit: editState, user } = getState()
+  const { edit: editState } = getState()
   const { editorState, eventInit, init, getIndex, setFixedStyle } = useEditor();
+  const [frameLoaded, setFrameLoaded] = useState(false)
 
   const [params] = useSearchParams()
 
@@ -78,10 +76,11 @@ function Edit() {
   }
 
   const initConfig = () => {
-    eventInit((index) => {
-      setCurrent(index)
-      postMsgToChild({ type: 'changeIndex', data: current });
-    });
+    setFrameLoaded(true)
+    // eventInit((index) => {
+    //   setCurrent(index)
+    //   postMsgToChild({ type: 'changeIndex', data: current });
+    // });
     if (typeof editState?.editConfig?.currentIndex === 'number') {
       init(editState.editConfig.currentIndex);
     }
@@ -125,31 +124,33 @@ function Edit() {
   }
 
   useEffect(() => {
-    setVisible(true)
-  }, [editState.editConfig.currentIndex,]);
+    if (frameLoaded) {
+      setVisible(true)
+    }
+  }, [editState.editConfig.currentIndex, frameLoaded]);
 
   useEffect(() => {
-    // if (typeof editState?.editConfig?.currentIndex === 'number') {
-    //   init(editState.editConfig.currentIndex);
-    // }
+    if (frameLoaded && typeof editState?.editConfig?.currentIndex === 'number') {
+      init(editState.editConfig.currentIndex);
+    }
     setFixedStyle(editState.editConfig.currentIndex);
-  }, [editState.pageConfig.userSelectComponents, editState.editConfig.currentIndex, init, setFixedStyle]);
+  }, [editState.pageConfig.userSelectComponents, editState.editConfig.currentIndex, init, setFixedStyle, frameLoaded]);
 
   useEffect(() => {
     Promise.all([
       project.query({ id: params.get('id') }),
       component.query({})
-    ]).then(([result, { result: componentRes }]) => {
+    ]).then(([result, componentRes]) => {
       setData(result[0])
       const targetConfig = result[0].pageConfig;
-      setName(result[0].name)
       setUrl(`http://localhost:3000/mumu-editor/build/index.html?isEdit=true`)
       setShowUrl(`http://localhost:3000/mumu-editor/build/index.html`)
+      console.log('result', result)
       dispatch(returnConfig({
         targetConfig,
         pageData: data,
         releaseStatus: result[0].releaseInfo,
-        commonComponents: componentRes,
+        commonComponents: componentRes?.[0]?.config,
       }));
     });
   }, [])
@@ -233,7 +234,7 @@ function Edit() {
                   className={style["pre-view"]}
                   src={url}
                   style={{
-                    height: containerHeight + 'px'
+                    height: editorState.containerHeight + 'px'
                   }}
                 />
                 {editState.uiConfig.dragStart && <div
@@ -267,31 +268,8 @@ function Edit() {
           </div >
         </div >
 
-        <div
-          // style={{
-          //   position: 'relative',
-          //   width: visible ? '350px' : ''
-          // }}
-          className={style["form-container-main"]}
-        >
+        <div className={style["form-container-main"]}>
           <FormConfig />
-          {/* <Drawer
-            // mask={false}
-            title="Basic Drawer"
-            placement="right"
-            closable={false}
-            visible={visible}
-            getContainer={false}
-            contentWrapperStyle={{ position: 'absolute' }}
-            onClose={() => onClose(false)}
-            width={350}
-            handler={<>
-              {!visible && <DoubleLeftOutlined onClick={() => onClose(true)} className={style["draw-op"]} />}
-              {visible && <DoubleRightOutlined onClick={() => onClose(false)} className={style["draw-op"]} />}
-            </>}
-          >
-            <FormConfig />
-          </Drawer> */}
         </div >
       </div >
     </div >

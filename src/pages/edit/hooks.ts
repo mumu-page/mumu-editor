@@ -21,7 +21,7 @@ export function useEditor() {
     isTop: false,
     current: 0,
     containerHeight: 667,
-    dragableComponents: []
+    dragableComponents: [] as any[]
   });
 
   const getIframeElement = (selectors = '#slider-view') => {
@@ -158,15 +158,15 @@ export function useEditor() {
     Array.from(componentsPND?.childNodes || []).forEach((nd: any) => {
       if (nd.getAttribute('data-layout') === 'fixed') {
         try {
-          // const el = nd.childNodes[0];
-          // const { left, top, width, height } = getComputedStyle(el);
-          // state.dragableComponents.push({
-          //   x: parseInt(left),
-          //   y: parseInt(top),
-          //   width: parseInt(width, 10),
-          //   height: parseInt(height, 10),
-          //   index
-          // });
+          const el = nd.childNodes[0];
+          const { left, top, width, height } = getComputedStyle(el);
+          state.dragableComponents.push({
+            x: parseInt(left),
+            y: parseInt(top),
+            width: parseInt(width, 10),
+            height: parseInt(height, 10),
+            index
+          });
         } catch (e) {
           //
         }

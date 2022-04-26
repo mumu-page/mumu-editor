@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { Provider } from "react-redux";
 import { useRoutes } from 'react-router-dom';
 import routes from './routes';
-import { store } from './store'
-import 'antd/dist/antd.css'
+import { store, actions } from './store'
 import { returnConfig } from './store/edit';
 
 function App() {
@@ -21,7 +20,9 @@ function App() {
           save: e.data.data.save
         }));
       }
-      return store.dispatch(e.data?.type?.(e.data.data));
+      if ((actions as any)[e.data.type]) {
+        return store.dispatch((actions as any)[e.data?.type]?.(e.data.data));
+      }
     });
   }, [])
 

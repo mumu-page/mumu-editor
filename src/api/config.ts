@@ -1,5 +1,5 @@
 const config = {
-  development: 'http://localhost:7001/',
+  development: 'https://mumu-page-server.resonance.fun/',
   test: 'http://localhost:7001/',
   production: 'https://api.resonance.fun:8080/',
 }

@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import Title from '@/components/Title';
 import { useEditState } from '@/store';
 import Collapse from '@/components/Collapse';
-import uniqueid from "lodash.uniqueid";
+// import uniqueid from "lodash.uniqueid";
 
 interface LeftMenu {
   key: string;
@@ -24,7 +24,7 @@ function ComponentSelect() {
   const handleMenuChange = (title: string) => {
     setCurrent(title)
   }
-  console.log('editState', editState)
+  // console.log('editState', editState)
 
   const leftMenus: LeftMenu[] = [
     {
