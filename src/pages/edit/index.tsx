@@ -5,16 +5,18 @@ import { Button, Drawer, Form, Input, Menu, message, Spin } from "antd";
 import { SettingOutlined, UndoOutlined, RedoOutlined, SaveOutlined, LinkOutlined, CopyOutlined, DeleteOutlined, DoubleLeftOutlined, DoubleRightOutlined, ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 import { EyeOutlined } from "@ant-design/icons/lib";
 import { component, project } from "@/api";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import style from './index.module.less'
 import classNames from 'classnames';
 import ComponentSelect from './components/ComponentSelect';
 import { useStore } from 'react-redux';
 import { RootStore } from '@/store';
 import { useEditor } from './hooks';
-import { postMsgToChild } from '@/utils/utils';
+import { clone, postMsgToChild } from '@/utils/utils';
 import { addComponent, returnConfig, setDragStart, setIsSave } from '@/store/edit';
 import FormConfig from './components/FormConfig';
+import { historyState } from '@/utils/history';
+import { CHANGE_INDEX, COPY_COMPONENT, DELETE_COMPONENT, GET_CONFIG, SET_CONFIG, SORT_COMPONENT } from '@/constants';
 
 function Edit() {
   const [spinning, setSpinning] = useState(true)
@@ -26,7 +28,6 @@ function Edit() {
   const { edit: editState } = getState()
   const { editorState, eventInit, init, getIndex, setFixedStyle } = useEditor();
   const [frameLoaded, setFrameLoaded] = useState(false)
-
   const [params] = useSearchParams()
 
   const getPageSchema = () => {
@@ -34,30 +35,30 @@ function Edit() {
   const changeProjectName = () => {
   }
   const rollback = () => {
-    // historyState.undo()
+    historyState.undo()
     // commit('setIsSave', false)
-    // // console.log('historyState undo', historyState)
-    // postMsgToChild({type: 'setConfig', data: clone(historyState.currentValue || '{}')})
+    // console.log('historyState undo', historyState)
+    postMsgToChild({type: SET_CONFIG, data: clone(historyState.currentValue || '{}')})
   }
   const next = () => {
-    // historyState.redo()
+    historyState.redo()
     // commit('setIsSave', false)
-    // // console.log('historyState undo', historyState)
-    // postMsgToChild({type: 'setConfig', data: clone(historyState.currentValue || '{}')})
+    // console.log('historyState undo', historyState)
+    postMsgToChild({type: SET_CONFIG, data: clone(historyState.currentValue || '{}')})
   }
   const saveConfig = () => {
-    // project.save({
-    //     id: router.query.id,
-    //     pageConfig: toRaw(editState.pageConfig)
-    // }).then(res => {
-    //     message.success(res.message)
-    // })
+    project.save({
+        id: params.get('id'),
+        pageConfig: editState.pageConfig
+    }).then(res => {
+        message.success(res.message)
+    })
   }
   const setPreview = () => {
     // window.open(`http://localhost:8081/?isPreview=true&pageId=${router.query.id}&env=development`)
   }
   const setRelease = () => {
-    project.release({ id: 'router.query.id' }).then(res => {
+    project.release({ id: params.get('id') }).then(res => {
       if (res.success) {
         message.success('发布成功！')
       } else {
@@ -67,7 +68,7 @@ function Edit() {
   }
 
   const deleteComponent = (index?: undefined | number) => {
-    postMsgToChild({ type: 'deleteComponent', data: index !== undefined ? index : editorState.current });
+    postMsgToChild({ type: DELETE_COMPONENT, data: index !== undefined ? index : editorState.current });
     dispatch(setIsSave(true))
   }
 
@@ -86,13 +87,13 @@ function Edit() {
     }
     setSpinning(false)
     // 初始化页面
-    postMsgToChild({ type: 'getConfig' });
+    postMsgToChild({ type: GET_CONFIG });
     // if (editState.pageConfig.components.length) {
     //   // 编辑
     //   let data = JSON.parse(JSON.stringify(editState.pageConfig))
     //   postMsgToChild({type: 'setConfig', data})
     // }
-    postMsgToChild({ type: 'changeIndex', data: editState.editConfig.currentIndex })
+    postMsgToChild({ type: CHANGE_INDEX, data: editState.editConfig.currentIndex })
     dispatch(setIsSave(true))
   }
 
@@ -114,12 +115,12 @@ function Edit() {
 
   const changeIndex = (op: number) => {
     console.log(op);
-    postMsgToChild({ type: 'sortComponent', data: { op, index: editorState.current } });
+    postMsgToChild({ type: SORT_COMPONENT, data: { op, index: editorState.current } });
     dispatch(setIsSave(true))
   }
 
   const copyComponent = () => {
-    postMsgToChild({ type: 'copyComponent', data: editorState.current });
+    postMsgToChild({ type: COPY_COMPONENT, data: editorState.current });
     dispatch(setIsSave(true))
   }
 
