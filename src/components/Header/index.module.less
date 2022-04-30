@@ -10,6 +10,8 @@
   border-bottom: 1px solid var(--dn-panel-border-color);
   padding: 4px;
   overflow: hidden;
+  position: relative;
+  z-index: 99999;
 
   .left {
     display: flex;
@@ -25,16 +27,13 @@
     height: 53px;
     width: 100%;
 
-    .ant-menu {
+    .menu {
       display: flex;
       align-items: center;
-
-      .ant-menu-item {
-        padding: 0 10px;
-
-        &-active {
-          border-bottom: 2px solid rgba(0, 0, 0, 0);
-        }
+      flex-wrap: nowrap;
+      .menuItem {
+        // width: 120px;
+        // display: inline-block;
       }
     }
 
@@ -99,10 +98,3 @@
   }
 }
 
-.menu {
-  display: flex;
-  align-items: center;
-  .menuItem {
-    // width: 120px;
-  }
-}

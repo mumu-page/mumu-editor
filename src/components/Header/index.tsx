@@ -3,11 +3,12 @@ import logo from '../../assets/image/logo.svg';
 import { Link } from 'react-router-dom'
 import classNames from 'classnames';
 import style from './index.module.less'
-import { Button, Radio } from 'antd';
+import { Button, Radio, RadioChangeEvent } from 'antd';
 
 interface MenuItem {
   key: string;
-  label: string | React.ReactNode
+  isBtn?: boolean,
+  label?: string | React.ReactNode
   onClick?: (menu: MenuItem) => void
   className?: string
   type?: "link" | "text" | "ghost" | "default" | "primary" | "dashed" | undefined
@@ -28,8 +29,8 @@ function Header(props: HeaderProps) {
     props?.handleSelect?.(menu)
   }
 
-  const handleSizeChange = () => {
-
+  const onChange = (e: RadioChangeEvent) => {
+    // console.log(e.target.value)
   }
 
   const renderMenuItem = (menus: MenuItem[] | undefined) => {
@@ -50,25 +51,40 @@ function Header(props: HeaderProps) {
     const render = (menus: MenuItem[]) => {
       return Array.isArray(menus) && menus.map(item => {
         if (item.children?.length) {
-          return <Radio.Group key={item.key} className={style.menu} onChange={handleSizeChange}>
+          return <Radio.Group
+            key={item.key}
+            className={style.menuItem}
+            style={{
+              display: 'flex',
+              ...(item.style || {})
+            }}
+            onChange={onChange}>
             {item.children.map(child => {
               return <Radio.Button
-                value="large"
+                value={child.key}
                 type="primary"
-                key={child?.key}
-                style={child.style}
-                className={classNames(child.className, style.menuItem)}
+                key={child.key}
+                style={{
+                    ...(child.style || {}),
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap'}}
+                className={classNames(child.className)}
                 onClick={() => handleSelect(child)}>{child.label}
               </Radio.Button>
             })}
           </Radio.Group>
         }
-        return <Button
+        return item.isBtn === undefined ? <Button
           type={item.type}
           key={item?.key}
           style={item.style || { marginLeft: 10 }}
           className={classNames(item.className, style.menuItem)}
-          onClick={() => handleSelect(item)}>{item.label}</Button>
+          onClick={() => handleSelect(item)}>{item.label}</Button> :
+          <div
+            key={item?.key}
+            style={item.style || { marginLeft: 10 }}
+            className={classNames(item.className, style.menuItem)}
+          >{item.label}</div>
       })
     }
     if (Array.isArray(menus)) return render(menus)
@@ -86,7 +102,7 @@ function Header(props: HeaderProps) {
           </div>
           {props.pageTitle}
         </div>
-        <div>
+        <div className={style.menu}>
           {renderMenuItem(props.menus)}
         </div>
       </div>

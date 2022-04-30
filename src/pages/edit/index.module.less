@@ -10,12 +10,11 @@
   align-items: flex-start;
   justify-content: space-between;
   background-color: var(--dn-mobile-simulator-bg-color);
-  position: relative;
+  
   z-index: 2;
   height: calc(100vh - 53px);
 
   .se-page-path-container {
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -71,21 +70,23 @@
   }
 
   .se-view-hover-tip {
-    background: #ededef;
+    border: 1px dashed var(--dn-brand-hovering);
     position: absolute;
     z-index: -1;
-    left: 0;
+    left: 50%;
+    margin-left: -189px;
     right: 0;
-    width: 100%;
+    width: 377px;
   }
 
   .se-view-active-tip {
-    background: #dddd;
+    border: 1px solid var(--dn-brand-color);
     position: absolute;
     z-index: -1;
-    left: 0;
+    left: 50%;
+    margin-left: -189px;
     right: 0;
-    width: 100%;
+    width: 377px;
   }
 
   .se-view-tools {
@@ -175,18 +176,24 @@
     justify-content: center;
     align-items: center;
     flex: 1;
-
+    height: 100%;
     .main-container {
-      position: relative;
-      max-height: calc(100vh - 146px);
-      overflow: auto;
-      overflow-y: overlay;
       display: flex;
       width: 100%;
+      height: 100%;
       justify-content: center;
+      padding: 20px 15px 20px 20px;
+      background-color: var(--dn-mobile-simulator-bg-color);
 
       .preview-container {
-        box-shadow: 0 3px 16px 0 rgba(0, 0, 0, .04);
+        width: 100%;
+        box-shadow: 0 0 16px rgba(0, 0, 0, .06);
+        position: relative;
+        overflow: hidden;
+        
+        .spin {
+          height: 100%;
+        }
       }
 
       .drag-hover {
@@ -204,7 +211,6 @@
   .form-container-main {
     display: flex;
     justify-content: flex-end;
-    position: relative;
     box-shadow: 3px 0 16px rgb(0 0 0 / 6%);
     border-left: 1px solid var(--dn-panel-border-color);
   }
@@ -229,8 +235,8 @@
 }
 
 .pre-view {
-  height: 667px;
-  width: 375px;
+  height: 100%;
+  width: 100%;
 }
 
 
@@ -305,7 +311,6 @@
     overflow: hidden;
 
     .spl-view-iframe {
-      position: relative;
       margin: 0 auto;
       width: 407px;
       padding: 70px 10px;

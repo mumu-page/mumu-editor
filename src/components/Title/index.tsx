@@ -1,4 +1,4 @@
-import Iconfont from '@/assets/iconfont'
+import Iconfont from '@/components/IconFont'
 import classNames from 'classnames'
 import React from 'react'
 import style from './index.module.less'

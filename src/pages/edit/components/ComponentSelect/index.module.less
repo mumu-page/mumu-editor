@@ -124,12 +124,11 @@
 
       .components {
         display: grid;
-        grid-template-columns: repeat(3, calc((300px - 2px)/3));
-        grid-row-gap: 1px;
-        grid-column-gap: 1px;
+        grid-template-columns: repeat(3, calc((300px - 6px - 4px)/3));
+        grid-row-gap: 3px;
+        grid-column-gap: 3px;
         background-color: var(--dn-panel-border-color);
-        // padding-top: 1px;
-        // padding-bottom: 1px;
+        padding: 2px;
 
         .mumu-item {
           height: 88px;

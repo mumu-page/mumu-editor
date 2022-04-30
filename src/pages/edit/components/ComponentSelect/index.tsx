@@ -1,12 +1,13 @@
 import { Image, Tooltip } from 'antd'
 import React, { memo, useState } from 'react'
-import Iconfont from "@/assets/iconfont";
+import IconFont from "@/components/IconFont";
 import style from './index.module.less'
 import classNames from 'classnames';
 import Title from '@/components/Title';
 import { useEditState } from '@/store';
 import Collapse from '@/components/Collapse';
-// import uniqueid from "lodash.uniqueid";
+import uniqueid from "lodash.uniqueid";
+import { clone } from '@/utils/utils';
 
 interface LeftMenu {
   key: string;
@@ -40,15 +41,15 @@ function ComponentSelect() {
   ]
 
   const renderComponents = (components: any[]) => {
-    // store
-    // if (components.length % 3 !== 0) {
-    //   const len = components.length % 3
-    //   for (let index = 0; index < (3 - len); index++) {
-    //     components.push({ placeholder: true, key: uniqueid() })
-    //   }
-    // }
+    const _components = clone(components) as any[]
+    if (_components.length % 3 !== 0) {
+      const len = _components.length % 3
+      for (let index = 0; index < (3 - len); index++) {
+        _components.push({ placeholder: true, key: uniqueid() })
+      }
+    }
     return <div className={style["components"]}>
-      {components.map(item => {
+      {_components.map(item => {
         if (item.placeholder) return <div
           className={style["mumu-item"]}
           key={item.key}
@@ -84,7 +85,7 @@ function ComponentSelect() {
                 }}
                 className={classNames({ [style['item']]: true, [style['active']]: current === item.title })}>
                 <Tooltip placement="right" title={item.title}>
-                  <Iconfont type={item.icon} />
+                  <IconFont type={item.icon} />
                 </Tooltip>
               </div>
             })
