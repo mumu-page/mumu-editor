@@ -2,7 +2,6 @@
   margin: 0;
   padding: 0;
   user-select: none;
-  box-sizing: border-box;
 }
 
 html,
@@ -76,6 +75,8 @@ body {
 }
 
 :root {
+  --dn-white-lighter: white;
+  --white-dn-gray-lighter: gray;
   --dn-brand-color: #1890ff;
   --dn-brand-hovering: #40a9ff;
   --dn-brand-bg: rgba(118, 180, 238, 0.389);
@@ -92,4 +93,5 @@ body {
   --dn-gray-lighter: #666;
   --dn-gray-dark: #222;
   --dn-black: #1a1a1a;
+  --color-lining: #f0f2f5;
 }

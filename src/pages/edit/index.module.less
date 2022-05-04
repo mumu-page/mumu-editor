@@ -190,7 +190,7 @@
         box-shadow: 0 0 16px rgba(0, 0, 0, .06);
         position: relative;
         overflow: hidden;
-        
+
         .spin {
           height: 100%;
         }
@@ -241,8 +241,14 @@
 
 
 .loading {
-  height: calc(~'100vh - 60px');
+  height: 100%;
   width: 100%;
+  :global {
+    .ant-spin-container {
+      height: 100%;
+      width: 100%;
+    }
+  }
 }
 
 .do-icon {

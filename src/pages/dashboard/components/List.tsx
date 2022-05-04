@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {memo, useEffect, useState} from 'react'
 import { Empty, Button, List as ListAD, Col, Row, Popover, Input, message } from 'antd'
 import { Link } from "react-router-dom";
 import { EditOutlined } from '@ant-design/icons';
@@ -106,4 +106,4 @@ function List() {
     </div>
 }
 
-export default List
+export default memo(List)

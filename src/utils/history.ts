@@ -33,7 +33,7 @@ class History {
    * 添加历史记录
    * @param {*} value 历史记录值
    */
-  push(value: null) {
+  push(value: any) {
     this.stack.push(value);
     this.undoStack = [];
     this.currentValue = value;

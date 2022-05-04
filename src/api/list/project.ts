@@ -37,7 +37,7 @@ async function createProject(params: CreateProjectParams) {
   return result.data;
 }
 async function query(params: {}) {
-  const result = await instance.get<Project[], Response<Project[]>>(`/project/findAll`, {
+  const result = await instance.get<Project[], Response<Project[]>>(`/project/find`, {
     params,
   });
   return result.data;

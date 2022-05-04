@@ -1,8 +1,9 @@
 import { mergeConfig } from "@/utils/utils";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { EditState } from "../state";
+import {historyState} from "@/utils/history";
 
-interface ReturnConfigPlayload {
+interface ReturnConfigPayload {
   targetConfig: any
   pageData?: any
   releaseStatus?: any
@@ -11,11 +12,11 @@ interface ReturnConfigPlayload {
 }
 
 /**
- * 
- * @param param0 
- * @param param1 
+ *
+ * @param state
+ * @param action
  */
-export function returnConfig(state: EditState, action: PayloadAction<ReturnConfigPlayload>) {
+export function returnConfig(state: EditState, action: PayloadAction<ReturnConfigPayload>) {
   const { targetConfig, pageData, releaseStatus, commonComponents, save = true, } = action.payload
   // 保存页面初始值
   if (!state.defaultConfig && !releaseStatus) {
@@ -83,8 +84,8 @@ export function returnConfig(state: EditState, action: PayloadAction<ReturnConfi
   // 上述方案通过[isSave]控制
   if (save && state.currentIndex !== null && state.isSave) {
     if (state.pageConfig.userSelectComponents.length) {
-      // historyState.push(state.pageConfig)
-      // console.log('historyState 22222', historyState)
+      historyState.push(state.pageConfig)
+      console.log('historyState 22222', historyState)
     }
   }
   state.uiConfig = {

@@ -21,7 +21,11 @@ function ComponentSelect() {
   const [current, setCurrent] = useState('组件')
   const selectMenu = () => { }
   const editState = useEditState()
-  const setDragStart = (e: any, flag: any, item?: any) => { }
+  const setDragStart = (e: any, flag: any, item?: any) => {
+    if(item) {
+      e.dataTransfer.setData("text/plain", JSON.stringify(item))
+    }
+  }
   const handleMenuChange = (title: string) => {
     setCurrent(title)
   }

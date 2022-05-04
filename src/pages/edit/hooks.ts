@@ -1,28 +1,29 @@
 import {useImmer} from "use-immer";
 import throttle from 'lodash.throttle'
+import {setShapeHoverStyle, setShapeStyle} from "@/components";
+import {useStore} from "react-redux";
+import {RootStore} from "@/store";
+import {addComponent} from '@/store/edit';
 
 interface ElementStyle {
-    top: number
-    left: number
-    right: number
-    bottom: number
-    width: number
-    height: number
+  top: number
+  left: number
+  right: number
+  bottom: number
+  width: number
+  height: number
 }
 
 interface State {
-    toolStyle: ElementStyle
-    activeStyle: ElementStyle
-    hoverStyle: ElementStyle
-    isBottom: boolean
-    frameLoaded: boolean
-    isTop: boolean
-    spinning: boolean
-    current: number
-    currentId: string
-    url: string
-    containerHeight: number
-    dragableComponents: any[]
+  toolStyle: ElementStyle
+  isBottom: boolean
+  frameLoaded: boolean
+  isTop: boolean
+  spinning: boolean
+  current: number
+  url: string
+  containerHeight: number
+  draggableComponents: any[]
 }
 
 function getElementTop(element: { offsetTop: any; offsetParent: any; }) {
@@ -37,57 +38,38 @@ function getElementTop(element: { offsetTop: any; offsetParent: any; }) {
   return actualTop;
 }
 
-function getElementPosition(element: HTMLElement | null) {
-  if (!element) return { top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0 }
-  const { width, height, left: _left, top: _top, right: _right } = element?.getBoundingClientRect()
-  const clientWidth = document.documentElement.clientWidth
+function getElementPosition(element: HTMLElement): ElementStyle {
+  const {width, height, left: _left, top: _top, right: _right} = element?.getBoundingClientRect()
+  // const clientWidth = document.documentElement.clientWidth
   const clientHeight = document.documentElement.clientHeight
   const top = _top/* + 20 + 53*/
   const left = _left/* + 20 + 350*/
   const right = _right - width + 5
-  const bottom = clientHeight - top - height- 40 - 53
+  const bottom = clientHeight - top - height - 40 - 53
   return {left, right, top, bottom, width, height}
-}
-
-function setShapeStyle(position: ElementStyle) {
-    const top = document.getElementById('shape-top')
-    const right = document.getElementById('shape-right')
-    const bottom = document.getElementById('shape-bottom')
-    const left = document.getElementById('shape-left')
-    if(!top || !right || !bottom || !left) return
-    top.style.top = `${position.top}px`
-    top.style.left = `${position.left}px`
-    top.style.width = `${position.width}px`
-    right.style.right = `${position.right}px`
-    right.style.top = `${position.top}px`
-    right.style.height = `${position.height}px`
-    bottom.style.left = `${position.left}px`
-    bottom.style.bottom = `${position.bottom}px`
-    bottom.style.width = `${position.width}px`
-    left.style.left = `${position.left}px`
-    left.style.top = `${position.top}px`
-    left.style.height = `${position.height}px`
 }
 
 const TEMPLATE_ELE_ID_PREFIX = 'mumu-render-id-_component_'
 
 let comCurrentId = ''
+let comHoverCurrentId = ''
+let isScroll = false
+let current = 0
+let hoverCurrent = 0
 
 export function useEditor() {
   const [editorState, setEditorState] = useImmer<State>({
-    toolStyle: { top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0 },
-    activeStyle: { top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0 },
-    hoverStyle: { top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0 },
+    toolStyle: {top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0},
     isBottom: false,
     spinning: true,
     isTop: false,
     current: 0,
-    currentId: '',
     url: '',
     frameLoaded: false,
     containerHeight: 667,
-    dragableComponents: []
+    draggableComponents: []
   });
+  const {dispatch} = useStore<RootStore>();
 
   const setFrameLoaded = (loaded: boolean) => {
     setEditorState(draft => {
@@ -112,31 +94,63 @@ export function useEditor() {
 
   const getIframeView = (selectors = '#slider-view') => {
     const frameDoc = getIframeDoc()
-    const componentsPND = frameDoc?.querySelector(selectors);
-    if (!componentsPND) return {} as any
-    return componentsPND
+    return frameDoc?.querySelector(selectors);
   }
 
-  const handleEvent = (e: Event, componentsPND: any, drag: boolean, callback?: Function) => {
+  const handleDragEvent = (e: any, node: HTMLElement) => {
+    const {clientY} = e
+    const {height, top, bottom, width} = node.getBoundingClientRect()
+    const line = document.getElementById('shape-line')
+    if (!line) return
+    line.style.display = 'block'
+    if ((clientY - top) < height / 2) {
+      // 上半部分
+      line.style.top = `${top - 2}px`
+      line.style.width = `${width}px`
+    } else {
+      // 下半部分
+      line.style.top = `${bottom - 2}px`
+      line.style.width = `${width}px`
+      hoverCurrent = hoverCurrent + 1
+    }
+  }
+
+  const handleEvent = (e: Event, componentsPND: any, callback?: Function) => {
+    const type = e.type // dragover mousemove click
     let node = e.target as HTMLElement | null;
     if (!node) return
     while (node?.tagName !== 'HTML') {
       let currentId = node?.getAttribute('id') || '';
       if (currentId.indexOf(TEMPLATE_ELE_ID_PREFIX) >= 0) {
-        const pids = Array.from(componentsPND.childNodes).map((nd: any) => nd.getAttribute('id'))
-        // eslint-disable-next-line no-loop-func
-        pids.forEach((id, index) => {
-          if (id === currentId) {
-            comCurrentId = currentId
-            setEditorState(draft => {
-              draft.isTop = index === 0;
-              draft.isBottom = index === pids.length - 1;
-              draft.current = index;
-              draft.currentId = currentId;
-              // draft.activeStyle = getElementPosition(node)
-            })
+        const PIDs = Array.from(componentsPND.childNodes).map((nd: any) => nd.getAttribute('id'))
+        PIDs.forEach((id, index) => {
+          // 对比当前鼠标位置的元素
+          if (id === currentId && node) {
+            if (type === 'dragover') {
+              comHoverCurrentId = currentId
+              hoverCurrent = index
+              handleDragEvent(e, node)
+              return
+            }
             const position = getElementPosition(node)
-            setShapeStyle(position)
+            if (type === 'mouseover') {
+              comHoverCurrentId = currentId
+              !isScroll && setShapeHoverStyle(position)
+            }
+            if (type === 'click') {
+              comCurrentId = currentId
+              current = index
+              setEditorState(draft => {
+                draft.current = index;
+                draft.isTop = index === 0
+                draft.isBottom = index === PIDs.length - 1
+                draft.toolStyle = position
+              })
+              setShapeStyle(position)
+            }
+            // if (type === 'drop') {
+            //   setShapeStyle(position)
+            // }
             callback?.(index);
           }
         })
@@ -146,109 +160,78 @@ export function useEditor() {
     }
   }
 
+  let t1 = 0;
+  let t2 = 0;
+  let timer = null as any;
+
+  function getScrollTop() {
+    return document.documentElement.scrollTop || document.body.scrollTop;
+  }
+
   const onIframeScroll = throttle((componentsPND) => {
-    const pids = Array.from(componentsPND.childNodes).map((nd: any) => nd.getAttribute('id'))
-    // eslint-disable-next-line no-loop-func
-    pids.forEach((id, index) => {
+    isScroll = true
+    clearTimeout(timer);
+    const PIDs = Array.from(componentsPND.childNodes).map((nd: any) => nd.getAttribute('id'))
+    PIDs.forEach((id, index) => {
       if (id === comCurrentId) {
         const node = Array.from(componentsPND.childNodes)[index] as HTMLElement
-        setEditorState(draft => {
-          // draft.activeStyle = getElementPosition(node)
-        })
         const position = getElementPosition(node)
         setShapeStyle(position)
       }
+      if (id === comHoverCurrentId) {
+        const node = Array.from(componentsPND.childNodes)[index] as HTMLElement
+        const position = getElementPosition(node)
+        setShapeHoverStyle(position)
+      }
     })
+
+    t1 = getScrollTop();
+    timer = setTimeout(() => {
+      t2 = getScrollTop();
+      if (t2 === t1) {
+        // 滚动结束
+        isScroll = false
+      }
+    }, 500);
   }, 0)
 
   const eventInit = (selectCb: (arg0: number) => void) => {
     requestIdleCallback(() => {
-      const iframeDoc = getIframeDoc()
       const componentsPND = getIframeView();
       if (!componentsPND) return;
-      componentsPND.addEventListener('click', (e: Event) => handleEvent(e, componentsPND, false, selectCb));
-      componentsPND.addEventListener('dragover', (e: Event) => handleEvent(e, componentsPND, true));
-      iframeDoc?.addEventListener('scroll', () => onIframeScroll(componentsPND))
-      window.addEventListener('resize',  () => onIframeScroll(componentsPND))
-    })
-  }
-
-  const init = (index: number) => {
-    requestIdleCallback(() => {
-      const componentsPND = getIframeView();
-      if (!componentsPND) return;
-      const container = getIframeView('html')
-      if (!container) return;
-      const containerHeight = Math.ceil(parseFloat(getComputedStyle(container).height) + componentsPND.offsetTop);
-      setEditorState(draft => {
-        draft.containerHeight = containerHeight > 667 ? containerHeight : 667;
+      componentsPND.addEventListener('click', (e: Event) => {
+        handleEvent(e, componentsPND, selectCb)
+      });
+      componentsPND.addEventListener('dragover', (e: Event) => {
+        e.preventDefault()
+        handleEvent(e, componentsPND)
+      });
+      componentsPND.addEventListener('dragleave', () => {
+        const line = document.getElementById('shape-line')
+        line && (line.style.display = 'none')
       })
-      if (index === -1) return;
-      const node = componentsPND.childNodes?.[index];
-      if (!node) return
-      let currentId = node?.getAttribute('id') || '';
-      const top = getElementTop(node);
-      const { height } = getComputedStyle(node);
-      // restStyle(height, top, 'activeStyle');
-      // const pids = Array.from(componentsPND.childNodes).map((nd: any) => nd.getAttribute('id'))
-      // pids.forEach((id, index) => {
-      //   if (id === currentId) {
-      //     setEditorState(draft => {
-      //       draft.isTop = index === 0;
-      //       draft.isBottom = index === pids.length - 1;
-      //       draft.current = index;
-      //     })
-      //   }
-      // })
-    })
-  }
-
-  const getIndex = (y: number) => {
-    const componentsPND = getIframeView();
-    let total = 40;
-    let index = 0;
-    Array.from(componentsPND.childNodes).some((nd: any, i) => {
-      try {
-        total = total + parseInt(getComputedStyle(nd).height, 10);
-        if (total > y) {
-          index = i;
-          return true;
+      componentsPND.addEventListener('drop', (e: any) => {
+        const line = document.getElementById('shape-line')
+        line && (line.style.display = 'none')
+        const data = e?.dataTransfer?.getData('text/plain')
+        if (data != null) {
+          dispatch(addComponent({data: JSON.parse(data), index: hoverCurrent}))
         }
-      } catch (e) {
-        //
-      }
-
-      index = i;
-      return false;
-    });
-    return index;
-  }
-
-  // 需要设置fixed布局的组件样式
-  const setFixedStyle = (index: any) => {
-    const componentsPND = getIframeView()
-    setEditorState(draft => {
-      draft.dragableComponents = [];
+        // 重置样式
+        current = hoverCurrent
+        comCurrentId = comHoverCurrentId
+        handleEvent(e, componentsPND)
+      });
+      componentsPND.addEventListener('mouseover', (e: Event) => {
+        handleEvent(e, componentsPND)
+      })
+      componentsPND.addEventListener('mouseleave', () => {
+        const shape = document.getElementById('shape-hover')
+        shape && (shape.style.display = 'none')
+      })
+      componentsPND.addEventListener('scroll', () => onIframeScroll(componentsPND))
+      window.addEventListener('resize', () => onIframeScroll(componentsPND))
     })
-    Array.from(componentsPND?.childNodes || []).forEach((nd: any) => {
-      if (nd.getAttribute('data-layout') === 'fixed') {
-        try {
-          const el = nd.childNodes[0];
-          const { left, top, width, height } = getComputedStyle(el);
-          setEditorState(draft => {
-            draft.dragableComponents.push({
-              x: parseInt(left),
-              y: parseInt(top),
-              width: parseInt(width, 10),
-              height: parseInt(height, 10),
-              index
-            });
-          })
-        } catch (e) {
-          //
-        }
-      }
-    });
   }
 
   return {
@@ -256,10 +239,8 @@ export function useEditor() {
     setUrl,
     setFrameLoaded,
     eventInit,
-    init,
     editorState,
-    getIndex,
-    setFixedStyle,
+    current
   }
 }
 

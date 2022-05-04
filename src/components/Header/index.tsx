@@ -66,8 +66,7 @@ function Header(props: HeaderProps) {
                 key={child.key}
                 style={{
                     ...(child.style || {}),
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap'}}
+                    overflow: 'hidden'}}
                 className={classNames(child.className)}
                 onClick={() => handleSelect(child)}>{child.label}
               </Radio.Button>

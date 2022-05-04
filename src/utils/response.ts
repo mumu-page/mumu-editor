@@ -1,4 +1,4 @@
-export interface Response<D> {
+export interface Response<D = any> {
     success: string
     message: string
     data: D

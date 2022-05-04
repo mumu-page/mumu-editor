@@ -2,13 +2,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import Header from '../../components/Header'
 import classNames from 'classnames'
-import { useStore } from 'react-redux'
 import styles from './index.module.less'
 
 function Intro() {
-    const store = useStore()
-    console.log('store', store.getState());
-    
     const style = {
         'transform': 'translate(0px, 0px)',
         'opacity': 1
