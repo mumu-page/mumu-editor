@@ -6,12 +6,8 @@ import {
   UndoOutlined,
   RedoOutlined,
   SaveOutlined,
-  CopyOutlined,
-  DeleteOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined
+  EyeOutlined
 } from "@ant-design/icons";
-import {EyeOutlined} from "@ant-design/icons/lib";
 import {component, project} from "@/api";
 import {Link, useSearchParams} from "react-router-dom";
 import style from './index.module.less'

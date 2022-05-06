@@ -3,7 +3,7 @@ import { Collapse as Collapse1 } from 'antd'
 import style from "./index.module.less";
 import classNames from 'classnames';
 
-const Panel = Collapse1.Panel as any
+const Panel = Collapse1.Panel
 
 interface Option {
   title: string

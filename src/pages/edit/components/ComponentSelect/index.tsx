@@ -125,7 +125,10 @@ function ComponentSelect() {
           </Menu> */}
         </div>
         <div className={style["list-view"]}>
-          <Title title={current} />
+          <Title
+            onClose={() => {}}
+            onFixed={() => {}}
+            title={current} />
           <Collapse options={[
             {
               key: '1',
