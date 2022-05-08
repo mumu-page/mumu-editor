@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from '../../assets/image/logo.svg';
+import logo from '../../assets/image/logo2.svg';
 import { Link } from 'react-router-dom'
 import classNames from 'classnames';
 import style from './index.module.less'

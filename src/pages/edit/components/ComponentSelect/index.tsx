@@ -17,6 +17,8 @@ interface LeftMenu {
 }
 
 function ComponentSelect() {
+  const [isAffix, setAffix] = useState(false)
+  const [hide, setHide] = useState(false)
   const [selectedKeys] = useState([])
   const [current, setCurrent] = useState('组件')
   const selectMenu = () => { }
@@ -28,6 +30,7 @@ function ComponentSelect() {
   }
   const handleMenuChange = (title: string) => {
     setCurrent(title)
+    setHide(false)
   }
   // console.log('editState', editState)
 
@@ -55,7 +58,7 @@ function ComponentSelect() {
     return <div className={style["components"]}>
       {_components.map(item => {
         if (item.placeholder) return <div
-          className={style["mumu-item"]}
+          className={classNames(style["mumu-item"], style.flag)}
           key={item.key}
         />
         return <div
@@ -68,8 +71,9 @@ function ComponentSelect() {
           <Image
             rootClassName={classNames(style["preview-item"], 'mumu-image')}
             src={item.snapshot}
-            preview={{ mask: <div className="mumu-title">{item.description}</div> }}
+            preview={{ mask: <div className="mumu-title">预览</div> }}
           />
+          <div className={style['item-name']}>{item.description}</div>
         </div>
       })}
     </div>
@@ -124,10 +128,10 @@ function ComponentSelect() {
           </a-sub-menu> 
           </Menu> */}
         </div>
-        <div className={style["list-view"]}>
+        <div className={classNames({[style["list-view"]]: true, [style.hide]: hide, [style.affix]: isAffix})}>
           <Title
-            onClose={() => {}}
-            onFixed={() => {}}
+            onClose={() => {setHide(true)}}
+            onFixed={() => {setAffix(!isAffix)}}
             title={current} />
           <Collapse options={[
             {

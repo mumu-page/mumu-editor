@@ -16,16 +16,16 @@ function Title(props: TitleProps) {
     <div className={style["title"]}>
       <p>{title}</p>
       <div className={style['action']}>
-        <div onClick={onFixed}>
+        <span onClick={onFixed} className={style['action-item']}>
           <Iconfont
-            className={classNames(style['action-item'], style['action-item-guding'])}
+            className={style['action-item-guding']}
             type='icon-guding'/>
-        </div>
-        <div onClick={onClose}>
+        </span>
+        <span onClick={onClose} className={style['action-item']}>
           <Iconfont
-            className={classNames(style['action-item'], style['action-item-close'])}
+            className={style['action-item-close']}
             type='icon-close'/>
-        </div>
+        </span>
       </div>
     </div>
   )

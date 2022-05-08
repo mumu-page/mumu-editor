@@ -1,13 +1,12 @@
 :global {
   .mumu-image {
     .ant-image-mask {
-      cursor: move;
+      cursor: pointer;
     }
   }
 }
 
 .select-menu {
-  box-shadow: 3px 0 16px rgba(0, 0, 0, .06);
   height: 100%;
   box-sizing: border-box;
   background: #fff;
@@ -46,49 +45,6 @@
     }
   }
 
-  .left-menu {
-    width: 49px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid var(--dn-panel-border-color);
-    background-color: var(--dn-composite-panel-tabs-bg-color);
-    z-index: 2;
-    position: relative;
-
-    .item {
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      // border-bottom: 1px solid var(--dn-panel-border-color);
-      cursor: pointer;
-      position: relative;
-      font-size: 24px;
-
-      &:hover {
-        color: var(--dn-aux-selector-btn-hover-bg-color);
-      }
-
-      &.active {
-        color: var(--dn-aux-selector-btn-hover-bg-color);
-
-        // background-color: var(--dn-brand-bg);
-        &::after {
-          content: '';
-          display: inline-block;
-          width: 3px;
-          height: 100%;
-          background-color: var(--dn-aux-selector-btn-hover-bg-color);
-          position: absolute;
-          left: 0;
-          z-index: 999;
-        }
-      }
-    }
-  }
-
   .menu-item {
     cursor: pointer;
     display: inline-block;
@@ -116,15 +72,72 @@
     display: flex;
     justify-content: space-between;
     height: 100%;
+    position: relative;
+
+    .left-menu {
+      width: 49px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--dn-panel-border-color);
+      background-color: var(--dn-composite-panel-tabs-bg-color);
+      z-index: 2;
+      position: relative;
+
+      .item {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        // border-bottom: 1px solid var(--dn-panel-border-color);
+        cursor: pointer;
+        position: relative;
+        font-size: 24px;
+
+        &:hover {
+          color: var(--dn-aux-selector-btn-hover-bg-color);
+        }
+
+        &.active {
+          color: var(--dn-aux-selector-btn-hover-bg-color);
+
+          // background-color: var(--dn-brand-bg);
+          &::after {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 100%;
+            background-color: var(--dn-aux-selector-btn-hover-bg-color);
+            position: absolute;
+            left: 0;
+            z-index: 999;
+          }
+        }
+      }
+    }
 
     .list-view {
-      width: 100%;
+      width: 300px;
       overflow-y: auto;
       overflow-x: hidden;
+      box-shadow: 3px 0 16px rgba(0, 0, 0, .06);
+
+      &.affix {
+        position: absolute;
+        left: 49px;
+        height: 100%;
+        z-index: 9999;
+        background-color: #fff;
+      }
+
+      &.hide {
+        display: none;
+      }
 
       .components {
         display: grid;
-        grid-template-columns: repeat(3, calc((300px - 6px - 4px)/3));
+        grid-template-columns: repeat(3, calc((300px - 6px - 4px) / 3));
         grid-row-gap: 3px;
         grid-column-gap: 3px;
         background-color: var(--dn-panel-border-color);
@@ -133,13 +146,24 @@
         .mumu-item {
           height: 88px;
           width: 100%;
-          // grid-column-start: span 1;
           position: relative;
           user-select: none;
           background: var(--dn-resource-content-bg-color);
           min-height: 40px;
           color: var(--dn-resource-item-color);
           transition: color 0.1s ease-out;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+          cursor: grab;
+          &.flag {
+            cursor: auto;
+          }
+          &:hover {
+            color: var(--dn-resource-item-hover-color);
+            box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+            z-index: 1;
+          }
 
           .mumu-title {
             width: 100%;
@@ -156,8 +180,7 @@
 
           .preview-item {
             height: 88px;
-            max-height: 200px;
-            // border: 1px solid #f0f0f0;
+            //border: 1px solid var(--dn-white-gray-lighter);
             position: relative;
             z-index: 1;
             overflow: hidden;
@@ -165,6 +188,20 @@
             img {
               object-fit: contain;
             }
+          }
+
+          .item-name {
+            font-size: 12px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 25px;
+            background-color: var(--dn-brand-moving);
+            z-index: 10;
+            text-align: center;
+            line-height: 25px;
+            color: var(--dn-white);
           }
         }
       }

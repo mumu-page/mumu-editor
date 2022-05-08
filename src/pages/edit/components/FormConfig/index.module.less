@@ -1,8 +1,37 @@
 .form-menu {
-  width: 100%;
+  width: 301px;
   background: #fff;
-  .form-render {
-    padding: 0 20px;
-    padding-top: 4px;
+  box-shadow: 3px 0 16px rgba(0, 0, 0, .06);
+  &.affix {
+    position: absolute;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    z-index: 9999;
+    background-color: #fff;
   }
+  &.hide {
+    display: none;
+  }
+  .form-render {
+    padding: 12px 20px 12px;
+    :global{
+      .fr-field:not(:last-child) {
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .error-message {
+        display: none;
+      }
+    }
+  }
+}
+
+.setting-icon {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  margin-top: -20px;
+  z-index: 999;
 }

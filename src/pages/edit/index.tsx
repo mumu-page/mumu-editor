@@ -11,7 +11,6 @@ import {
 import {component, project} from "@/api";
 import {Link, useSearchParams} from "react-router-dom";
 import style from './index.module.less'
-import classNames from 'classnames';
 import ComponentSelect from './components/ComponentSelect';
 import {useStore} from 'react-redux';
 import {RootStore} from '@/store';
@@ -58,10 +57,10 @@ function Edit() {
   }
   const setRelease = () => {
     project.release({id: params.get('id')}).then(res => {
-      if (res.success) {
-        message.success('发布成功！').then()
+      if (res?.success) {
+        message.success('发布成功').then()
       } else {
-        message.error('发布失败！').then()
+        message.error('发布失败').then()
       }
     })
   }
@@ -131,8 +130,7 @@ function Edit() {
             <Input
               className={style["title-content"]}
               value={editState.pageConfig.config.projectName}
-              onInput={changeProjectName}
-            />
+              onInput={changeProjectName}/>
           </div>
         </>}
         menus={[
@@ -165,24 +163,24 @@ function Edit() {
             children: [
               {
                 key: 'rollback',
-                label: <><UndoOutlined/> 撤销</>,
+                label: <><UndoOutlined/></>,
                 onClick: rollback
               },
               {
                 key: 'next',
-                label: <><RedoOutlined/> 前进</>,
+                label: <><RedoOutlined/></>,
                 onClick: next
               },
               {
                 key: 'saveConfig',
-                label: <><SaveOutlined/> 保存</>,
+                label: <><SaveOutlined/></>,
                 onClick: saveConfig
               },
             ]
           },
           {
             key: 'setPreview',
-            label: <><EyeOutlined/> 预览</>,
+            label: <><EyeOutlined/></>,
             onClick: setPreview,
           },
           {
