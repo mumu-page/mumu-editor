@@ -18,8 +18,8 @@ jobs:
           persist-credentials: false
       - name: Install Dependencies And Build 🔧
         run: |
-          npm install
-          npm run build
+          yarn
+          yarn build
       - name: Deploy Github Pages 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
