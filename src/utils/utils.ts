@@ -1,5 +1,7 @@
+import {cloneDeep} from "lodash";
+
 export const clone = (obj: any) => {
-  return JSON.parse(JSON.stringify(obj));
+  return cloneDeep(obj);
 }
 
 export const postMsgToChild = (msg: any) => {

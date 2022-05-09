@@ -1,36 +1,38 @@
-import { Image, Tooltip } from 'antd'
-import React, { memo, useState } from 'react'
+import {Image, Tooltip} from 'antd'
+import React, {memo, useRef, useState} from 'react'
 import IconFont from "@/components/IconFont";
 import style from './index.module.less'
 import classNames from 'classnames';
-import Title from '@/components/Title';
-import { useEditState } from '@/store';
+import Title, {TitleRef} from '@/components/Title';
+import {useEditState} from '@/store';
 import Collapse from '@/components/Collapse';
 import uniqueid from "lodash.uniqueid";
-import { clone } from '@/utils/utils';
+import {clone} from '@/utils/utils';
+import History from './History'
 
 interface LeftMenu {
   key: string;
-  title: string;
+  title: Current;
   icon: string;
   onClick?: (title: string) => void
 }
 
+type Current = '组件' | '历史记录'
+
 function ComponentSelect() {
-  const [isAffix, setAffix] = useState(false)
-  const [hide, setHide] = useState(false)
-  const [selectedKeys] = useState([])
-  const [current, setCurrent] = useState('组件')
-  const selectMenu = () => { }
+  const [current, setCurrent] = useState<Current>('组件')
+  const title = useRef<TitleRef>(null)
+  const {isAffix, hide, setHide} = title.current || {}
+
   const editState = useEditState()
-  const setDragStart = (e: any, flag: any, item?: any) => {
-    if(item) {
+  const setDragStart = (e: any, item?: any) => {
+    if (item) {
       e.dataTransfer.setData("text/plain", JSON.stringify(item))
     }
   }
-  const handleMenuChange = (title: string) => {
+  const handleMenuChange = (title: Current) => {
     setCurrent(title)
-    setHide(false)
+    setHide?.(false)
   }
   // console.log('editState', editState)
 
@@ -52,7 +54,7 @@ function ComponentSelect() {
     if (_components.length % 3 !== 0) {
       const len = _components.length % 3
       for (let index = 0; index < (3 - len); index++) {
-        _components.push({ placeholder: true, key: uniqueid() })
+        _components.push({placeholder: true, key: uniqueid()})
       }
     }
     return <div className={style["components"]}>
@@ -62,8 +64,7 @@ function ComponentSelect() {
           key={item.key}
         />
         return <div
-          onDragStart={(e) => setDragStart(e, true, item)}
-          onDragEnd={(e) => setDragStart(e, false)}
+          onDragStart={(e) => setDragStart(e, item)}
           draggable
           className={style["mumu-item"]}
           key={item.name}
@@ -71,7 +72,7 @@ function ComponentSelect() {
           <Image
             rootClassName={classNames(style["preview-item"], 'mumu-image')}
             src={item.snapshot}
-            preview={{ mask: <div className="mumu-title">预览</div> }}
+            preview={{mask: <div className="mumu-title">预览</div>}}
           />
           <div className={style['item-name']}>{item.description}</div>
         </div>
@@ -91,49 +92,22 @@ function ComponentSelect() {
                   handleMenuChange(item.title)
                   item?.onClick?.(item.title)
                 }}
-                className={classNames({ [style['item']]: true, [style['active']]: current === item.title })}>
+                className={classNames({
+                  [style['item']]: true,
+                  [style['active']]: current === item.title
+                })}>
                 <Tooltip placement="right" title={item.title}>
-                  <IconFont type={item.icon} />
+                  <IconFont type={item.icon}/>
                 </Tooltip>
               </div>
             })
           }
-          {/* <Menu
-            style={{ width: 120 }}
-            mode="inline"
-            selectedKeys={selectedKeys}
-            onSelect={selectMenu}
-            defaultOpenKeys={['common']}
-          >
-            <Menu.Item
-              // v-if="editState.pageConfig.components?.length"
-              key="template"
-            >
-              <MailOutlined />
-              模板组件
-            </Menu.Item>
-            {/* <a-sub-menu key="common">
-            <template #title>
-              <span>
-                <AppstoreOutlined />
-                <span>系统组件</span>
-              </span>
-            </template>
-            <Menu.Item
-                :key="item.name"
-                v-for="item in editState.uiConfig.commonComponents"
-            >
-              {{item.description}}
-            </Menu.Item>
-          </a-sub-menu> 
-          </Menu> */}
         </div>
         <div className={classNames({[style["list-view"]]: true, [style.hide]: hide, [style.affix]: isAffix})}>
           <Title
-            onClose={() => {setHide(true)}}
-            onFixed={() => {setAffix(!isAffix)}}
-            title={current} />
-          <Collapse options={[
+            ref={title}
+            title={current}/>
+          {current === '组件' && <Collapse options={[
             {
               key: '1',
               title: '模板组件',
@@ -144,11 +118,12 @@ function ComponentSelect() {
               title: '系统组件',
               node: renderComponents(editState.uiConfig.commonComponents)
             }
-          ]} />
-        </div >
-      </div >
-    </div >
+          ]}/>}
+          {current === '历史记录' && <History/>}
+        </div>
+      </div>
+    </div>
   )
 }
 
-export default (ComponentSelect) 
+export default (ComponentSelect)

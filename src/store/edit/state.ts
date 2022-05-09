@@ -1,12 +1,5 @@
 import { Schema } from "form-render";
 
-export interface TodoItem {
-  id: string;
-  text: string;
-  completed: boolean;
-  saveState: "saved" | "dirty" | "saving";
-}
-
 export interface PageConfig {
   remoteComponents: any;
   userSelectComponents: any[]

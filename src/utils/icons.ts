@@ -8,3 +8,6 @@ export {default as DeleteOutlined} from '@ant-design/icons/lib/icons/DeleteOutli
 export {default as RedoOutlined} from '@ant-design/icons/lib/icons/RedoOutlined'
 export {default as SaveOutlined} from '@ant-design/icons/lib/icons/SaveOutlined'
 export {default as EyeOutlined} from '@ant-design/icons/lib/icons/EyeOutlined'
+export {default as PushpinOutlined} from '@ant-design/icons/lib/icons/PushpinOutlined'
+export {default as PushpinFilled} from '@ant-design/icons/lib/icons/PushpinFilled'
+export {default as DashboardOutlined} from '@ant-design/icons/lib/icons/DashboardOutlined'

@@ -2,8 +2,10 @@ import {useImmer} from "use-immer";
 import throttle from 'lodash.throttle'
 import {setShapeHoverStyle, setShapeStyle} from "@/components";
 import {useStore} from "react-redux";
-import {RootStore} from "@/store";
+import {RootStore, useEditState} from "@/store";
 import {addComponent} from '@/store/edit';
+import {history} from "@/utils/history";
+import dayjs from "dayjs";
 
 interface ElementStyle {
   top: number
@@ -70,6 +72,7 @@ export function useEditor() {
     draggableComponents: []
   });
   const {dispatch} = useStore<RootStore>();
+  const editState = useEditState()
 
   const setFrameLoaded = (loaded: boolean) => {
     setEditorState(draft => {
@@ -199,7 +202,14 @@ export function useEditor() {
     requestIdleCallback(() => {
       const componentsPND = getIframeView();
       if (!componentsPND) return;
+      history.actionType = '初始化'
+      history.push({
+        ...editState.pageConfig,
+        actionType: history.actionType,
+        createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
+      })
       componentsPND.addEventListener('click', (e: Event) => {
+        history.actionType = '选中组件'
         handleEvent(e, componentsPND, selectCb)
       });
       componentsPND.addEventListener('dragover', (e: Event) => {
@@ -221,6 +231,7 @@ export function useEditor() {
         current = hoverCurrent
         comCurrentId = comHoverCurrentId
         handleEvent(e, componentsPND)
+        history.actionType = '新增组件'
       });
       componentsPND.addEventListener('mouseover', (e: Event) => {
         handleEvent(e, componentsPND)

@@ -1,7 +1,8 @@
-import { mergeConfig } from "@/utils/utils";
-import { PayloadAction } from "@reduxjs/toolkit";
-import { EditState } from "../state";
-import {historyState} from "@/utils/history";
+import {mergeConfig} from "@/utils/utils";
+import {PayloadAction} from "@reduxjs/toolkit";
+import {EditState} from "../state";
+import {history} from "@/utils/history";
+import dayjs from "dayjs";
 
 interface ReturnConfigPayload {
   targetConfig: any
@@ -12,12 +13,12 @@ interface ReturnConfigPayload {
 }
 
 /**
- *
+ * 更新配置
  * @param state
  * @param action
  */
 export function returnConfig(state: EditState, action: PayloadAction<ReturnConfigPayload>) {
-  const { targetConfig, pageData, releaseStatus, commonComponents, save = true, } = action.payload
+  const {targetConfig, pageData, releaseStatus, commonComponents, save = true,} = action.payload
   // 保存页面初始值
   if (!state.defaultConfig && !releaseStatus) {
     state.defaultConfig = JSON.parse(JSON.stringify(targetConfig))
@@ -38,7 +39,7 @@ export function returnConfig(state: EditState, action: PayloadAction<ReturnConfi
     }
   }
   // 页面级别的配置，比如 title 之类的
-  targetConfig.page = targetConfig.page || { schema: {}, props: {} };
+  targetConfig.page = targetConfig.page || {schema: {}, props: {}};
   // merge 页面配置信息
   state.pageConfig = {
     ...state.pageConfig,
@@ -80,13 +81,13 @@ export function returnConfig(state: EditState, action: PayloadAction<ReturnConfi
   }
 
   // 项目初始化时为空项目，所以不需要进行编辑记录
-  // 父子页面通信也会经过这里，所以只需要关注 拖拽、组件点击、组件属性改变、组件顺序、组件复制、删除
-  // 上述方案通过[isSave]控制
-  if (save && state.currentIndex !== null && state.isSave) {
-    if (state.pageConfig.userSelectComponents.length) {
-      historyState.push(state.pageConfig)
-      console.log('historyState 22222', historyState)
-    }
+  // 父子页面通信也会经过这里，所以只需要关注 新增、组件点击、组件属性改变、组件顺序、组件复制、删除
+  if (history.actionType) {
+    history.push({
+      ...state.pageConfig,
+      actionType: history.actionType,
+      createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
+    })
   }
   state.uiConfig = {
     ...state.uiConfig,

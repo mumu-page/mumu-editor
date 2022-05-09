@@ -6,7 +6,8 @@ import {
   UndoOutlined,
   RedoOutlined,
   SaveOutlined,
-  EyeOutlined
+  EyeOutlined,
+  DashboardOutlined
 } from "@ant-design/icons";
 import {component, project} from "@/api";
 import {Link, useSearchParams} from "react-router-dom";
@@ -18,9 +19,10 @@ import {useEditor} from './hooks';
 import {clone, postMsgToChild} from '@/utils/utils';
 import {addComponent, returnConfig, setDragStart, setIsSave} from '@/store/edit';
 import FormConfig from './components/FormConfig';
-import {historyState} from '@/utils/history';
+import {history} from '@/utils/history';
 import {CHANGE_INDEX, COPY_COMPONENT, DELETE_COMPONENT, GET_CONFIG, SET_CONFIG, SORT_COMPONENT} from '@/constants';
 import IconFont from '@/components/IconFont';
+import Iconfont from "@/components/IconFont";
 
 function Edit() {
   const {getState, dispatch} = useStore<RootStore>();
@@ -33,16 +35,16 @@ function Edit() {
   const changeProjectName = () => {
   }
   const rollback = () => {
-    historyState.undo()
+    history.undo()
     // commit('setIsSave', false)
     // console.log('historyState undo', historyState)
-    postMsgToChild({type: SET_CONFIG, data: clone(historyState.currentValue || '{}')})
+    postMsgToChild({type: SET_CONFIG, data: clone(history.currentValue || '{}')})
   }
   const next = () => {
-    historyState.redo()
+    history.redo()
     // commit('setIsSave', false)
     // console.log('historyState undo', historyState)
-    postMsgToChild({type: SET_CONFIG, data: clone(historyState.currentValue || '{}')})
+    postMsgToChild({type: SET_CONFIG, data: clone(history.currentValue || '{}')})
   }
   const saveConfig = () => {
     project.save({
@@ -65,14 +67,6 @@ function Edit() {
     })
   }
 
-  const deleteComponent = (index?: undefined | number) => {
-    postMsgToChild({type: DELETE_COMPONENT, data: index !== undefined ? index : editorState.current});
-    dispatch(setIsSave(true))
-  }
-
-  // const onClose = (flag: boolean | ((prevState: boolean) => boolean)) => {
-  // }
-
   const initConfig = () => {
     setFrameLoaded(true)
     eventInit((index) => {
@@ -90,18 +84,22 @@ function Edit() {
       postMsgToChild({type: 'setConfig', data})
     }
     postMsgToChild({type: CHANGE_INDEX, data: editState.editConfig.currentIndex})
-    dispatch(setIsSave(true))
   }
 
   const changeIndex = (type: 'up' | 'down') => {
     console.log(type);
-    // postMsgToChild({type: SORT_COMPONENT, data: {op, index: editorState.current}});
-    // dispatch(setIsSave(true))
+    history.actionType = '移动组件'
+    // postMsgToChild({type: SORT_COMPONENT, data: {op: current, index: editorState.current}});
   }
 
   const copyComponent = () => {
+    history.actionType = '复制组件'
     postMsgToChild({type: COPY_COMPONENT, data: current});
-    // dispatch(setIsSave(true))
+  }
+
+  const deleteComponent = (index?: undefined | number) => {
+    history.actionType = '删除组件'
+    postMsgToChild({type: DELETE_COMPONENT, data: index !== undefined ? index : editorState.current});
   }
 
   useEffect(() => {
@@ -185,13 +183,13 @@ function Edit() {
           },
           {
             key: 'setRelease',
-            label: '发布',
+            label: <><Iconfont type='icon-publish1'/></>,
             onClick: setRelease,
             type: 'primary'
           },
           {
             key: 'dashboard',
-            label: <Link to="/dashboard">工作台</Link>,
+            label: <Link to="/dashboard"><DashboardOutlined /></Link>,
           }
         ]}
       />
@@ -209,7 +207,7 @@ function Edit() {
                   cross-origin="true"
                   onLoad={initConfig}
                   id="frame"
-                  frameBorder="0"
+                  frameBorder={0}
                   className={style["pre-view"]}
                   src={editorState.url}
                 />

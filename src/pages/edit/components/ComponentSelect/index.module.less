@@ -212,3 +212,25 @@
     height: 100%;
   }
 }
+
+.history {
+  height: calc(100% - 48px);
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background-color: #f0f2f5;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, .3);
+    /*border-radius: 5px;*/
+  }
+  :global {
+    .ant-list-item-action {
+      li:last-child {
+        padding: 0;
+      }
+    }
+  }
+}

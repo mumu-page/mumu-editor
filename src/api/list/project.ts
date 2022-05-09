@@ -43,8 +43,8 @@ async function query(params: {}) {
   return result.data;
 }
 async function save(params: any) {
-  const result = await instance.post('/project/updateConfig', params);
-  return result.data;
+  const result = await instance.post<Project, Response<Project>>('/project/updateConfig', params);
+  return result;
 }
 async function release(params: any) {
   const result = await instance.post('/project/release', params);

@@ -1,10 +1,10 @@
-import React, {useState} from 'react'
+import React, {useRef} from 'react'
 import FormRender, {useForm, Error} from 'form-render';
 import style from "./index.module.less";
 import {useStore} from 'react-redux';
 import {RootStore} from '@/store';
 import {changeProps} from '@/store/edit';
-import Title from '@/components/Title';
+import Title, {TitleRef} from '@/components/Title';
 import Collapse from '@/components/Collapse';
 import classNames from "classnames";
 import {SettingOutlined} from "@ant-design/icons";
@@ -15,8 +15,8 @@ interface FormConfigProps {
 
 function FormConfig(props: FormConfigProps) {
   const form = useForm();
-  const [isAffix, setAffix] = useState(false)
-  const [hide, setHide] = useState(false)
+  const title = useRef<TitleRef>(null)
+  const {isAffix, hide, setHide} = title.current || {}
   const {getState, dispatch} = useStore<RootStore>();
   const state = getState()
   const editState = state.edit
@@ -40,12 +40,7 @@ function FormConfig(props: FormConfigProps) {
     <>
       <div className={classNames({[style["form-menu"]]: true, [style.hide]: hide, [style.affix]: isAffix})}>
         <Title
-          onClose={() => {
-            setHide(true)
-          }}
-          onFixed={() => {
-            setAffix(!isAffix)
-          }}
+          ref={title}
           title='属性配置'/>
         <Collapse options={[
           {
@@ -66,7 +61,7 @@ function FormConfig(props: FormConfigProps) {
       {hide && <Button
         size={'large'}
         onClick={() => {
-          setHide(false)
+          setHide?.(false)
         }}
         className={style['setting-icon']}
         icon={<SettingOutlined/>}/>}

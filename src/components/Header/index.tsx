@@ -64,9 +64,7 @@ function Header(props: HeaderProps) {
                 value={child.key}
                 type="primary"
                 key={child.key}
-                style={{
-                    ...(child.style || {}),
-                    overflow: 'hidden'}}
+                style={child.style}
                 className={classNames(child.className)}
                 onClick={() => handleSelect(child)}>{child.label}
               </Radio.Button>
