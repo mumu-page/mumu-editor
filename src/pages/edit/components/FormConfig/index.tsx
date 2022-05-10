@@ -1,10 +1,10 @@
-import React, {useRef} from 'react'
+import React, {memo, useRef, useState} from 'react'
 import FormRender, {useForm, Error} from 'form-render';
 import style from "./index.module.less";
 import {useStore} from 'react-redux';
-import {RootStore} from '@/store';
+import {RootStore, useEditState} from '@/store';
 import {changeProps} from '@/store/edit';
-import Title, {TitleRef} from '@/components/Title';
+import Title from '@/components/Title';
 import Collapse from '@/components/Collapse';
 import classNames from "classnames";
 import {SettingOutlined} from "@ant-design/icons";
@@ -15,11 +15,10 @@ interface FormConfigProps {
 
 function FormConfig(props: FormConfigProps) {
   const form = useForm();
-  const title = useRef<TitleRef>(null)
-  const {isAffix, hide, setHide} = title.current || {}
-  const {getState, dispatch} = useStore<RootStore>();
-  const state = getState()
-  const editState = state.edit
+  const [isAffix, setAffix] = useState(false)
+  const [hide, setHide] = useState(false)
+  const {dispatch} = useStore<RootStore>();
+  const editState = useEditState()
   const currentComponent = editState.editConfig.currentComponent
   const {component, currentComponentSchema, type} = currentComponent;
   const globalProps = component?.props;
@@ -40,8 +39,11 @@ function FormConfig(props: FormConfigProps) {
     <>
       <div className={classNames({[style["form-menu"]]: true, [style.hide]: hide, [style.affix]: isAffix})}>
         <Title
-          ref={title}
-          title='属性配置'/>
+          title={'属性配置'}
+          isAffix={isAffix}
+          onClose={() => setHide(true)}
+          onFixed={() => setAffix(!isAffix)}
+        />
         <Collapse options={[
           {
             key: '1',
@@ -60,9 +62,7 @@ function FormConfig(props: FormConfigProps) {
       </div>
       {hide && <Button
         size={'large'}
-        onClick={() => {
-          setHide?.(false)
-        }}
+        onClick={() => setHide(false)}
         className={style['setting-icon']}
         icon={<SettingOutlined/>}/>}
     </>

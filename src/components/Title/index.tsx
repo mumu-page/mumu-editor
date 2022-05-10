@@ -1,42 +1,17 @@
 import Iconfont from '@/components/IconFont'
 import {PushpinFilled, PushpinOutlined} from '@ant-design/icons'
-import React, {useEffect, useState, forwardRef, useImperativeHandle, Ref, Dispatch} from 'react'
+import React, {memo} from 'react'
 import style from './index.module.less'
 
 interface TitleProps {
   title: string
-  onChange?: (isAffix: boolean, hide: boolean) => void
-}
-
-export interface TitleRef {
   isAffix: boolean
-  hide: boolean
-  setHide: Dispatch<React.SetStateAction<boolean>>
-  setAffix: Dispatch<React.SetStateAction<boolean>>
+  onClose: () => void
+  onFixed: () => void
 }
 
-function Title(props: TitleProps, ref: Ref<TitleRef>) {
-  const {title, onChange} = props
-  const [isAffix, setAffix] = useState(false)
-  const [hide, setHide] = useState(false)
-  const onClose = () => {
-    if (hide) return
-    setHide(true)
-  }
-  const onFixed = () => {
-    setAffix(!isAffix)
-  }
-
-  useImperativeHandle(ref, () => ({
-    isAffix,
-    hide,
-    setAffix,
-    setHide
-  }), [isAffix, hide])
-
-  useEffect(() => {
-    onChange?.(isAffix, hide)
-  }, [isAffix, hide])
+function Title(props: TitleProps) {
+  const {title, isAffix, onClose, onFixed} = props
 
   const getAffixICON = () => {
     return isAffix ?
@@ -57,4 +32,5 @@ function Title(props: TitleProps, ref: Ref<TitleRef>) {
   )
 }
 
-export default forwardRef(Title)
+export default memo(Title)
+

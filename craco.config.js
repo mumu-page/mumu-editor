@@ -90,7 +90,7 @@ Licensed under the Apache License, Version 2.0 (the 'License');
       `)
     ],
     configure: (webpackConfig, {env: webpackEnv, paths}) => {
-      if (webpackEnv === 'production') {
+      if(webpackEnv !== 'production') {
         webpackConfig.plugins.push(new BundleAnalyzerPlugin({
           analyzerMode: 'server',
           analyzerHost: '127.0.0.1',
@@ -98,6 +98,8 @@ Licensed under the Apache License, Version 2.0 (the 'License');
           openAnalyzer: true, // 构建完打开浏览器
           reportFilename: path.resolve(__dirname, `analyzer/index.html`),
         }))
+      }
+      if (webpackEnv === 'production') {
         webpackConfig.optimization.splitChunks = {
           ...webpackConfig.optimization.splitChunks,
           cacheGroups: {

@@ -1,9 +1,9 @@
 import {Image, Tooltip} from 'antd'
-import React, {memo, useRef, useState} from 'react'
+import React, {useState} from 'react'
 import IconFont from "@/components/IconFont";
 import style from './index.module.less'
 import classNames from 'classnames';
-import Title, {TitleRef} from '@/components/Title';
+import Title from '@/components/Title';
 import {useEditState} from '@/store';
 import Collapse from '@/components/Collapse';
 import uniqueid from "lodash.uniqueid";
@@ -21,20 +21,18 @@ type Current = '组件' | '历史记录'
 
 function ComponentSelect() {
   const [current, setCurrent] = useState<Current>('组件')
-  const title = useRef<TitleRef>(null)
-  const {isAffix, hide, setHide} = title.current || {}
-
+  const [isAffix, setAffix] = useState(false)
+  const [hide, setHide] = useState(false)
   const editState = useEditState()
   const setDragStart = (e: any, item?: any) => {
     if (item) {
       e.dataTransfer.setData("text/plain", JSON.stringify(item))
     }
   }
-  const handleMenuChange = (title: Current) => {
-    setCurrent(title)
-    setHide?.(false)
+  const handleMenuChange = (_title: Current) => {
+    setCurrent(_title)
+    setHide(false)
   }
-  // console.log('editState', editState)
 
   const leftMenus: LeftMenu[] = [
     {
@@ -105,8 +103,11 @@ function ComponentSelect() {
         </div>
         <div className={classNames({[style["list-view"]]: true, [style.hide]: hide, [style.affix]: isAffix})}>
           <Title
-            ref={title}
-            title={current}/>
+            title={current}
+            isAffix={isAffix}
+            onClose={() => setHide(true)}
+            onFixed={() => setAffix(!isAffix)}
+          />
           {current === '组件' && <Collapse options={[
             {
               key: '1',
@@ -126,4 +127,4 @@ function ComponentSelect() {
   )
 }
 
-export default (ComponentSelect)
+export default ComponentSelect
