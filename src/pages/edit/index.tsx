@@ -17,12 +17,11 @@ import {useStore} from 'react-redux';
 import {RootStore} from '@/store';
 import {useEditor} from './hooks';
 import {clone, postMsgToChild} from '@/utils/utils';
-import {addComponent, returnConfig, setDragStart, setIsSave} from '@/store/edit';
+import {returnConfig} from '@/store/edit';
 import FormConfig from './components/FormConfig';
 import {history} from '@/utils/history';
 import {CHANGE_INDEX, COPY_COMPONENT, DELETE_COMPONENT, GET_CONFIG, SET_CONFIG, SORT_COMPONENT} from '@/constants';
 import IconFont from '@/components/IconFont';
-import Iconfont from "@/components/IconFont";
 
 function Edit() {
   const {getState, dispatch} = useStore<RootStore>();
@@ -36,14 +35,10 @@ function Edit() {
   }
   const rollback = () => {
     history.undo()
-    // commit('setIsSave', false)
-    // console.log('historyState undo', historyState)
     postMsgToChild({type: SET_CONFIG, data: clone(history.currentValue || '{}')})
   }
   const next = () => {
     history.redo()
-    // commit('setIsSave', false)
-    // console.log('historyState undo', historyState)
     postMsgToChild({type: SET_CONFIG, data: clone(history.currentValue || '{}')})
   }
   const saveConfig = () => {
@@ -86,10 +81,9 @@ function Edit() {
     postMsgToChild({type: CHANGE_INDEX, data: editState.editConfig.currentIndex})
   }
 
-  const changeIndex = (type: 'up' | 'down') => {
-    console.log(type);
+  const changeIndex = (_type: 'up' | 'down') => {
     history.actionType = '移动组件'
-    // postMsgToChild({type: SORT_COMPONENT, data: {op: current, index: editorState.current}});
+    postMsgToChild({type: SORT_COMPONENT, data: {op: current, index: editorState.current}});
   }
 
   const copyComponent = () => {
@@ -183,7 +177,7 @@ function Edit() {
           },
           {
             key: 'setRelease',
-            label: <><Iconfont type='icon-publish1'/></>,
+            label: <><IconFont type='icon-publish1'/></>,
             onClick: setRelease,
             type: 'primary'
           },

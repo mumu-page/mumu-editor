@@ -22,58 +22,40 @@ interface Callback<T> {
 }
 
 class History<T> {
-  stack: (T & HistoryItem)[];
-  undoStack: (T & HistoryItem)[];
-  currentValue: (T & HistoryItem) | null;
-  actionType: ActionType | undefined;
-  maxLength: number;
-  callbacks: Callback<T>[] = []
+  private readonly stack: (T & HistoryItem)[];
+  private _undoStack: (T & HistoryItem)[];
+  private _currentValue: (T & HistoryItem) | null;
+  private _actionType: ActionType | undefined;
+  private readonly maxLength: number;
+  private _callbacks: Callback<T>[] = []
 
   constructor(maxLength = MAX_HISTORY_LENGTH) {
     // 历史记录栈
     this.stack = [];
     // 撤销栈
-    this.undoStack = [];
+    this._undoStack = [];
     // 最新的值
-    this.currentValue = null;
+    this._currentValue = null;
     // 最大历史栈长度
     this.maxLength = maxLength;
   }
 
   onUpdate(name: string, callback: (h: History<T>) => void) {
-    this.callbacks.push({name, callback})
+    this._callbacks.push({name, callback})
   }
 
   offUpdate(name: string) {
-    for (let i = 0; i < this.callbacks.length; i++) {
-      const item = this.callbacks[i]
+    for (let i = 0; i < this._callbacks.length; i++) {
+      const item = this._callbacks[i]
       if (item.name === name) {
-        this.callbacks.splice(i, 1)
+        this._callbacks.splice(i, 1)
         break
       }
     }
   }
 
   runCallback() {
-    this.callbacks.forEach(item => item.callback(this))
-  }
-
-  /**
-   * 获取反转后的栈内容
-   */
-  getStack() {
-    if (this.stack.length === 1) return this.stack
-    const result: (T & HistoryItem)[] = [...this.stack]
-    let left = 0; // 存储左边第一个位置
-    let right = this.stack.length - 1;//存储右边最后一个位置
-    while (left < right) {
-      let temp = result[left]; // 利用一个中间变量来交换位置
-      result[left] = result[right];
-      result[right] = temp;
-      left++;
-      right--;
-    }
-    return result
+    this._callbacks.forEach(item => item.callback(this))
   }
 
   /**
@@ -89,8 +71,8 @@ class History<T> {
    */
   push(value: T & HistoryItem) {
     this.stack.push(value);
-    this.undoStack = [];
-    this.currentValue = value;
+    this._undoStack = [];
+    this._currentValue = value;
     if (this.stack.length > this.maxLength) {
       this.stack.splice(0, 1);
     }
@@ -106,8 +88,8 @@ class History<T> {
     }
     const value = this.stack.pop();
     if (!value) return
-    this.undoStack.push(value);
-    this.currentValue = last(this.stack);
+    this._undoStack.push(value);
+    this._currentValue = last(this.stack);
     this.runCallback()
   }
 
@@ -115,23 +97,65 @@ class History<T> {
    * 重做
    */
   redo() {
-    if (this.undoStack.length === 0) {
+    if (this._undoStack.length === 0) {
       return;
     }
-    const valueList = this.undoStack.pop();
+    const valueList = this._undoStack.pop();
     if (!valueList) return
     this.stack.push(valueList);
-    this.currentValue = last(this.stack);
+    this._currentValue = last(this.stack);
     this.runCallback()
+  }
+
+  getStackByIndex(index: number) {
+    return this.stack[index]
+  }
+
+  /**
+   * 获取反转后的栈内容
+   */
+  getReverseStack() {
+    if (this.stack.length === 1) return this.stack
+    const result: (T & HistoryItem)[] = [...this.stack]
+    let left = 0; // 存储左边第一个位置
+    let right = this.stack.length - 1;//存储右边最后一个位置
+    while (left < right) {
+      let temp = result[left]; // 利用一个中间变量来交换位置
+      result[left] = result[right];
+      result[right] = temp;
+      left++;
+      right--;
+    }
+    return result
   }
 
   /**
    * 清空历史栈
    */
   clear() {
-    this.undoStack.push(...this.stack);
+    this._undoStack.push(...this.stack);
     clear(this.stack)
     this.runCallback()
+  }
+
+  setCurrentValue(index: number) {
+    this._currentValue = this.stack[index]
+  }
+
+  get actionType() {
+    return this._actionType
+  }
+
+  set actionType(val) {
+    this._actionType = val
+  }
+
+  get currentValue() {
+    return this._currentValue
+  }
+
+  set currentValue(val) {
+    this._currentValue = val
   }
 }
 

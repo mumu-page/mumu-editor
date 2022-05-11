@@ -6,6 +6,7 @@ import {RootStore, useEditState} from "@/store";
 import {addComponent} from '@/store/edit';
 import {history} from "@/utils/history";
 import dayjs from "dayjs";
+import {useCallback, useEffect, useRef} from "react";
 
 interface ElementStyle {
   top: number
@@ -28,6 +29,21 @@ interface State {
   draggableComponents: any[]
 }
 
+interface RefData {
+  comCurrentId: string,
+  comHoverCurrentId: string,
+  isScroll: boolean,
+  current: number,
+  hoverCurrent: number,
+  componentsPND: Element | null | undefined
+  selectCb: (arg0: number) => void
+  resizeObserver: ResizeObserver | null
+  mutationObserver: MutationObserver | null
+  preTop: number;
+  nextTop: number;
+  timer: NodeJS.Timeout | null;
+}
+
 function getElementTop(element: { offsetTop: any; offsetParent: any; }) {
   let actualTop = element.offsetTop;
   let current = element.offsetParent;
@@ -38,6 +54,10 @@ function getElementTop(element: { offsetTop: any; offsetParent: any; }) {
   }
 
   return actualTop;
+}
+
+function getScrollTop() {
+  return document.documentElement.scrollTop || document.body.scrollTop;
 }
 
 function getElementPosition(element: HTMLElement): ElementStyle {
@@ -53,12 +73,6 @@ function getElementPosition(element: HTMLElement): ElementStyle {
 
 const TEMPLATE_ELE_ID_PREFIX = 'mumu-render-id-_component_'
 
-let comCurrentId = ''
-let comHoverCurrentId = ''
-let isScroll = false
-let current = 0
-let hoverCurrent = 0
-
 export function useEditor() {
   const [editorState, setEditorState] = useImmer<State>({
     toolStyle: {top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0},
@@ -73,6 +87,21 @@ export function useEditor() {
   });
   const {dispatch} = useStore<RootStore>();
   const editState = useEditState()
+  const staticData = useRef<RefData>({
+    comCurrentId: '',
+    comHoverCurrentId: '',
+    isScroll: false,
+    current: 0,
+    hoverCurrent: 0,
+    componentsPND: null,
+    selectCb: () => {
+    },
+    resizeObserver: null,
+    mutationObserver: null,
+    preTop: 0,
+    nextTop: 0,
+    timer: null
+  })
 
   const setFrameLoaded = (loaded: boolean) => {
     setEditorState(draft => {
@@ -114,7 +143,7 @@ export function useEditor() {
       // 下半部分
       line.style.top = `${bottom - 2}px`
       line.style.width = `${width}px`
-      hoverCurrent = hoverCurrent + 1
+      staticData.current.hoverCurrent = staticData.current.hoverCurrent + 1
     }
   }
 
@@ -130,19 +159,19 @@ export function useEditor() {
           // 对比当前鼠标位置的元素
           if (id === currentId && node) {
             if (type === 'dragover') {
-              comHoverCurrentId = currentId
-              hoverCurrent = index
+              staticData.current.comHoverCurrentId = currentId
+              staticData.current.hoverCurrent = index
               handleDragEvent(e, node)
               return
             }
             const position = getElementPosition(node)
             if (type === 'mouseover') {
-              comHoverCurrentId = currentId
-              !isScroll && setShapeHoverStyle(position)
+              staticData.current.comHoverCurrentId = currentId
+              !staticData.current.isScroll && setShapeHoverStyle(position)
             }
             if (type === 'click') {
-              comCurrentId = currentId
-              current = index
+              staticData.current.comCurrentId = currentId
+              staticData.current.current = index
               setEditorState(draft => {
                 draft.current = index;
                 draft.isTop = index === 0
@@ -163,95 +192,130 @@ export function useEditor() {
     }
   }
 
-  let t1 = 0;
-  let t2 = 0;
-  let timer = null as any;
-
-  function getScrollTop() {
-    return document.documentElement.scrollTop || document.body.scrollTop;
-  }
-
-  const onIframeScroll = throttle((componentsPND) => {
-    isScroll = true
-    clearTimeout(timer);
+  const computedStyle = (componentsPND: Element | null | undefined) => {
+    if (!componentsPND) return
     const PIDs = Array.from(componentsPND.childNodes).map((nd: any) => nd.getAttribute('id'))
     PIDs.forEach((id, index) => {
-      if (id === comCurrentId) {
+      if (id === staticData.current.comCurrentId) {
         const node = Array.from(componentsPND.childNodes)[index] as HTMLElement
         const position = getElementPosition(node)
         setShapeStyle(position)
       }
-      if (id === comHoverCurrentId) {
+      if (id === staticData.current.comHoverCurrentId) {
         const node = Array.from(componentsPND.childNodes)[index] as HTMLElement
         const position = getElementPosition(node)
         setShapeHoverStyle(position)
       }
     })
+  }
 
-    t1 = getScrollTop();
-    timer = setTimeout(() => {
-      t2 = getScrollTop();
-      if (t2 === t1) {
+  const onIframeScroll = throttle((componentsPND) => {
+    staticData.current.isScroll = true
+    clearTimeout(staticData.current.timer as any);
+    computedStyle(componentsPND)
+
+    staticData.current.preTop = getScrollTop();
+    staticData.current.timer = setTimeout(() => {
+      staticData.current.nextTop = getScrollTop();
+      if (staticData.current.nextTop === staticData.current.preTop) {
         // 滚动结束
-        isScroll = false
+        staticData.current.isScroll = false
       }
     }, 500);
   }, 0)
 
+  const onClick = useCallback((e: Event) => {
+    history.actionType = '选中组件'
+    handleEvent(e, staticData.current.componentsPND, staticData.current.selectCb)
+  }, [])
+
+  const onDragover = useCallback((e: Event) => {
+    e.preventDefault()
+    handleEvent(e, staticData.current.componentsPND)
+  }, [])
+
+  const onDragleave = useCallback(() => {
+    const line = document.getElementById('shape-line')
+    line && (line.style.display = 'none')
+  }, [])
+
+  const onDrop = useCallback((e: any) => {
+    const line = document.getElementById('shape-line')
+    line && (line.style.display = 'none')
+    const data = e?.dataTransfer?.getData('text/plain')
+    if (data != null) {
+      dispatch(addComponent({data: JSON.parse(data), index: staticData.current.hoverCurrent}))
+    }
+    // 重置样式
+    staticData.current.current = staticData.current.hoverCurrent
+    staticData.current.comCurrentId = staticData.current.comHoverCurrentId
+    handleEvent(e, staticData.current.componentsPND)
+    history.actionType = '新增组件'
+  }, [])
+
+  const onMouseover = useCallback((e: Event) => {
+    handleEvent(e, staticData.current.componentsPND)
+  }, [])
+
+  const onMouseleave = useCallback(() => {
+    const shape = document.getElementById('shape-hover')
+    shape && (shape.style.display = 'none')
+  }, [])
+
+  const onScroll = useCallback(() => onIframeScroll(staticData.current.componentsPND), [])
+
+  const onResize = useCallback(() => computedStyle(staticData.current.componentsPND), [])
+
   const eventInit = (selectCb: (arg0: number) => void) => {
     requestIdleCallback(() => {
-      const componentsPND = getIframeView();
-      if (!componentsPND) return;
+      staticData.current.componentsPND = getIframeView();
+      staticData.current.selectCb = selectCb
+      if (!staticData.current.componentsPND) return;
       history.actionType = '初始化'
       history.push({
         ...editState.pageConfig,
         actionType: history.actionType,
         createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
       })
-      componentsPND.addEventListener('click', (e: Event) => {
-        history.actionType = '选中组件'
-        handleEvent(e, componentsPND, selectCb)
-      });
-      componentsPND.addEventListener('dragover', (e: Event) => {
-        e.preventDefault()
-        handleEvent(e, componentsPND)
-      });
-      componentsPND.addEventListener('dragleave', () => {
-        const line = document.getElementById('shape-line')
-        line && (line.style.display = 'none')
+      staticData.current.componentsPND.addEventListener('click', onClick);
+      staticData.current.componentsPND.addEventListener('dragover', onDragover);
+      staticData.current.componentsPND.addEventListener('dragleave', onDragleave)
+      staticData.current.componentsPND.addEventListener('drop', onDrop);
+      staticData.current.componentsPND.addEventListener('mouseover', onMouseover)
+      staticData.current.componentsPND.addEventListener('mouseleave', onMouseleave)
+      staticData.current.componentsPND.addEventListener('scroll', onScroll)
+      window.addEventListener('resize', onResize)
+      staticData.current.resizeObserver = new ResizeObserver(onResize);
+      staticData.current.resizeObserver.observe(staticData.current.componentsPND)
+      staticData.current.mutationObserver = new MutationObserver(onResize)
+      staticData.current.mutationObserver.observe(staticData.current.componentsPND, {
+        attributes: true, childList: true, subtree: true
       })
-      componentsPND.addEventListener('drop', (e: any) => {
-        const line = document.getElementById('shape-line')
-        line && (line.style.display = 'none')
-        const data = e?.dataTransfer?.getData('text/plain')
-        if (data != null) {
-          dispatch(addComponent({data: JSON.parse(data), index: hoverCurrent}))
-        }
-        // 重置样式
-        current = hoverCurrent
-        comCurrentId = comHoverCurrentId
-        handleEvent(e, componentsPND)
-        history.actionType = '新增组件'
-      });
-      componentsPND.addEventListener('mouseover', (e: Event) => {
-        handleEvent(e, componentsPND)
-      })
-      componentsPND.addEventListener('mouseleave', () => {
-        const shape = document.getElementById('shape-hover')
-        shape && (shape.style.display = 'none')
-      })
-      componentsPND.addEventListener('scroll', () => onIframeScroll(componentsPND))
-      window.addEventListener('resize', () => onIframeScroll(componentsPND))
     })
   }
 
+  useEffect(() => {
+    return () => {
+      if (!staticData?.current?.componentsPND) return
+      staticData.current.componentsPND.removeEventListener('click', onClick);
+      staticData.current.componentsPND.removeEventListener('dragover', onDragover);
+      staticData.current.componentsPND.removeEventListener('dragleave', onDragleave)
+      staticData.current.componentsPND.removeEventListener('drop', onDrop);
+      staticData.current.componentsPND.removeEventListener('mouseover', onMouseover)
+      staticData.current.componentsPND.removeEventListener('mouseleave', onMouseleave)
+      staticData.current.componentsPND.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+      staticData.current.resizeObserver?.disconnect()
+      staticData.current.mutationObserver?.disconnect()
+    }
+  }, [])
   return {
     setSpinning,
     setUrl,
     setFrameLoaded,
     eventInit,
     editorState,
-    current
+    current: staticData.current.current
   }
 }
 
