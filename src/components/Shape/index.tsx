@@ -61,6 +61,16 @@ export function setShapeHoverStyle(position: ElementStyle) {
   leftHover.style.height = `${position.height}px`
 }
 
+export function hideShape() {
+  if(!shape) return
+  shape.style.display = 'none'
+}
+
+export function hideShapeHover() {
+  if(!shapeHover) return
+  shapeHover.style.display = 'none'
+}
+
 function Shape(props: ShapeProps) {
   const {tool} = props
   const initEle = () => {

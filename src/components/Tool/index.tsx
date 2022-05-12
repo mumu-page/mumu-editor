@@ -15,6 +15,16 @@ interface ElementStyle {
 
 let tool: HTMLElement | null
 
+export function hideTool() {
+  if(!tool) return
+  tool.style.display = 'none'
+}
+
+export function showTool() {
+  if(!tool) return
+  tool.style.display = 'flex'
+}
+
 function Tool(props: ElementStyle) {
   const {onMove, onDel, onCopy, isTop, isBottom, height} = props
   let top = null

@@ -4,6 +4,7 @@ import { useRoutes } from 'react-router-dom';
 import routes from './routes';
 import { store, actions } from './store'
 import { returnConfig } from './store/edit';
+import {RETURN_CONFIG} from "@/constants";
 
 function App() {
   const element = useRoutes(routes)
@@ -14,7 +15,7 @@ function App() {
       if (e.source === window || e.data === 'loaded') {
         return
       }
-      if (e.data.type === 'returnConfig') {
+      if (e.data.type === RETURN_CONFIG) {
         return store.dispatch(returnConfig({
           targetConfig: e.data.data
         }));

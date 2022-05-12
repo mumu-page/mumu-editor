@@ -7,6 +7,8 @@ import {addComponent} from '@/store/edit';
 import {history} from "@/utils/history";
 import dayjs from "dayjs";
 import {useCallback, useEffect, useRef} from "react";
+import {hideShape, hideShapeHover} from "@/components/Shape";
+import {hideTool, showTool} from "@/components/Tool";
 
 interface ElementStyle {
   top: number
@@ -153,6 +155,9 @@ export function useEditor() {
 
   const setToolStyle = (index: number, position: ElementStyle) => {
     if (!staticData.current.componentsPND) return
+    showTool()
+    // 滚动时不更新工具组件，减少卡顿
+    if (staticData.current.isScroll) return
     const childNodes = Array.from(staticData.current.componentsPND.childNodes)
     const PIDs = childNodes.map((nd: any) => nd.getAttribute('id'))
     // 设置工具组件样式
@@ -171,6 +176,13 @@ export function useEditor() {
   const computedShapeAndToolStyle = () => {
     if (!staticData.current.componentsPND) return
     const childNodes = Array.from(staticData.current.componentsPND.childNodes)
+    if (!childNodes.length) {
+      hideShape()
+      hideShapeHover()
+      hideTool()
+      staticData.current.current = -1
+      return;
+    }
     const currentDom = childNodes[staticData.current.current] as HTMLElement
     const hoverCurrentDom = childNodes[staticData.current.hoverCurrent] as HTMLElement
     if (currentDom) {
@@ -328,6 +340,12 @@ export function useEditor() {
       staticData.current.mutationObserver?.disconnect()
     }
   }, [])
+
+  useEffect(() => {
+    staticData.current.current = typeof editState.currentIndex === 'number' ? editState.currentIndex : staticData.current.current
+    computedShapeAndToolStyle()
+  }, [editState])
+
   return {
     setSpinning,
     setUrl,

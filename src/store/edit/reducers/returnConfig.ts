@@ -46,6 +46,7 @@ export function returnConfig(state: EditState, action: PayloadAction<ReturnConfi
   }
   // 确定当前修改的是哪个组件
   const currentIndex = targetConfig.currentIndex || 0;
+  state.currentIndex = currentIndex
   // 如果 currentIndex = -1 表示是编辑页面配置，比如 title
   // 此时不需要对组件进行修改
   if (currentIndex === -1) {

@@ -107,10 +107,10 @@ function Edit() {
     computedShapeAndToolStyle()
   }
 
-  const deleteComponent = (index?: undefined | number) => {
+  const deleteComponent = () => {
     history.actionType = '删除组件'
-    staticData.current.current = staticData.current.hoverCurrent > 0 ? staticData.current.hoverCurrent - 1 : staticData.current.hoverCurrent
-    postMsgToChild({type: DELETE_COMPONENT, data: staticData.current.hoverCurrent});
+    postMsgToChild({type: DELETE_COMPONENT, data: staticData.current.current});
+    staticData.current.current = staticData.current.current -1 < 0 ? 0 : staticData.current.current - 1
     computedShapeAndToolStyle()
   }
 
@@ -138,7 +138,11 @@ function Edit() {
           <div className={style["page-title"]}>
             <Typography.Title
               style={{margin: 0}}
-              editable={{onChange: changeProjectName}}
+              editable={{
+                maxLength: 12,
+                autoSize: {maxRows: 1},
+                onChange: changeProjectName
+              }}
               level={5}
               onClick={getPageSchema}>
               {editState.pageConfig.config.projectName}
@@ -150,10 +154,15 @@ function Edit() {
             key: 'input',
             isBtn: false,
             style: {marginRight: 110, width: 200},
-            label: <Slider max={1920} min={750} defaultValue={750} marks={{
-              750: '750px',
-              1300: '1300px',
-              1920: '1920px',
+            label: <Slider
+              max={1920}
+              min={750}
+              tipFormatter={value => `${value}px`}
+              defaultValue={750}
+              marks={{
+              750: <IconFont type='icon-shouji'/>,
+              1300: <IconFont type='icon-iPad'/>,
+              1920: <IconFont type='icon-PCtaishiji'/>,
             }}/>,
           },
           {
@@ -217,7 +226,7 @@ function Edit() {
                   src={editorState.url}
                 />
               </Spin>
-              {staticData.current.current != -1 && <Shape tool={
+              <Shape tool={
                 <Tool
                   isTop={editorState.isTop}
                   isBottom={editorState.isBottom}
@@ -226,7 +235,7 @@ function Edit() {
                   onCopy={() => copyComponent()}
                   onDel={() => deleteComponent()}
                 />
-              }/>}
+              }/>
             </div>
           </div>
         </div>

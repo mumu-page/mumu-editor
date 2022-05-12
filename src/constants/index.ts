@@ -22,4 +22,5 @@ export const RESET = 'reset'
 /** 新增组件 */
 export const ADD_COMPONENT = 'addComponent'
 export const CHANGE_PROPS = 'changeProps'
+export const RETURN_CONFIG = 'returnConfig'
 
