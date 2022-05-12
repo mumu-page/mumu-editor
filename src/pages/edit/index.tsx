@@ -1,13 +1,14 @@
 import React, {memo, useEffect} from 'react'
 import {Header, Shape, Tool} from '@/components'
-import {Input, message, Spin} from "antd";
+import {Input, message, Slider, Spin, Typography} from "antd";
 import {
   SettingOutlined,
   UndoOutlined,
   RedoOutlined,
   SaveOutlined,
   EyeOutlined,
-  DashboardOutlined
+  DashboardOutlined,
+  ClearOutlined
 } from "@ant-design/icons";
 import {component, project} from "@/api";
 import {Link, useSearchParams} from "react-router-dom";
@@ -17,16 +18,32 @@ import {useStore} from 'react-redux';
 import {RootStore} from '@/store';
 import {useEditor} from './hooks';
 import {clone, postMsgToChild} from '@/utils/utils';
-import {returnConfig} from '@/store/edit';
+import {reset, returnConfig} from '@/store/edit';
 import FormConfig from './components/FormConfig';
 import {history} from '@/utils/history';
-import {CHANGE_INDEX, COPY_COMPONENT, DELETE_COMPONENT, GET_CONFIG, SET_CONFIG, SORT_COMPONENT} from '@/constants';
+import {
+  CHANGE_INDEX,
+  COPY_COMPONENT,
+  DELETE_COMPONENT,
+  GET_CONFIG,
+  RESET,
+  SET_CONFIG,
+  SORT_COMPONENT
+} from '@/constants';
 import IconFont from '@/components/IconFont';
 
 function Edit() {
   const {getState, dispatch} = useStore<RootStore>();
   const {edit: editState} = getState()
-  const {editorState, eventInit, setFrameLoaded, setUrl, setSpinning, current} = useEditor();
+  const {
+    editorState,
+    eventInit,
+    setFrameLoaded,
+    setUrl,
+    setSpinning,
+    computedShapeAndToolStyle,
+    staticData
+  } = useEditor();
   const [params] = useSearchParams()
 
   const getPageSchema = () => {
@@ -49,6 +66,9 @@ function Edit() {
       message.success(res.message).then()
     })
   }
+  const clearConfig = () => {
+    dispatch(reset())
+  }
   const setPreview = () => {
     window.open(`/mumu-editor/build/index.html?isPreview=true&pageId=${params.get('id')}&env=development`)
   }
@@ -65,35 +85,33 @@ function Edit() {
   const initConfig = () => {
     setFrameLoaded(true)
     eventInit((index) => {
-      postMsgToChild({type: 'changeIndex', data: index});
+      postMsgToChild({type: CHANGE_INDEX, data: index});
     });
-    // if (typeof editState?.editConfig?.currentIndex === 'number') {
-    //   init(editState.editConfig.currentIndex);
-    // }
     setSpinning(false)
     // 初始化页面
     postMsgToChild({type: GET_CONFIG});
-    if (editState.pageConfig.components.length) {
-      // 编辑
-      let data = JSON.parse(JSON.stringify(editState.pageConfig))
-      postMsgToChild({type: 'setConfig', data})
-    }
+    postMsgToChild({type: SET_CONFIG, data: clone(editState.pageConfig)})
     postMsgToChild({type: CHANGE_INDEX, data: editState.editConfig.currentIndex})
   }
 
-  const changeIndex = (_type: 'up' | 'down') => {
+  const changeIndex = (type: 'up' | 'down') => {
     history.actionType = '移动组件'
-    postMsgToChild({type: SORT_COMPONENT, data: {op: current, index: editorState.current}});
+    postMsgToChild({type: SORT_COMPONENT, data: {op: type === 'up' ? -1 : 1, index: staticData.current.current}});
+    computedShapeAndToolStyle()
   }
 
   const copyComponent = () => {
     history.actionType = '复制组件'
-    postMsgToChild({type: COPY_COMPONENT, data: current});
+    postMsgToChild({type: COPY_COMPONENT, data: staticData.current.current});
+    staticData.current.current = staticData.current.current + 1
+    computedShapeAndToolStyle()
   }
 
   const deleteComponent = (index?: undefined | number) => {
     history.actionType = '删除组件'
-    postMsgToChild({type: DELETE_COMPONENT, data: index !== undefined ? index : editorState.current});
+    staticData.current.current = staticData.current.hoverCurrent > 0 ? staticData.current.hoverCurrent - 1 : staticData.current.hoverCurrent
+    postMsgToChild({type: DELETE_COMPONENT, data: staticData.current.hoverCurrent});
+    computedShapeAndToolStyle()
   }
 
   useEffect(() => {
@@ -118,37 +136,25 @@ function Edit() {
         className={style['edit-menu']}
         pageTitle={<>
           <div className={style["page-title"]}>
-            <SettingOutlined onClick={getPageSchema} style={{"marginRight": "10px", "cursor": "pointer"}}/>
-            <Input
-              className={style["title-content"]}
-              value={editState.pageConfig.config.projectName}
-              onInput={changeProjectName}/>
+            <Typography.Title
+              style={{margin: 0}}
+              editable={{onChange: changeProjectName}}
+              level={5}
+              onClick={getPageSchema}>
+              {editState.pageConfig.config.projectName}
+            </Typography.Title>
           </div>
         </>}
         menus={[
           {
-            key: 'lp-simulator-pane',
-            style: {marginRight: 20},
-            children: [
-              {
-                key: 'pc',
-                label: <IconFont type='icon-PCtaishiji'/>,
-              },
-              {
-                key: 'iPad',
-                label: <IconFont type='icon-iPad'/>,
-              },
-              {
-                key: 'shouji',
-                label: <IconFont type='icon-shouji'/>,
-              },
-            ]
-          },
-          {
             key: 'input',
             isBtn: false,
-            style: {marginRight: 110, width: 120},
-            label: <Input style={{}} addonAfter="px"/>,
+            style: {marginRight: 110, width: 200},
+            label: <Slider max={1920} min={750} defaultValue={750} marks={{
+              750: '750px',
+              1300: '1300px',
+              1920: '1920px',
+            }}/>,
           },
           {
             key: 'radio',
@@ -168,6 +174,11 @@ function Edit() {
                 label: <><SaveOutlined/></>,
                 onClick: saveConfig
               },
+              {
+                key: 'clearConfig',
+                label: <><ClearOutlined/></>,
+                onClick: clearConfig
+              },
             ]
           },
           {
@@ -183,7 +194,7 @@ function Edit() {
           },
           {
             key: 'dashboard',
-            label: <Link to="/dashboard"><DashboardOutlined /></Link>,
+            label: <Link to="/dashboard"><DashboardOutlined/></Link>,
           }
         ]}
       />
@@ -194,7 +205,7 @@ function Edit() {
         </div>
         <div className={style["editor-view"]}>
           <div className={style["main-container"]}>
-            <div className={style["preview-container"]}>
+            <div className={style["preview-container"]} id={'preview-container'}>
               <Spin spinning={editorState.spinning} wrapperClassName={style.loading}>
                 <iframe
                   title='模板页面'
@@ -206,7 +217,7 @@ function Edit() {
                   src={editorState.url}
                 />
               </Spin>
-              <Shape tool={
+              {staticData.current.current != -1 && <Shape tool={
                 <Tool
                   isTop={editorState.isTop}
                   isBottom={editorState.isBottom}
@@ -215,7 +226,7 @@ function Edit() {
                   onCopy={() => copyComponent()}
                   onDel={() => deleteComponent()}
                 />
-              }/>
+              }/>}
             </div>
           </div>
         </div>

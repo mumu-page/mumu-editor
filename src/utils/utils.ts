@@ -1,4 +1,5 @@
 import {cloneDeep} from "lodash";
+import {PageConfig} from "@/store/edit/state";
 
 export const clone = (obj: any) => {
   return cloneDeep(obj);
@@ -12,10 +13,11 @@ export function deepCopy(value: any) {
   return JSON.parse(JSON.stringify(value))
 }
 
-export const mergeConfig = (origin: { components: any[]; page: { props: any; schema: any; }; }, target: { userSelectComponents: any[]; components: any[]; page: { props: any; schema: any; }; }) => {
+export const mergeConfig = (origin: PageConfig, target: PageConfig) => {
   if (!origin.components || !origin.components.length) return target;
-  const mergeResult = {
+  return {
     ...(origin || {}),
+    ...(target || {}),
     userSelectComponents: target.userSelectComponents.map((co: { name: any; props: any; }) => {
       const originCo = origin.components.filter((oco: { name: any; }) => oco.name === co.name)[0];
       if (originCo) {
@@ -53,5 +55,4 @@ export const mergeConfig = (origin: { components: any[]; page: { props: any; sch
       schema: (origin.page && origin.page.schema) || (target.page && target.page.schema) || {},
     }
   };
-  return mergeResult;
 }

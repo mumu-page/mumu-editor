@@ -17,6 +17,14 @@ let tool: HTMLElement | null
 
 function Tool(props: ElementStyle) {
   const {onMove, onDel, onCopy, isTop, isBottom, height} = props
+  let top = null
+
+  if (isTop) {
+    top = height + 2
+  }
+  if (isTop && isBottom) {
+    top = 2
+  }
 
   const initEle = () => {
     tool = document.getElementById('tool')
@@ -28,9 +36,7 @@ function Tool(props: ElementStyle) {
 
   return <div
     id={'tool'}
-    style={isTop ? {
-      top: height + 2
-    } : {}}
+    style={top ? {top} : {}}
     className={classNames({
       [style.tool]: true,
       [style.isTop]: isTop,

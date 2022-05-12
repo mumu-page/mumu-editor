@@ -9,7 +9,6 @@ interface ReturnConfigPayload {
   pageData?: any
   releaseStatus?: any
   commonComponents?: any
-  save?: boolean
 }
 
 /**
@@ -18,7 +17,7 @@ interface ReturnConfigPayload {
  * @param action
  */
 export function returnConfig(state: EditState, action: PayloadAction<ReturnConfigPayload>) {
-  const {targetConfig, pageData, releaseStatus, commonComponents, save = true,} = action.payload
+  const {targetConfig, pageData, releaseStatus, commonComponents} = action.payload
   // 保存页面初始值
   if (!state.defaultConfig && !releaseStatus) {
     state.defaultConfig = JSON.parse(JSON.stringify(targetConfig))
@@ -62,11 +61,11 @@ export function returnConfig(state: EditState, action: PayloadAction<ReturnConfi
     // 组件修改
     let component = state.pageConfig.userSelectComponents[currentIndex];
     if (component) {
-      let currentComponentSchema = state.pageConfig.components.filter((c) => c.name === component.name)[0];
+      let currentComponentSchema = state.pageConfig.components.filter((c) => c.name === component.name)?.[0];
       // 远程组件
-      if (component && component.name === 'mumu-remote-components-loader') {
-        if (state.pageConfig.remoteComponents && state.pageConfig.remoteComponents.length) {
-          currentComponentSchema = state.pageConfig.remoteComponents.filter((c: { name: any; version: any; }) => `${c.name}_${c.version}` === component.config.name)[0];
+      if (component.name === 'mumu-remote-component-loader') {
+        if (state.pageConfig.remoteComponents.length) {
+          currentComponentSchema = state.pageConfig.remoteComponents.filter((c) => `${c.name}` === `${component.config.name}`)?.[0] || {};
         }
       }
       // 当前修改项，用于 form-render

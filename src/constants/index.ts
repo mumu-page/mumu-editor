@@ -15,3 +15,11 @@ export const SORT_COMPONENT = 'sortComponent'
 
 /** 复制组件 */
 export const COPY_COMPONENT = 'copyComponent'
+
+/** 重置组件 */
+export const RESET = 'reset'
+
+/** 新增组件 */
+export const ADD_COMPONENT = 'addComponent'
+export const CHANGE_PROPS = 'changeProps'
+

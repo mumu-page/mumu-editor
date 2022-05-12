@@ -16,8 +16,7 @@ function App() {
       }
       if (e.data.type === 'returnConfig') {
         return store.dispatch(returnConfig({
-          targetConfig: e.data.data,
-          save: e.data.data.save
+          targetConfig: e.data.data
         }));
       }
       if ((actions as any)[e.data.type]) {

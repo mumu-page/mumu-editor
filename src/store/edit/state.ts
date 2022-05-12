@@ -1,7 +1,16 @@
 import { Schema } from "form-render";
 
+export interface RemoteComponent {
+  config: Record<string, any>
+  js: string
+  css: string
+  schema: Record<string, any>
+  name: string
+  version: string
+}
+
 export interface PageConfig {
-  remoteComponents: any;
+  remoteComponents: RemoteComponent[];
   userSelectComponents: any[]
   components: any[]
   config: Record<string, any>

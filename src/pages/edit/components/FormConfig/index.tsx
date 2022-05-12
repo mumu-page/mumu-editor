@@ -54,7 +54,7 @@ function FormConfig(props: FormConfigProps) {
               className={style['form-render']}
               onMount={onMount}
               form={form} removeHiddenData
-              schema={currentComponentSchema.schema}
+              schema={currentComponentSchema?.schema || {}}
               onValuesChange={onValuesChange}
               onFinish={onFinish}/>
           },
