@@ -1,5 +1,5 @@
-import React, {memo, useRef, useState} from 'react'
-import FormRender, {useForm, Error} from 'form-render';
+import React, {useState} from 'react'
+import FormRender, {useForm} from 'form-render';
 import style from "./index.module.less";
 import {useStore} from 'react-redux';
 import {RootStore, useEditState} from '@/store';
@@ -22,10 +22,6 @@ function FormConfig(props: FormConfigProps) {
   const currentComponent = editState.editConfig.currentComponent
   const {component, currentComponentSchema, type} = currentComponent;
   const globalProps = component?.props;
-
-  const onFinish = (formData: any, errors: Error[]) => {
-    console.log('formData:', formData, 'errors', errors);
-  };
 
   const onValuesChange = (_changedValues: any, formData: any) => {
     dispatch(changeProps({...formData, type}))
@@ -56,7 +52,7 @@ function FormConfig(props: FormConfigProps) {
               form={form} removeHiddenData
               schema={currentComponentSchema?.schema || {}}
               onValuesChange={onValuesChange}
-              onFinish={onFinish}/>
+            />
           },
         ]}/>
       </div>
