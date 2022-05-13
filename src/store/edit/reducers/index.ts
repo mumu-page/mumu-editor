@@ -28,11 +28,7 @@ function changeProps(state: EditState, action: PayloadAction<any>) {
 }
 
 function setDragStart(state: EditState, action: PayloadAction<any>) {
-  const {ev, v, data} = action.payload
-  state.uiConfig.dragStart = v;
-  if (data) {
-    ev.dataTransfer.setData("text/plain", JSON.stringify(data));
-  }
+  state.uiConfig.dragStart = action.payload
 }
 
 const reducers = {

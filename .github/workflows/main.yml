@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - '**'
+      - main
   pull_request:
     branches:
       - main
@@ -18,8 +18,8 @@ jobs:
           persist-credentials: false
       - name: Install Dependencies And Build 🔧
         run: |
-          yarn
-          yarn build
+          npm install
+          npm run build
       - name: Deploy Github Pages 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:

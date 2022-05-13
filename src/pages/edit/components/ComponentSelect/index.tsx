@@ -4,11 +4,11 @@ import IconFont from "@/components/IconFont";
 import style from './index.module.less'
 import classNames from 'classnames';
 import Title from '@/components/Title';
-import {useEditState} from '@/store';
+import {RootStore, useEditState} from '@/store';
 import Collapse from '@/components/Collapse';
-import uniqueid from "lodash.uniqueid";
+import {uniqueId} from "lodash";
 import {clone} from '@/utils/utils';
-import History from './History'
+import History from './History';
 
 interface LeftMenu {
   key: string;
@@ -24,7 +24,7 @@ function ComponentSelect() {
   const [isAffix, setAffix] = useState(false)
   const [hide, setHide] = useState(false)
   const editState = useEditState()
-  const setDragStart = (e: any, item?: any) => {
+  const onDragStart = (e: React.DragEvent<HTMLDivElement>, item?: any) => {
     if (item) {
       e.dataTransfer.setData("text/plain", JSON.stringify(item))
     }
@@ -52,7 +52,7 @@ function ComponentSelect() {
     if (_components.length % 3 !== 0) {
       const len = _components.length % 3
       for (let index = 0; index < (3 - len); index++) {
-        _components.push({placeholder: true, key: uniqueid()})
+        _components.push({placeholder: true, key: uniqueId()})
       }
     }
     return <div className={style["components"]}>
@@ -62,7 +62,7 @@ function ComponentSelect() {
           key={item.key}
         />
         return <div
-          onDragStart={(e) => setDragStart(e, item)}
+          onDragStart={(e) => onDragStart(e, item)}
           draggable
           className={style["mumu-item"]}
           key={item.name}

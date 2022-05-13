@@ -125,6 +125,12 @@ Licensed under the Apache License, Version 2.0 (the 'License');
               test: /(immer)/,
               priority: 100,
             },
+            immer: {
+              name: 'lodash',
+              chunks: 'all',
+              test: /(lodash)/,
+              priority: 100,
+            },
             'form-render': {
               name: 'form-render',
               chunks: 'all',

@@ -1,8 +1,7 @@
 import React, {memo, useEffect} from 'react'
 import {Header, Shape, Tool} from '@/components'
-import {Input, message, Slider, Spin, Typography} from "antd";
+import {message, Slider, Spin, Typography} from "antd";
 import {
-  SettingOutlined,
   UndoOutlined,
   RedoOutlined,
   SaveOutlined,
@@ -15,7 +14,7 @@ import {Link, useSearchParams} from "react-router-dom";
 import style from './index.module.less'
 import ComponentSelect from './components/ComponentSelect';
 import {useStore} from 'react-redux';
-import {RootStore} from '@/store';
+import {RootStore, useEditState} from '@/store';
 import {useEditor} from './hooks';
 import {clone, postMsgToChild} from '@/utils/utils';
 import {reset, returnConfig} from '@/store/edit';
@@ -26,15 +25,15 @@ import {
   COPY_COMPONENT,
   DELETE_COMPONENT,
   GET_CONFIG,
-  RESET,
   SET_CONFIG,
   SORT_COMPONENT
 } from '@/constants';
 import IconFont from '@/components/IconFont';
 
 function Edit() {
-  const {getState, dispatch} = useStore<RootStore>();
-  const {edit: editState} = getState()
+  const {dispatch} = useStore<RootStore>();
+  const editState = useEditState()
+  const currentComponent = editState.editConfig.currentComponent
   const {
     editorState,
     eventInit,
@@ -240,11 +239,11 @@ function Edit() {
           </div>
         </div>
         <div className={style["form-container-main"]}>
-          <FormConfig/>
+          <FormConfig currentComponent={currentComponent}/>
         </div>
       </div>
     </div>
   )
 }
 
-export default memo(Edit)
+export default Edit

@@ -1,5 +1,5 @@
 import {useImmer} from "use-immer";
-import throttle from 'lodash.throttle'
+import {throttle} from 'lodash'
 import {setShapeHoverStyle, setShapeStyle} from "@/components";
 import {useStore} from "react-redux";
 import {RootStore, useEditState} from "@/store";

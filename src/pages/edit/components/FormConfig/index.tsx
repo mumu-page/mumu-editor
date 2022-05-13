@@ -1,25 +1,26 @@
-import React, {useState} from 'react'
+import React, {memo, useState} from 'react'
 import FormRender, {useForm} from 'form-render';
 import style from "./index.module.less";
 import {useStore} from 'react-redux';
-import {RootStore, useEditState} from '@/store';
+import {RootStore} from '@/store';
 import {changeProps} from '@/store/edit';
 import Title from '@/components/Title';
 import Collapse from '@/components/Collapse';
 import classNames from "classnames";
 import {SettingOutlined} from "@ant-design/icons";
 import {Button} from "antd";
+import {CurrentComponent} from "@/store/edit/state";
 
 interface FormConfigProps {
+  currentComponent: CurrentComponent
 }
 
 function FormConfig(props: FormConfigProps) {
+  const {currentComponent} = props
   const form = useForm();
   const [isAffix, setAffix] = useState(false)
   const [hide, setHide] = useState(false)
   const {dispatch} = useStore<RootStore>();
-  const editState = useEditState()
-  const currentComponent = editState.editConfig.currentComponent
   const {component, currentComponentSchema, type} = currentComponent;
   const globalProps = component?.props;
 
@@ -28,6 +29,7 @@ function FormConfig(props: FormConfigProps) {
   }
 
   const onMount = () => {
+    console.log('onMount')
     form.setValues(globalProps)
   }
 
@@ -65,4 +67,4 @@ function FormConfig(props: FormConfigProps) {
   )
 }
 
-export default FormConfig
+export default memo(FormConfig)

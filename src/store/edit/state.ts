@@ -9,10 +9,17 @@ export interface RemoteComponent {
   version: string
 }
 
+export interface Component {
+  id: string
+  name: string
+  props: Record<string, string | number | object>
+  schema: Schema
+}
+
 export interface PageConfig {
-  remoteComponents: RemoteComponent[];
+  remoteComponents?: RemoteComponent[];
   userSelectComponents: any[]
-  components: any[]
+  components: Component[]
   config: Record<string, any>
   page: any
 }
@@ -22,9 +29,9 @@ export interface CurrentComponentSchema {
 }
 
 export interface CurrentComponent {
-  component: any;
-  currentComponentSchema: CurrentComponentSchema;
-  type?: any;
+  component?: Component;
+  currentComponentSchema?: CurrentComponentSchema;
+  type?: string;
 }
 
 export interface EditConfig {
@@ -40,7 +47,7 @@ export interface ReleaseStatus {
 }
 
 export interface UIConfig {
-  commonComponents: any[] // 远程组件列表
+  commonComponents: RemoteComponent[] // 远程组件列表
   showEdit: boolean
   releaseStatus: ReleaseStatus
   showRelease: boolean
@@ -71,8 +78,8 @@ export const initialEditState: EditState = {
     componentConfig: {},
     currentIndex: null,
     currentComponent: {
-      component: null,
-      type: null,
+      component: undefined,
+      type: undefined,
       currentComponentSchema: { schema: {} }
     },
   },

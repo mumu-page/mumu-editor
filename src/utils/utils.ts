@@ -24,7 +24,7 @@ export const mergeConfig = (origin: PageConfig, target: PageConfig) => {
         return {
           ...co,
           props: {
-            ...originCo.data || {},
+            ...originCo.props || {},
             ...co.props,
           },
           schema: originCo.schema
@@ -32,13 +32,13 @@ export const mergeConfig = (origin: PageConfig, target: PageConfig) => {
       }
       return co;
     }),
-    components: target.components.map((co: { name: any; props: any; }) => {
-      const originCo = origin.components.filter((oco: { name: any; }) => oco.name === co.name)[0];
+    components: target.components.map((co) => {
+      const originCo = origin.components.filter((oco: { name: any; }) => oco.name === co.name)?.[0];
       if (originCo) {
         return {
           ...co,
           props: {
-            ...originCo.data || {},
+            ...originCo.props || {},
             ...co.props,
           },
           schema: originCo.schema

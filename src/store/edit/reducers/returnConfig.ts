@@ -1,6 +1,6 @@
-import {mergeConfig} from "@/utils/utils";
+import {clone, mergeConfig} from "@/utils/utils";
 import {PayloadAction} from "@reduxjs/toolkit";
-import {EditState} from "../state";
+import {Component, EditState, RemoteComponent} from "../state";
 import {history} from "@/utils/history";
 import dayjs from "dayjs";
 
@@ -41,6 +41,7 @@ export function returnConfig(state: EditState, action: PayloadAction<ReturnConfi
   targetConfig.page = targetConfig.page || {schema: {}, props: {}};
   // merge 页面配置信息
   state.pageConfig = {
+    remoteComponents: [],
     ...state.pageConfig,
     ...mergeConfig(state.defaultConfig, targetConfig)
   }
@@ -62,11 +63,11 @@ export function returnConfig(state: EditState, action: PayloadAction<ReturnConfi
     // 组件修改
     let component = state.pageConfig.userSelectComponents[currentIndex];
     if (component) {
-      let currentComponentSchema = state.pageConfig.components.filter((c) => c.name === component.name)?.[0];
+      let currentComponentSchema: RemoteComponent | Component | undefined = state.pageConfig.components.filter((c: any) => c.name === component.name)?.[0];
       // 远程组件
       if (component.name === 'mumu-remote-component-loader') {
-        if (state.pageConfig.remoteComponents.length) {
-          currentComponentSchema = state.pageConfig.remoteComponents.filter((c) => `${c.name}` === `${component.config.name}`)?.[0] || {};
+        if (state.pageConfig.remoteComponents?.length) {
+          currentComponentSchema = state.pageConfig.remoteComponents.filter((c: any) => `${c.name}` === `${component.config.name}`)?.[0];
         }
       }
       // 当前修改项，用于 form-render
