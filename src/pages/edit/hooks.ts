@@ -3,12 +3,14 @@ import {throttle} from 'lodash'
 import {setShapeHoverStyle, setShapeStyle} from "@/components";
 import {useStore} from "react-redux";
 import {RootStore, useEditState} from "@/store";
-import {addComponent} from '@/store/edit';
+import {addComponent, setCurrentComponent} from '@/store/edit';
 import {history} from "@/utils/history";
 import dayjs from "dayjs";
 import {useCallback, useEffect, useRef} from "react";
 import {hideShape, hideShapeHover} from "@/components/Shape";
 import {hideTool, showTool} from "@/components/Tool";
+import {postMsgToChild} from "@/utils/utils";
+import {GET_CONFIG} from "@/constants";
 
 interface ElementStyle {
   top: number
@@ -36,7 +38,7 @@ interface RefData {
   current: number,
   hoverCurrent: number,
   componentsPND: Element | null | undefined
-  selectCb: (arg0: number) => void
+  selectCb?: (arg0: number) => void
   resizeObserver: ResizeObserver | null
   mutationObserver: MutationObserver | null
   preTop: number;
@@ -231,6 +233,7 @@ export function useEditor() {
             }
             if (['click', 'drop'].includes(type)) {
               computedShapeAndToolStyle()
+              dispatch(setCurrentComponent({currentIndex: index}))
             }
             callback?.(staticData.current.current);
           }
@@ -245,7 +248,6 @@ export function useEditor() {
     staticData.current.isScroll = true
     clearTimeout(staticData.current.timer as any);
     computedShapeAndToolStyle()
-
     staticData.current.preTop = getScrollTop();
     staticData.current.timer = setTimeout(() => {
       staticData.current.nextTop = getScrollTop();
@@ -257,7 +259,6 @@ export function useEditor() {
   }, 0)
 
   const onClick = useCallback((e: Event) => {
-    history.actionType = '选中组件'
     handleEvent(e, staticData.current.componentsPND, staticData.current.selectCb)
   }, [])
 
@@ -281,7 +282,6 @@ export function useEditor() {
     // 重置样式
     staticData.current.current = staticData.current.hoverCurrent
     handleEvent(e, staticData.current.componentsPND)
-    history.actionType = '新增组件'
   }, [])
 
   const onMouseover = useCallback((e: Event) => {
@@ -297,17 +297,11 @@ export function useEditor() {
 
   const onResize = useCallback(() => computedShapeAndToolStyle(), [])
 
-  const eventInit = (selectCb: (arg0: number) => void) => {
+  const eventInit = (selectCb?: (arg0: number) => void) => {
     requestIdleCallback(() => {
-      staticData.current.componentsPND = getIframeView();
+      staticData.current.componentsPND = getIframeView(/*editState.containerElementId*/);
       staticData.current.selectCb = selectCb
       if (!staticData.current.componentsPND) return;
-      history.actionType = '初始化'
-      history.push({
-        ...editState.pageConfig,
-        actionType: history.actionType,
-        createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
-      })
       staticData.current.componentsPND.addEventListener('click', onClick);
       staticData.current.componentsPND.addEventListener('dragover', onDragover);
       staticData.current.componentsPND.addEventListener('dragleave', onDragleave)
@@ -342,8 +336,7 @@ export function useEditor() {
   }, [])
 
   useEffect(() => {
-    staticData.current.current = typeof editState.currentIndex === 'number' ? editState.currentIndex : staticData.current.current
-    computedShapeAndToolStyle()
+    postMsgToChild({type: GET_CONFIG, data: JSON.parse(JSON.stringify(editState.pageConfig.userSelectComponents))})
   }, [editState])
 
   return {

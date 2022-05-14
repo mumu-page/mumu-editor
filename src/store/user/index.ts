@@ -15,6 +15,7 @@ export const userSlice = createSlice({
       // state.id += action.payload
     },
   },
+
 })
 
 export const { increment, decrement, incrementByAmount } = userSlice.actions

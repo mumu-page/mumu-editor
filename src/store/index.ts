@@ -1,9 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit';
-import userReducer, { decrement, increment, incrementByAmount } from './user/index';
-import editReducer, { addComponent, changeProps, returnConfig, setDragStart, setIsSave } from './edit/index';
-import { EditState } from './edit/state';
-import { UserState } from './user/state';
-import { useStore } from 'react-redux';
+import {configureStore, createListenerMiddleware} from '@reduxjs/toolkit';
+import userReducer, {userSlice} from './user/index';
+import editReducer, {editSlice} from './edit/index';
+import {EditState} from './edit/state';
+import {UserState} from './user/state';
+import {useStore} from 'react-redux';
+import {postMsgToChild} from "@/utils/utils";
+import {SET_IFRAME_COMPONENTS} from "@/constants";
 
 export interface RootStore {
   user: UserState,
@@ -18,24 +20,24 @@ export const store = configureStore({
 });
 
 export const useStoreMM = () => {
-  const { getState, dispatch } = useStore<RootStore>()
+  const {getState, dispatch} = useStore<RootStore>()
   const store = getState()
-  return { store, dispatch }
+  return {store, dispatch}
 }
 
 export const useEditState = () => {
-  const { getState } = useStore<RootStore>()
+  const {getState} = useStore<RootStore>()
   const store = getState()
   return store.edit
 }
 
 export const useUserState = () => {
-  const { getState } = useStore<RootStore>()
+  const {getState} = useStore<RootStore>()
   const store = getState()
   return store.user
 }
 
 export const actions = {
-  returnConfig, setIsSave, addComponent, setDragStart, changeProps,
-  increment, decrement, incrementByAmount
+  ...editSlice.actions,
+  ...userSlice.actions
 }

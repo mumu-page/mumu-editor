@@ -17,18 +17,16 @@ import {useStore} from 'react-redux';
 import {RootStore, useEditState} from '@/store';
 import {useEditor} from './hooks';
 import {clone, postMsgToChild} from '@/utils/utils';
-import {reset, returnConfig} from '@/store/edit';
+import {copyComponent, deleteComponent, reset, returnConfig, setCurrentComponent, sortComponent} from '@/store/edit';
 import FormConfig from './components/FormConfig';
 import {history} from '@/utils/history';
 import {
   CHANGE_INDEX,
-  COPY_COMPONENT,
-  DELETE_COMPONENT,
   GET_CONFIG,
-  SET_CONFIG,
-  SORT_COMPONENT
+  SET_CONFIG, SET_IFRAME_COMPONENTS,
 } from '@/constants';
 import IconFont from '@/components/IconFont';
+import dayjs from "dayjs";
 
 function Edit() {
   const {dispatch} = useStore<RootStore>();
@@ -83,34 +81,38 @@ function Edit() {
 
   const initConfig = () => {
     setFrameLoaded(true)
-    eventInit((index) => {
-      postMsgToChild({type: CHANGE_INDEX, data: index});
+    eventInit(() => {
+      history.push({
+        ...editState.pageConfig,
+        actionType: '初始化',
+        createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
+      })
     });
     setSpinning(false)
-    // 初始化页面
-    postMsgToChild({type: GET_CONFIG});
-    postMsgToChild({type: SET_CONFIG, data: clone(editState.pageConfig)})
-    postMsgToChild({type: CHANGE_INDEX, data: editState.editConfig.currentIndex})
   }
 
-  const changeIndex = (type: 'up' | 'down') => {
-    history.actionType = '移动组件'
-    postMsgToChild({type: SORT_COMPONENT, data: {op: type === 'up' ? -1 : 1, index: staticData.current.current}});
+  const onSortComponent = (type: 'up' | 'down') => {
+    const op = type === 'up' ? -1 : 1
+    const index = staticData.current.current
+    const next = index + op < 0 ? 0 : index + op;
+    dispatch(sortComponent({index, next}))
+    staticData.current.current = next
+    dispatch(setCurrentComponent({currentIndex: staticData.current.current}))
     computedShapeAndToolStyle()
   }
 
-  const copyComponent = () => {
-    history.actionType = '复制组件'
-    postMsgToChild({type: COPY_COMPONENT, data: staticData.current.current});
+  const onCopyComponent = () => {
+    dispatch(copyComponent({index: staticData.current.current}))
     staticData.current.current = staticData.current.current + 1
+    dispatch(setCurrentComponent({currentIndex: staticData.current.current}))
     computedShapeAndToolStyle()
   }
 
-  const deleteComponent = () => {
-    history.actionType = '删除组件'
-    postMsgToChild({type: DELETE_COMPONENT, data: staticData.current.current});
-    staticData.current.current = staticData.current.current -1 < 0 ? 0 : staticData.current.current - 1
+  const onDeleteComponent = () => {
+    dispatch(deleteComponent(staticData.current.current))
+    staticData.current.current = staticData.current.current - 1 < 0 ? 0 : staticData.current.current - 1
     computedShapeAndToolStyle()
+    dispatch(setCurrentComponent({currentIndex: staticData.current.current}))
   }
 
   useEffect(() => {
@@ -126,6 +128,7 @@ function Edit() {
         releaseStatus: result[0].releaseInfo,
         commonComponents: componentRes?.[0]?.config,
       }));
+      dispatch(setCurrentComponent({currentIndex: 0}))
     });
   }, [])
 
@@ -159,10 +162,10 @@ function Edit() {
               tipFormatter={value => `${value}px`}
               defaultValue={750}
               marks={{
-              750: <IconFont type='icon-shouji'/>,
-              1300: <IconFont type='icon-iPad'/>,
-              1920: <IconFont type='icon-PCtaishiji'/>,
-            }}/>,
+                750: <IconFont type='icon-shouji'/>,
+                1300: <IconFont type='icon-iPad'/>,
+                1920: <IconFont type='icon-PCtaishiji'/>,
+              }}/>,
           },
           {
             key: 'radio',
@@ -230,9 +233,9 @@ function Edit() {
                   isTop={editorState.isTop}
                   isBottom={editorState.isBottom}
                   height={editorState.toolStyle.height}
-                  onMove={(type) => changeIndex(type)}
-                  onCopy={() => copyComponent()}
-                  onDel={() => deleteComponent()}
+                  onMove={(type) => onSortComponent(type)}
+                  onCopy={() => onCopyComponent()}
+                  onDel={() => onDeleteComponent()}
                 />
               }/>
             </div>
@@ -246,4 +249,4 @@ function Edit() {
   )
 }
 
-export default Edit
+export default (Edit)

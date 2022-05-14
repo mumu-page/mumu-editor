@@ -16,12 +16,12 @@ interface ElementStyle {
 let tool: HTMLElement | null
 
 export function hideTool() {
-  if(!tool) return
+  if (!tool) return
   tool.style.display = 'none'
 }
 
 export function showTool() {
-  if(!tool) return
+  if (!tool) return
   tool.style.display = 'flex'
 }
 
@@ -30,10 +30,13 @@ function Tool(props: ElementStyle) {
   let top = null
 
   if (isTop) {
-    top = height + 2
+    top = 3
   }
-  if (isTop && isBottom) {
-    top = 2
+  if (isBottom) {
+    top = -28
+  }
+  if(isTop && isBottom) {
+    top = 3
   }
 
   const initEle = () => {

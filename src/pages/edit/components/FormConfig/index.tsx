@@ -1,4 +1,4 @@
-import React, {memo, useState} from 'react'
+import React, {memo, useEffect, useState} from 'react'
 import FormRender, {useForm} from 'form-render';
 import style from "./index.module.less";
 import {useStore} from 'react-redux';
@@ -8,7 +8,7 @@ import Title from '@/components/Title';
 import Collapse from '@/components/Collapse';
 import classNames from "classnames";
 import {SettingOutlined} from "@ant-design/icons";
-import {Button} from "antd";
+import {Button, Empty} from "antd";
 import {CurrentComponent} from "@/store/edit/state";
 
 interface FormConfigProps {
@@ -29,7 +29,6 @@ function FormConfig(props: FormConfigProps) {
   }
 
   const onMount = () => {
-    console.log('onMount')
     form.setValues(globalProps)
   }
 
@@ -42,7 +41,8 @@ function FormConfig(props: FormConfigProps) {
           onClose={() => setHide(true)}
           onFixed={() => setAffix(!isAffix)}
         />
-        <Collapse options={[
+        {!currentComponentSchema?.schema && <div className={style.empty}><Empty/></div>}
+        {currentComponentSchema?.schema && <Collapse options={[
           {
             key: '1',
             title: '字段属性',
@@ -52,11 +52,11 @@ function FormConfig(props: FormConfigProps) {
               className={style['form-render']}
               onMount={onMount}
               form={form} removeHiddenData
-              schema={currentComponentSchema?.schema || {}}
+              schema={currentComponentSchema?.schema}
               onValuesChange={onValuesChange}
             />
           },
-        ]}/>
+        ]}/>}
       </div>
       {hide && <Button
         size={'large'}

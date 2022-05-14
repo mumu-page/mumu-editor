@@ -14,6 +14,7 @@ export interface Component {
   name: string
   props: Record<string, string | number | object>
   schema: Schema
+  config?: RemoteComponent
 }
 
 export interface PageConfig {
@@ -61,7 +62,7 @@ export interface EditState {
   editConfig: EditConfig
   uiConfig: UIConfig
   defaultConfig: any
-  isSave: boolean
+  containerElementId: string
 }
 
 export const initialEditState: EditState = {
@@ -98,6 +99,6 @@ export const initialEditState: EditState = {
   },
 
   defaultConfig: null,
-  isSave: true,
+  containerElementId: '',
 }
 
