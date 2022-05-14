@@ -42,21 +42,21 @@ function FormConfig(props: FormConfigProps) {
           onFixed={() => setAffix(!isAffix)}
         />
         {!currentComponentSchema?.schema && <div className={style.empty}><Empty/></div>}
-        {currentComponentSchema?.schema && <Collapse options={[
+        <Collapse options={[
           {
             key: '1',
             title: '字段属性',
             node: <FormRender
               labelWidth={90}
               displayType={'row'}
-              className={style['form-render']}
+              className={style.formRender}
               onMount={onMount}
               form={form} removeHiddenData
-              schema={currentComponentSchema?.schema}
+              schema={currentComponentSchema?.schema || {}}
               onValuesChange={onValuesChange}
             />
           },
-        ]}/>}
+        ]}/>
       </div>
       {hide && <Button
         size={'large'}

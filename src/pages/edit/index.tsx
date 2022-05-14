@@ -21,12 +21,9 @@ import {copyComponent, deleteComponent, reset, returnConfig, setCurrentComponent
 import FormConfig from './components/FormConfig';
 import {history} from '@/utils/history';
 import {
-  CHANGE_INDEX,
-  GET_CONFIG,
-  SET_CONFIG, SET_IFRAME_COMPONENTS,
+  SET_CONFIG,
 } from '@/constants';
 import IconFont from '@/components/IconFont';
-import dayjs from "dayjs";
 
 function Edit() {
   const {dispatch} = useStore<RootStore>();
@@ -79,15 +76,14 @@ function Edit() {
     })
   }
 
-  const initConfig = () => {
+  const onIframeLoaded = () => {
     setFrameLoaded(true)
-    eventInit(() => {
-      history.push({
-        ...editState.pageConfig,
-        actionType: '初始化',
-        createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
-      })
-    });
+    history.push({
+      ...editState.pageConfig,
+      actionType: '初始化',
+    })
+    dispatch(setCurrentComponent({currentIndex: staticData.current.current}))
+    eventInit();
     setSpinning(false)
   }
 
@@ -128,7 +124,6 @@ function Edit() {
         releaseStatus: result[0].releaseInfo,
         commonComponents: componentRes?.[0]?.config,
       }));
-      dispatch(setCurrentComponent({currentIndex: 0}))
     });
   }, [])
 
@@ -221,7 +216,7 @@ function Edit() {
                 <iframe
                   title='模板页面'
                   cross-origin="true"
-                  onLoad={initConfig}
+                  onLoad={onIframeLoaded}
                   id="frame"
                   frameBorder={0}
                   className={style["pre-view"]}

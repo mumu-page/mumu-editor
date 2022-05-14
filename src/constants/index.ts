@@ -21,8 +21,8 @@ export const RETURN_CONFIG = 'returnConfig'
 /** 设置子页面组件 */
 export const SET_IFRAME_COMPONENTS = 'setIframeComponents'
 /** 组件编辑单个元素ID前缀 */
-export const COMPONENT_ELEMENT_ITEM_ID_PREFIX = 'mumu-render-id-_component_'
+export const COMPONENT_ELEMENT_ITEM_ID_PREFIX = 'mm-render-id-_component_'
 /** 远程组件加载器名称 */
-export const REMOTE_COMPONENT_LOADER_NAME = 'mumu-remote-component-loader'
+export const REMOTE_COMPONENT_LOADER_NAME = 'mm-remote-component-loader'
 /** 名称是这个的就是系统组件 */
 export const GLOBAL_COMPONENT_TYPE_NAME = 'global-component'

@@ -6,7 +6,6 @@ import {COMPONENT_ELEMENT_ITEM_ID_PREFIX, GLOBAL_COMPONENT_TYPE_NAME, REMOTE_COM
 import {message} from "antd";
 import {deepCopy} from "@/utils/utils";
 import {history} from "@/utils/history";
-import dayjs from "dayjs";
 
 /** 历史记录包括： 新增、组件点击、组件属性改变、组件顺序、组件复制、删除 */
 
@@ -39,7 +38,6 @@ function addComponent(state: EditState, action: PayloadAction<any>) {
   history.push({
     ...state.pageConfig,
     actionType: '新增组件',
-    createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
   })
 }
 
@@ -54,7 +52,6 @@ function changeProps(state: EditState, action: PayloadAction<any>) {
   history.push({
     ...state.pageConfig,
     actionType: '更新属性',
-    createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
   })
 }
 
@@ -70,7 +67,6 @@ function deleteComponent(state: EditState, action: PayloadAction<any>) {
   history.push({
     ...state.pageConfig,
     actionType: '删除组件',
-    createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
   })
 }
 
@@ -83,7 +79,6 @@ function sortComponent(state: EditState, action: PayloadAction<any>) {
   history.push({
     ...state.pageConfig,
     actionType: '移动组件',
-    createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
   })
 }
 
@@ -96,7 +91,6 @@ function copyComponent(state: EditState, action: PayloadAction<any>) {
   history.push({
     ...state.pageConfig,
     actionType: '复制组件',
-    createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
   })
 }
 
@@ -107,7 +101,6 @@ function setCurrentComponent(state: EditState, action: PayloadAction<any>) {
   history.push({
     ...state.pageConfig,
     actionType: '选中组件',
-    createTime: dayjs().format('YYYY-MM-DD hh:mm:ss')
   })
 }
 

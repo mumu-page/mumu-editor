@@ -1,5 +1,11 @@
 import {PageConfig} from "@/store/edit/state";
-import {clone} from "@/utils/utils";
+import dayJS from "dayjs";
+import tz from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+
+dayJS.extend(utc)
+dayJS.extend(tz)
+dayJS.tz.setDefault("PRC")
 
 // 最大历史栈长度
 const MAX_HISTORY_LENGTH = 100;
@@ -12,7 +18,7 @@ const clear = (arr: any[]) => arr.splice(0, arr.length);
 type ActionType = '删除组件' | '新增组件' | '移动组件' | '更新属性' | '选中组件' | '复制组件' | '初始化'
 
 export interface HistoryItem {
-  createTime: string
+  createTime?: string
   actionType: ActionType
 }
 
@@ -70,6 +76,7 @@ class History<T> {
    * @param {*} value 历史记录值
    */
   push(value: T & HistoryItem) {
+    value.createTime = dayJS().format('YYYY-MM-DD hh:mm:ss')
     this.stack.push(value);
     this._undoStack = [];
     this._currentValue = value;
@@ -138,6 +145,14 @@ class History<T> {
     this.runCallback()
   }
 
+  getStack() {
+    return this.stack
+  }
+
+  /**
+   * 跳转到指定的某条记录
+   * @param index
+   */
   setCurrentValue(index: number) {
     this._currentValue = this.stack[index]
   }

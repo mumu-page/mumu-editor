@@ -4,8 +4,6 @@ import {setShapeHoverStyle, setShapeStyle} from "@/components";
 import {useStore} from "react-redux";
 import {RootStore, useEditState} from "@/store";
 import {addComponent, setCurrentComponent} from '@/store/edit';
-import {history} from "@/utils/history";
-import dayjs from "dayjs";
 import {useCallback, useEffect, useRef} from "react";
 import {hideShape, hideShapeHover} from "@/components/Shape";
 import {hideTool, showTool} from "@/components/Tool";
@@ -46,7 +44,7 @@ interface RefData {
   timer: NodeJS.Timeout | null;
 }
 
-const TEMPLATE_ELE_ID_PREFIX = 'mumu-render-id-_component_'
+const TEMPLATE_ELE_ID_PREFIX = 'mm-render-id-_component_'
 
 function getScrollTop() {
   return document.documentElement.scrollTop || document.body.scrollTop;
@@ -99,7 +97,7 @@ export function useEditor() {
     const top = _top/* + 20 + 53*/
     const left = _left/* + 20 + 350*/
     const right = _right - width + getDeviation()
-    const bottom = clientHeight - top - height - 40 - 53
+    const bottom = clientHeight - top - height - 8 - 53
     return {left, right, top, bottom, width, height}
   }
 

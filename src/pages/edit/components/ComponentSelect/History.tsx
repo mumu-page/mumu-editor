@@ -5,11 +5,11 @@ import {history, HistoryItem} from "@/utils/history";
 import {PageConfig} from "@/store/edit/state";
 
 function History() {
-  const [data, setData] = useState(history.getReverseStack())
+  const [data, setData] = useState(history.getStack())
 
   useEffect(() => {
     history.onUpdate('setData', (h) => {
-      setData(h.getReverseStack())
+      setData(h.getStack())
     })
     return () => {
       history.offUpdate('setData')
