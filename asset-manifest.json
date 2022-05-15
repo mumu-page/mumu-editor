@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/mumu-editor/static/css/main.5aa1a4a4.css",
-    "main.js": "/mumu-editor/static/js/main.704d7de1.js",
+    "main.css": "/mumu-editor/static/css/main.7753ef1e.css",
+    "main.js": "/mumu-editor/static/js/main.c57717ac.js",
     "static/js/787.5ac8ce23.chunk.js": "/mumu-editor/static/js/787.5ac8ce23.chunk.js",
     "antd.css": "/mumu-editor/static/css/antd.e2ab0206.css",
     "antd.js": "/mumu-editor/static/js/antd.7b721e52.js",
@@ -12,8 +12,8 @@
     "redux.js": "/mumu-editor/static/js/redux.e935970f.js",
     "static/media/logo2.svg": "/mumu-editor/static/media/logo2.48d4d68ab1b32b724ac45bbceff44d6e.svg",
     "index.html": "/mumu-editor/index.html",
-    "main.5aa1a4a4.css.map": "/mumu-editor/static/css/main.5aa1a4a4.css.map",
-    "main.704d7de1.js.map": "/mumu-editor/static/js/main.704d7de1.js.map",
+    "main.7753ef1e.css.map": "/mumu-editor/static/css/main.7753ef1e.css.map",
+    "main.c57717ac.js.map": "/mumu-editor/static/js/main.c57717ac.js.map",
     "787.5ac8ce23.chunk.js.map": "/mumu-editor/static/js/787.5ac8ce23.chunk.js.map",
     "antd.e2ab0206.css.map": "/mumu-editor/static/css/antd.e2ab0206.css.map",
     "antd.7b721e52.js.map": "/mumu-editor/static/js/antd.7b721e52.js.map",
@@ -31,7 +31,7 @@
     "static/js/base.16ca9ae9.js",
     "static/js/immer.99d4ae07.js",
     "static/js/redux.e935970f.js",
-    "static/css/main.5aa1a4a4.css",
-    "static/js/main.704d7de1.js"
+    "static/css/main.7753ef1e.css",
+    "static/js/main.c57717ac.js"
   ]
 }
