@@ -1,12 +1,12 @@
 import {mergeConfig} from "@/utils/utils";
 import {PayloadAction} from "@reduxjs/toolkit";
-import {EditState} from "../state";
+import {CommonComponents, EditState, ReleaseStatus} from "../state";
 
 interface ReturnConfigPayload {
   targetConfig: any
   pageData?: any
-  releaseStatus?: any
-  commonComponents?: any
+  releaseStatus?: ReleaseStatus
+  commonComponents?: CommonComponents[]
 }
 
 /**
@@ -50,7 +50,7 @@ export function returnConfig(state: EditState, action: PayloadAction<ReturnConfi
     ...state.uiConfig,
     pageData: pageData || state.uiConfig.pageData,  // 设置页面信息
     releaseStatus: releaseStatus || state.uiConfig.releaseStatus,  // 设置页面发布状态
-    commonComponents: commonComponents || state.uiConfig.commonComponents,  // 设置远程组件列表
+    commonComponents: commonComponents || [],  // 设置远程组件列表
   }
 
   // 设置当前选择组件

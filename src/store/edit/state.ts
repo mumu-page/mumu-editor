@@ -47,8 +47,13 @@ export interface ReleaseStatus {
   master: [number, number, number]
 }
 
+export interface CommonComponents {
+  groupName?: string // 远程组件分组名称
+  components?: RemoteComponent[] // 远程组件列表
+}
+
 export interface UIConfig {
-  commonComponents: RemoteComponent[] // 远程组件列表
+  commonComponents: CommonComponents[]
   showEdit: boolean
   releaseStatus: ReleaseStatus
   showRelease: boolean

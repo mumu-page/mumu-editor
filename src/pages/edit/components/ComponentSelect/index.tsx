@@ -4,7 +4,7 @@ import IconFont from "@/components/IconFont";
 import style from './index.module.less'
 import classNames from 'classnames';
 import Title from '@/components/Title';
-import {RootStore, useEditState} from '@/store';
+import { useEditState} from '@/store';
 import Collapse from '@/components/Collapse';
 import {uniqueId} from "lodash";
 import {clone} from '@/utils/utils';
@@ -111,14 +111,16 @@ function ComponentSelect() {
           {current === '组件' && <Collapse options={[
             {
               key: '1',
-              title: '模板组件',
+              title: '当前模板组件',
               node: renderComponents(editState.pageConfig.components)
             },
-            {
-              key: '2',
-              title: '系统组件',
-              node: renderComponents(editState.uiConfig.commonComponents)
-            }
+            ...editState.uiConfig.commonComponents.map(item => {
+              return {
+                key: item.groupName || '',
+                title: item.groupName || '',
+                node: renderComponents(item.components || [])
+              }
+            })
           ]}/>}
           {current === '历史记录' && <History/>}
         </div>

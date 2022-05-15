@@ -6,8 +6,6 @@ import {store, actions} from './store'
 import {returnConfig} from './store/edit';
 import {RETURN_CONFIG, SET_IFRAME_COMPONENTS} from "@/constants";
 import {postMsgToChild} from "@/utils/utils";
-import {history} from "@/utils/history";
-import dayjs from "dayjs";
 
 function App() {
   const element = useRoutes(routes)
@@ -34,7 +32,8 @@ function App() {
       postMsgToChild({
         type: SET_IFRAME_COMPONENTS,
         data: {
-          components: state.pageConfig.userSelectComponents
+          components: state.pageConfig.userSelectComponents,
+          projectName: state.pageConfig.config.projectName
         }
       })
     })

@@ -2,7 +2,6 @@ import {PayloadAction} from "@reduxjs/toolkit";
 import {EditState} from "../state";
 import {returnConfig} from "./returnConfig";
 import component from "./component";
-import {setCurrentComponent} from "@/store/edit";
 import {handleCurrentComponent} from "@/store/edit/reducers/utils";
 
 function reset(state: EditState) {
@@ -27,10 +26,11 @@ function onRemoteComponentLoad(state: EditState, action: PayloadAction<any>) {
 function onLoad(state: EditState, action: PayloadAction<any>) {
   state.containerElementId = `#${action.payload.containerElementId}`
   // 判断父页面是否已经拿到数据
-  if(state.pageConfig.userSelectComponents.length) return
-  if(state.pageConfig.components.length) return
+  if(state.pageConfig.userSelectComponents.length || state.pageConfig.components.length) return
   state.pageConfig.userSelectComponents = action.payload.components
   state.pageConfig.components = action.payload.components
+  state.currentIndex = 0
+  handleCurrentComponent(state, 0)
 }
 
 const reducers = {

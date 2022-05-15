@@ -16,13 +16,9 @@ import ComponentSelect from './components/ComponentSelect';
 import {useStore} from 'react-redux';
 import {RootStore, useEditState} from '@/store';
 import {useEditor} from './hooks';
-import {clone, postMsgToChild} from '@/utils/utils';
 import {copyComponent, deleteComponent, reset, returnConfig, setCurrentComponent, sortComponent} from '@/store/edit';
 import FormConfig from './components/FormConfig';
 import {history} from '@/utils/history';
-import {
-  SET_CONFIG,
-} from '@/constants';
 import IconFont from '@/components/IconFont';
 
 function Edit() {
@@ -46,11 +42,9 @@ function Edit() {
   }
   const rollback = () => {
     history.undo()
-    postMsgToChild({type: SET_CONFIG, data: clone(history.currentValue || '{}')})
   }
   const next = () => {
     history.redo()
-    postMsgToChild({type: SET_CONFIG, data: clone(history.currentValue || '{}')})
   }
   const saveConfig = () => {
     project.save({
@@ -121,8 +115,13 @@ function Edit() {
       dispatch(returnConfig({
         targetConfig,
         pageData: result[0],
-        releaseStatus: result[0].releaseInfo,
-        commonComponents: componentRes?.[0]?.config,
+        // releaseStatus: [], // result[0].releaseInfo,
+        commonComponents: componentRes?.map((item: { description: any; config: any; }) => {
+          return {
+            groupName: item?.description,
+            components: item?.config
+          }
+        })
       }));
     });
   }, [])
@@ -244,4 +243,4 @@ function Edit() {
   )
 }
 
-export default (Edit)
+export default memo(Edit)

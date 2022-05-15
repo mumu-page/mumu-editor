@@ -19,13 +19,13 @@ function addComponent(state: EditState, action: PayloadAction<any>) {
       schema: {},
       name: REMOTE_COMPONENT_LOADER_NAME,
       id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uniqueId()}`,
-      props: data.data,
+      props: data.props,
       config: data
     }
   } else {
     newComponent = {
       name: data.name,
-      props: data.data,
+      props: data.props,
       id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uniqueId()}`,
       schema: {},
     }
