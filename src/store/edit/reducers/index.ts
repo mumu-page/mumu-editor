@@ -3,7 +3,7 @@ import { EditState } from "../state";
 import { returnConfig } from "./returnConfig";
 import component from "./component";
 import { handleCurrentComponent } from "@/store/edit/reducers/utils";
-import { ON_ADD_ROW } from "@/constants";
+import { ON_GRID_ADD_ROW } from "@/constants";
 
 function reset(state: EditState) {
   state.pageConfig.userSelectComponents = []
@@ -34,7 +34,7 @@ function onLoad(state: EditState, action: PayloadAction<any>) {
 
 function onEvent(state: EditState, action: PayloadAction<any>) {
   const { id, type, data } = action.payload
-  if (type === ON_ADD_ROW) {
+  if (type === ON_GRID_ADD_ROW) {
     if (!(typeof state.currentIndex === 'number' && state.currentIndex >= 0)) return
     const _rowCount = state.pageConfig.userSelectComponents[state.currentIndex].props.rowCount
     if (typeof _rowCount !== 'number') return

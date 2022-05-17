@@ -29,6 +29,10 @@ export const GLOBAL_COMPONENT_TYPE_NAME = 'global-component'
 /** 组件编辑事件，编辑组件触发最终会到达父页面，目的是响应组件事件并修改组件属性(Props) */
 export const ON_EVENT = 'onEvent'
 /** 网格布局组件的添加行事件 */
-export const ON_ADD_ROW = 'onAddRow'
+export const ON_GRID_ADD_ROW = 'onGridAddRow'
+/** 网格布局组件的选中行事件 */
+export const ON_GRID_SELECT_ITEM = 'onGridSelectItem'
+/** 网格布局组件的拖放鼠标松开事件 */
+export const ON_GRID_DROP = 'onGridDrop'
 /** 设置选中组件 */
 export const SET_CURRENTCOMPONENT = 'setCurrentComponent'

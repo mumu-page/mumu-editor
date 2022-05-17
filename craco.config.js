@@ -1,7 +1,7 @@
 const path = require('path')
 const CracoLessPlugin = require('craco-less')
-const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
-const {BannerPlugin} = require('webpack')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { BannerPlugin } = require('webpack')
 const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
 
 const lessModuleRegex = /\.module\.less$/;
@@ -37,41 +37,41 @@ module.exports = {
           {
             module: 'react',
             entry:
-              'https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js',
+              'https://unpkg.com/react@18/umd/react.production.min.js',
             global: 'React',
           },
           {
             module: 'react-dom',
             entry:
-              'https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js',
+              'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
             global: 'ReactDOM',
           },
           {
             module: 'lodash',
             entry:
-              'https://cdn.jsdelivr.net/npm/lodash@4/lodash.min.js',
+              'https://unpkg.com/lodash@4/lodash.min.js',
             global: '_',
           },
           {
             module: 'moment',
-            entry: 'https://cdn.jsdelivr.net/npm/moment@2/moment.min.js',
+            entry: 'https://unpkg.com/moment@2/moment.js',
             global: 'moment',
           },
           {
             module: 'immer',
             entry:
-              'https://cdn.jsdelivr.net/npm/immer@9.0.1/dist/immer.umd.production.min.js',
+              'https://unpkg.com/immer@9.0.1/dist/immer.umd.production.min.js',
             global: 'immer',
           },
           {
             module: 'antd',
-            entry: 'https://cdn.jsdelivr.net/npm/antd@4/dist/antd.min.js',
+            entry: 'https://unpkg.com/antd@4/dist/antd.min.js',
             global: 'antd',
           },
           {
             module: '@ant-design/icons',
             entry:
-              'https://cdn.jsdelivr.net/npm/@ant-design/icons@4/dist/index.umd.js',
+              'https://unpkg.com/@ant-design/icons@4/dist/index.umd.js',
             global: 'icons',
           },
         ]
