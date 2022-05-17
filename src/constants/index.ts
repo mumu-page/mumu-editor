@@ -26,3 +26,9 @@ export const COMPONENT_ELEMENT_ITEM_ID_PREFIX = 'mm-render-id-_component_'
 export const REMOTE_COMPONENT_LOADER_NAME = 'mm-remote-component-loader'
 /** 名称是这个的就是系统组件 */
 export const GLOBAL_COMPONENT_TYPE_NAME = 'global-component'
+/** 组件编辑事件，编辑组件触发最终会到达父页面，目的是响应组件事件并修改组件属性(Props) */
+export const ON_EVENT = 'onEvent'
+/** 网格布局组件的添加行事件 */
+export const ON_ADD_ROW = 'onAddRow'
+/** 设置选中组件 */
+export const SET_CURRENTCOMPONENT = 'setCurrentComponent'

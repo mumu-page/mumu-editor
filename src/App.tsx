@@ -12,9 +12,7 @@ function App() {
 
   const onMessage = useCallback((e: MessageEvent) => {
     // 不接受消息源来自于当前窗口的消息
-    if (e.source === window || e.data === 'loaded') {
-      return
-    }
+    if (e.source === window || e.data === 'loaded') return
     if (e.data.type === RETURN_CONFIG) {
       return store.dispatch(returnConfig({
         targetConfig: e.data.data
@@ -33,7 +31,7 @@ function App() {
         type: SET_IFRAME_COMPONENTS,
         data: {
           components: state.pageConfig.userSelectComponents,
-          projectName: state.pageConfig.config.projectName
+          projectName: state.pageConfig.page.projectName
         }
       })
     })

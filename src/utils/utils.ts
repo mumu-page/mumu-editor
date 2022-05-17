@@ -18,8 +18,8 @@ export const mergeConfig = (origin: PageConfig, target: PageConfig) => {
   return {
     ...(origin || {}),
     ...(target || {}),
-    userSelectComponents: target.userSelectComponents.map((co: { name: any; props: any; }) => {
-      const originCo = origin.components.filter((oco: { name: any; }) => oco.name === co.name)[0];
+    userSelectComponents: target.userSelectComponents.map((co) => {
+      const originCo = origin.components.filter((oco) => oco.name === co.name)[0];
       if (originCo) {
         return {
           ...co,
@@ -46,13 +46,13 @@ export const mergeConfig = (origin: PageConfig, target: PageConfig) => {
       }
       return co;
     }),
-    page: {
+    config: {
       ...target.page,
       props: {
         ...(origin.page && origin.page.props || {}),
         ...(target.page && target.page.props || {}),
       },
-      schema: (origin.page && origin.page.schema) || (target.page && target.page.schema) || {},
+      schema: (origin.page && origin.page) || (target.page && target.page) || {},
     }
   };
 }

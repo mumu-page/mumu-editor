@@ -1,6 +1,6 @@
-import React, {memo, useEffect} from 'react'
-import {Header, Shape, Tool} from '@/components'
-import {message, Slider, Spin, Typography} from "antd";
+import React, { memo, useEffect } from 'react'
+import { Header } from '@/components'
+import { message, Slider, Spin, Typography } from "antd";
 import {
   UndoOutlined,
   RedoOutlined,
@@ -9,31 +9,22 @@ import {
   DashboardOutlined,
   ClearOutlined
 } from "@ant-design/icons";
-import {component, project} from "@/api";
-import {Link, useSearchParams} from "react-router-dom";
-import style from './index.module.less'
+import { component, project } from "@/api";
+import { Link, useSearchParams } from "react-router-dom";
 import ComponentSelect from './components/ComponentSelect';
-import {useStore} from 'react-redux';
-import {RootStore, useEditState} from '@/store';
-import {useEditor} from './hooks';
-import {copyComponent, deleteComponent, reset, returnConfig, setCurrentComponent, sortComponent} from '@/store/edit';
+import { useStore } from 'react-redux';
+import { RootStore, useEditState } from '@/store';
+import { useEditor } from './hooks';
+import { reset, returnConfig, setCurrentComponent } from '@/store/edit';
 import FormConfig from './components/FormConfig';
-import {history} from '@/utils/history';
+import { history } from '@/utils/history';
 import IconFont from '@/components/IconFont';
+import style from './index.module.less'
 
 function Edit() {
-  const {dispatch} = useStore<RootStore>();
+  const { dispatch } = useStore<RootStore>();
   const editState = useEditState()
-  const currentComponent = editState.editConfig.currentComponent
-  const {
-    editorState,
-    eventInit,
-    setFrameLoaded,
-    setUrl,
-    setSpinning,
-    computedShapeAndToolStyle,
-    staticData
-  } = useEditor();
+  const { editorState, setFrameLoaded, setUrl, setSpinning } = useEditor();
   const [params] = useSearchParams()
 
   const getPageSchema = () => {
@@ -61,7 +52,7 @@ function Edit() {
     window.open(`/mumu-editor/build/index.html?isPreview=true&pageId=${params.get('id')}&env=development`)
   }
   const setRelease = () => {
-    project.release({id: params.get('id')}).then(res => {
+    project.release({ id: params.get('id') }).then(res => {
       if (res?.success) {
         message.success('发布成功').then()
       } else {
@@ -76,38 +67,13 @@ function Edit() {
       ...editState.pageConfig,
       actionType: '初始化',
     })
-    dispatch(setCurrentComponent({currentIndex: staticData.current.current}))
-    eventInit();
+    dispatch(setCurrentComponent({ currentIndex: 0 }))
     setSpinning(false)
-  }
-
-  const onSortComponent = (type: 'up' | 'down') => {
-    const op = type === 'up' ? -1 : 1
-    const index = staticData.current.current
-    const next = index + op < 0 ? 0 : index + op;
-    dispatch(sortComponent({index, next}))
-    staticData.current.current = next
-    dispatch(setCurrentComponent({currentIndex: staticData.current.current}))
-    computedShapeAndToolStyle()
-  }
-
-  const onCopyComponent = () => {
-    dispatch(copyComponent({index: staticData.current.current}))
-    staticData.current.current = staticData.current.current + 1
-    dispatch(setCurrentComponent({currentIndex: staticData.current.current}))
-    computedShapeAndToolStyle()
-  }
-
-  const onDeleteComponent = () => {
-    dispatch(deleteComponent(staticData.current.current))
-    staticData.current.current = staticData.current.current - 1 < 0 ? 0 : staticData.current.current - 1
-    computedShapeAndToolStyle()
-    dispatch(setCurrentComponent({currentIndex: staticData.current.current}))
   }
 
   useEffect(() => {
     Promise.all([
-      project.query({id: params.get('id')}),
+      project.query({ id: params.get('id') }),
       component.query({})
     ]).then(([result, componentRes]) => {
       const targetConfig = result[0].pageConfig;
@@ -129,19 +95,19 @@ function Edit() {
   return (
     <div>
       <Header
-        className={style['edit-menu']}
+        className={style.editMenu}
         pageTitle={<>
-          <div className={style["page-title"]}>
+          <div className={style.pageTitle}>
             <Typography.Title
-              style={{margin: 0}}
+              style={{ margin: 0 }}
               editable={{
                 maxLength: 12,
-                autoSize: {maxRows: 1},
+                autoSize: { maxRows: 1 },
                 onChange: changeProjectName
               }}
               level={5}
               onClick={getPageSchema}>
-              {editState.pageConfig.config.projectName}
+              {editState.pageConfig.page.projectName}
             </Typography.Title>
           </div>
         </>}
@@ -149,64 +115,63 @@ function Edit() {
           {
             key: 'input',
             isBtn: false,
-            style: {marginRight: 110, width: 200},
+            style: { marginRight: 110, width: 200 },
             label: <Slider
               max={1920}
               min={750}
               tipFormatter={value => `${value}px`}
               defaultValue={750}
               marks={{
-                750: <IconFont type='icon-shouji'/>,
-                1300: <IconFont type='icon-iPad'/>,
-                1920: <IconFont type='icon-PCtaishiji'/>,
-              }}/>,
+                750: <IconFont type='icon-shouji' />,
+                1300: <IconFont type='icon-iPad' />,
+                1920: <IconFont type='icon-PCtaishiji' />,
+              }} />,
           },
           {
             key: 'radio',
             children: [
               {
                 key: 'rollback',
-                label: <><UndoOutlined/></>,
+                label: <><UndoOutlined /></>,
                 onClick: rollback
               },
               {
                 key: 'next',
-                label: <><RedoOutlined/></>,
+                label: <><RedoOutlined /></>,
                 onClick: next
               },
               {
                 key: 'saveConfig',
-                label: <><SaveOutlined/></>,
+                label: <><SaveOutlined /></>,
                 onClick: saveConfig
               },
               {
                 key: 'clearConfig',
-                label: <><ClearOutlined/></>,
+                label: <><ClearOutlined /></>,
                 onClick: clearConfig
               },
             ]
           },
           {
             key: 'setPreview',
-            label: <><EyeOutlined/></>,
+            label: <><EyeOutlined /></>,
             onClick: setPreview,
           },
           {
             key: 'setRelease',
-            label: <><IconFont type='icon-publish1'/></>,
+            label: <><IconFont type='icon-publish1' /></>,
             onClick: setRelease,
             type: 'primary'
           },
           {
             key: 'dashboard',
-            label: <Link to="/dashboard"><DashboardOutlined/></Link>,
+            label: <Link to="/dashboard"><DashboardOutlined /></Link>,
           }
         ]}
       />
-
-      <div className={style['edit-container']}>
+      <div className={style.editContainer}>
         <div className={style["component-container"]}>
-          <ComponentSelect/>
+          <ComponentSelect />
         </div>
         <div className={style["editor-view"]}>
           <div className={style["main-container"]}>
@@ -217,26 +182,16 @@ function Edit() {
                   cross-origin="true"
                   onLoad={onIframeLoaded}
                   id="frame"
+                  className={style.preView}
                   frameBorder={0}
-                  className={style["pre-view"]}
                   src={editorState.url}
                 />
               </Spin>
-              <Shape tool={
-                <Tool
-                  isTop={editorState.isTop}
-                  isBottom={editorState.isBottom}
-                  height={editorState.toolStyle.height}
-                  onMove={(type) => onSortComponent(type)}
-                  onCopy={() => onCopyComponent()}
-                  onDel={() => onDeleteComponent()}
-                />
-              }/>
             </div>
           </div>
         </div>
         <div className={style["form-container-main"]}>
-          <FormConfig currentComponent={currentComponent}/>
+          <FormConfig />
         </div>
       </div>
     </div>

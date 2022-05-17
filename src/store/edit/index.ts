@@ -19,7 +19,8 @@ export const {
   copyComponent,
   sortComponent,
   onLoad,
-  onRemoteComponentLoad
+  onRemoteComponentLoad,
+  onEvent
 } = editSlice.actions
 
 export default editSlice.reducer

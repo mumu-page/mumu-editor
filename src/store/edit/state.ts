@@ -5,6 +5,7 @@ export interface RemoteComponent {
   js: string
   css: string
   schema: Record<string, any>
+  props: Record<string, any>
   name: string
   version: string
 }
@@ -19,19 +20,18 @@ export interface Component {
 
 export interface PageConfig {
   remoteComponents?: RemoteComponent[];
-  userSelectComponents: any[]
+  userSelectComponents: Component[]
   components: Component[]
-  config: Record<string, any>
-  page: any
-}
-
-export interface CurrentComponentSchema {
-  schema: Schema
+  page: {
+    projectName: string
+    schema: Schema
+    props:Record<string, any>
+  }
 }
 
 export interface CurrentComponent {
   component?: Component;
-  currentComponentSchema?: CurrentComponentSchema;
+  currentComponentSchema?: Schema;
   type?: string;
 }
 
@@ -67,7 +67,6 @@ export interface EditState {
   editConfig: EditConfig
   uiConfig: UIConfig
   defaultConfig: any
-  containerElementId: string
 }
 
 export const initialEditState: EditState = {
@@ -76,8 +75,11 @@ export const initialEditState: EditState = {
     remoteComponents: [],
     userSelectComponents: [],
     components: [],
-    config: {}, // 模板信息
-    page: {}, // 页面样式&全局配置
+    page: {
+      projectName: '模板页面',
+      schema: {},
+      props: {},
+    }, // 页面样式&全局配置
   },
 
   editConfig: {
@@ -86,7 +88,7 @@ export const initialEditState: EditState = {
     currentComponent: {
       component: undefined,
       type: undefined,
-      currentComponentSchema: { schema: {} }
+      currentComponentSchema: {}
     },
   },
 
@@ -104,6 +106,5 @@ export const initialEditState: EditState = {
   },
 
   defaultConfig: null,
-  containerElementId: '',
 }
 

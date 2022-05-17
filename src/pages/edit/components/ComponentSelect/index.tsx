@@ -1,7 +1,6 @@
 import {Image, Tooltip} from 'antd'
-import React, {useState} from 'react'
+import React, {memo, useState} from 'react'
 import IconFont from "@/components/IconFont";
-import style from './index.module.less'
 import classNames from 'classnames';
 import Title from '@/components/Title';
 import { useEditState} from '@/store';
@@ -9,6 +8,7 @@ import Collapse from '@/components/Collapse';
 import {uniqueId} from "lodash";
 import {clone} from '@/utils/utils';
 import History from './History';
+import style from './index.module.less'
 
 interface LeftMenu {
   key: string;
@@ -24,6 +24,7 @@ function ComponentSelect() {
   const [isAffix, setAffix] = useState(false)
   const [hide, setHide] = useState(false)
   const editState = useEditState()
+
   const onDragStart = (e: React.DragEvent<HTMLDivElement>, item?: any) => {
     if (item) {
       e.dataTransfer.setData("text/plain", JSON.stringify(item))
@@ -129,4 +130,4 @@ function ComponentSelect() {
   )
 }
 
-export default ComponentSelect
+export default memo(ComponentSelect)
