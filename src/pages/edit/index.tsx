@@ -12,8 +12,7 @@ import {
 import { component, project } from "@/api";
 import { Link, useSearchParams } from "react-router-dom";
 import ComponentSelect from './components/ComponentSelect';
-import { useStore } from 'react-redux';
-import { RootStore, useEditState } from '@/store';
+import { useDiapatch, useEditState } from '@/store';
 import { useEditor } from './hooks';
 import { reset, returnConfig, setCurrentComponent } from '@/store/edit';
 import FormConfig from './components/FormConfig';
@@ -22,7 +21,7 @@ import IconFont from '@/components/IconFont';
 import style from './index.module.less'
 
 function Edit() {
-  const { dispatch } = useStore<RootStore>();
+  const dispatch = useDiapatch();
   const editState = useEditState()
   const { editorState, setFrameLoaded, setUrl, setSpinning } = useEditor();
   const [params] = useSearchParams()
@@ -76,18 +75,19 @@ function Edit() {
       project.query({ id: params.get('id') }),
       component.query({})
     ]).then(([result, componentRes]) => {
-      const targetConfig = result[0].pageConfig;
+      const targetConfig = result[0].pageConfig || {};
       setUrl(`/mumu-editor/build/index.html?isEdit=true`)
       dispatch(returnConfig({
-        targetConfig,
+        targetConfig: {
+          ...targetConfig,
+          page: targetConfig.config // 兼容
+        },
         pageData: result[0],
-        // releaseStatus: [], // result[0].releaseInfo,
-        commonComponents: componentRes?.map((item: { description: any; config: any; }) => {
-          return {
-            groupName: item?.description,
-            components: item?.config
-          }
-        })
+        // releaseStatus: {}, // result[0].releaseInfo,
+        commonComponents: componentRes?.map((item: { description: any; config: any; }) => ({
+          groupName: item?.description,
+          components: item?.config
+        }))
       }));
     });
   }, [])
@@ -171,7 +171,9 @@ function Edit() {
       />
       <div className={style.editContainer}>
         <div className={style["component-container"]}>
-          <ComponentSelect />
+          <ComponentSelect
+            components={editState.pageConfig.components}
+            commonComponents={editState.uiConfig.commonComponents} />
         </div>
         <div className={style["editor-view"]}>
           <div className={style["main-container"]}>
@@ -191,7 +193,7 @@ function Edit() {
           </div>
         </div>
         <div className={style["form-container-main"]}>
-          <FormConfig />
+          <FormConfig currentComponent={editState.editConfig.currentComponent} />
         </div>
       </div>
     </div>

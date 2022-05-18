@@ -1,25 +1,30 @@
-import React, {memo, useEffect, useState} from 'react'
-import FormRender, {useForm} from 'form-render';
-import {useStore} from 'react-redux';
-import {RootStore, useEditState} from '@/store';
-import {changeProps} from '@/store/edit';
+import React, { memo, useEffect, useState } from 'react'
+import FormRender, { useForm } from 'form-render';
+import { useStore } from 'react-redux';
+import { RootStore, useEditState } from '@/store';
+import { changeProps } from '@/store/edit';
 import Title from '@/components/Title';
 import Collapse from '@/components/Collapse';
 import classNames from "classnames";
-import {SettingOutlined} from "@ant-design/icons";
-import {Button, Empty} from "antd";
+import { SettingOutlined } from "@ant-design/icons";
+import { Button, Empty } from "antd";
+import { CurrentComponent } from '@/store/edit/state';
 import style from "./index.module.less";
 
-function FormConfig() {
+interface FormConfigProps {
+  currentComponent: CurrentComponent
+}
+
+function FormConfig(props: FormConfigProps) {
+  const { currentComponent } = props
   const form = useForm();
   const [isAffix, setAffix] = useState(false)
   const [hide, setHide] = useState(false)
-  const {dispatch} = useStore<RootStore>();
-  const editState = useEditState()
-  const {component, currentComponentSchema, type} = editState.editConfig.currentComponent;
-  
+  const { dispatch } = useStore<RootStore>();
+  const { component, currentComponentSchema, type } = currentComponent;
+
   const onValuesChange = (_changedValues: any, formData: any) => {
-    dispatch(changeProps({...formData, type}))
+    dispatch(changeProps({ ...formData, type }))
   }
 
   const onMount = () => {
@@ -32,14 +37,14 @@ function FormConfig() {
 
   return (
     <>
-      <div className={classNames({[style["form-menu"]]: true, [style.hide]: hide, [style.affix]: isAffix})}>
+      <div className={classNames({ [style["form-menu"]]: true, [style.hide]: hide, [style.affix]: isAffix })}>
         <Title
           title={'属性配置'}
           isAffix={isAffix}
           onClose={() => setHide(true)}
           onFixed={() => setAffix(!isAffix)}
         />
-        {!currentComponentSchema && <div className={style.empty}><Empty/></div>}
+        {!currentComponentSchema && <div className={style.empty}><Empty /></div>}
         <Collapse options={[
           {
             key: '1',
@@ -54,13 +59,13 @@ function FormConfig() {
               onValuesChange={onValuesChange}
             />
           },
-        ]}/>
+        ]} />
       </div>
       {hide && <Button
         size={'large'}
         onClick={() => setHide(false)}
         className={style['setting-icon']}
-        icon={<SettingOutlined/>}/>}
+        icon={<SettingOutlined />} />}
     </>
   )
 }

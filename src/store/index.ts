@@ -1,11 +1,9 @@
-import {configureStore, createListenerMiddleware} from '@reduxjs/toolkit';
-import userReducer, {userSlice} from './user/index';
-import editReducer, {editSlice} from './edit/index';
-import {EditState} from './edit/state';
-import {UserState} from './user/state';
-import {useStore} from 'react-redux';
-import {postMsgToChild} from "@/utils/utils";
-import {SET_IFRAME_COMPONENTS} from "@/constants";
+import { configureStore, createListenerMiddleware } from '@reduxjs/toolkit';
+import userReducer, { userSlice } from './user/index';
+import editReducer, { editSlice } from './edit/index';
+import { EditState } from './edit/state';
+import { UserState } from './user/state';
+import { useSelector, useStore } from 'react-redux';
 
 export interface RootStore {
   user: UserState,
@@ -19,22 +17,22 @@ export const store = configureStore({
   },
 });
 
-export const useStoreMM = () => {
-  const {getState, dispatch} = useStore<RootStore>()
-  const store = getState()
-  return {store, dispatch}
+export const useDiapatch = () => {
+  const { dispatch } = useStore<RootStore>()
+  return dispatch
+}
+
+export const useRootState = () => {
+  const { getState } = useStore<RootStore>()
+  return getState()
 }
 
 export const useEditState = () => {
-  const {getState} = useStore<RootStore>()
-  const store = getState()
-  return store.edit
+  return useSelector((store: RootStore) => store.edit)
 }
 
 export const useUserState = () => {
-  const {getState} = useStore<RootStore>()
-  const store = getState()
-  return store.user
+  return useSelector((store: RootStore) => store.user)
 }
 
 export const actions = {

@@ -3,7 +3,7 @@ import { EditState } from "../state";
 import { returnConfig } from "./returnConfig";
 import component from "./component";
 import { handleCurrentComponent } from "@/store/edit/reducers/utils";
-import { ON_GRID_ADD_ROW } from "@/constants";
+import { ON_GRID_ADD_ROW, ON_GRID_DROP } from "@/constants";
 
 function reset(state: EditState) {
   state.pageConfig.userSelectComponents = []
@@ -43,6 +43,12 @@ function onEvent(state: EditState, action: PayloadAction<any>) {
     if (state.editConfig.currentComponent.component?.props) {
       state.editConfig.currentComponent.component.props.rowCount = _nextRowCount
     }
+  }
+  if (type === ON_GRID_DROP) {
+    console.log({id, type, data});
+    const findComponent = state.pageConfig.userSelectComponents.filter(item => item.id === id)?.[0]
+    console.log('findComponent', findComponent);
+    // findComponent.children
   }
 }
 

@@ -8,8 +8,7 @@
 
 .select-menu {
   height: 100%;
-  box-sizing: border-box;
-  background: #fff;
+  background: var(--mm-white-lighter);
 
   .title {
     padding: 14px 7px;
@@ -59,12 +58,12 @@
     margin-bottom: 20px;
 
     &.active {
-      color: #fff;
-      background: #1890ff;
+      color: var(--mm-white-lighter);
+      background: var(--mm-brand-color);
     }
 
     &.disabled {
-      color: #999;
+      color: var(--mm-white-gray-dark);
     }
   }
 
@@ -119,8 +118,7 @@
 
     .list-view {
       width: 300px;
-      overflow-y: auto;
-      overflow-x: hidden;
+      border-right: 1px solid var(--mm-panel-border-color);
       box-shadow: 3px 0 16px rgba(0, 0, 0, .06);
 
       &.affix {
@@ -140,8 +138,20 @@
         grid-template-columns: repeat(3, calc((300px - 6px - 4px) / 3));
         grid-row-gap: 3px;
         grid-column-gap: 3px;
-        background-color: var(--mm-panel-border-color);
+        background-color: var(--mm-resize-handle-hover-bg-color);
         padding: 2px;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        &::-webkit-scrollbar {
+          width: 5px;
+          height: 5px;
+          background-color: #f0f2f5;
+        }
+  
+        &::-webkit-scrollbar-thumb {
+          background-color: rgba(0, 0, 0, .3);
+        }
 
         .mumu-item {
           height: 88px;
@@ -156,9 +166,11 @@
           align-items: center;
           flex-direction: column;
           cursor: grab;
+
           &.flag {
             cursor: auto;
           }
+
           &:hover {
             color: var(--mm-resource-item-hover-color);
             box-shadow: 0 0 10px rgb(0 0 0 / 10%);
@@ -216,6 +228,7 @@
 .history {
   height: calc(100% - 48px);
   overflow-y: auto;
+
   &::-webkit-scrollbar {
     width: 5px;
     height: 5px;
@@ -224,8 +237,8 @@
 
   &::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, .3);
-    /*border-radius: 5px;*/
   }
+
   :global {
     .ant-list-item-action {
       li:last-child {
@@ -236,8 +249,9 @@
 
   .item {
     cursor: pointer;
+
     &:hover {
-      background-color: rgba(0,0,0,.1);
+      background-color: rgba(0, 0, 0, .1);
     }
   }
 }

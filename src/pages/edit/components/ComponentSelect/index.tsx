@@ -1,14 +1,15 @@
-import {Image, Tooltip} from 'antd'
-import React, {memo, useState} from 'react'
+import { Image, Tooltip } from 'antd'
+import React, { memo, useState } from 'react'
 import IconFont from "@/components/IconFont";
 import classNames from 'classnames';
 import Title from '@/components/Title';
-import { useEditState} from '@/store';
+import { useEditState } from '@/store';
 import Collapse from '@/components/Collapse';
-import {uniqueId} from "lodash";
-import {clone} from '@/utils/utils';
+import { uniqueId } from "lodash";
+import { clone } from '@/utils/utils';
 import History from './History';
 import style from './index.module.less'
+import { CommonComponents, Component, RemoteComponent } from '@/store/edit/state';
 
 interface LeftMenu {
   key: string;
@@ -19,11 +20,16 @@ interface LeftMenu {
 
 type Current = '组件' | '历史记录'
 
-function ComponentSelect() {
+interface ComponentSelectProps {
+  components: Component[]
+  commonComponents: CommonComponents[]
+}
+
+function ComponentSelect(props: ComponentSelectProps) {
+  const { components, commonComponents } = props
   const [current, setCurrent] = useState<Current>('组件')
   const [isAffix, setAffix] = useState(false)
   const [hide, setHide] = useState(false)
-  const editState = useEditState()
 
   const onDragStart = (e: React.DragEvent<HTMLDivElement>, item?: any) => {
     if (item) {
@@ -48,12 +54,12 @@ function ComponentSelect() {
     },
   ]
 
-  const renderComponents = (components: any[]) => {
+  const renderComponents = (components: Component[] | RemoteComponent[]) => {
     const _components = clone(components) as any[]
     if (_components.length % 3 !== 0) {
       const len = _components.length % 3
       for (let index = 0; index < (3 - len); index++) {
-        _components.push({placeholder: true, key: uniqueId()})
+        _components.push({ placeholder: true, key: uniqueId() })
       }
     }
     return <div className={style["components"]}>
@@ -71,7 +77,7 @@ function ComponentSelect() {
           <Image
             rootClassName={classNames(style["preview-item"], 'mumu-image')}
             src={item.snapshot}
-            preview={{mask: <div className="mumu-title">预览</div>}}
+            preview={{ mask: <div className="mumu-title">预览</div> }}
           />
           <div className={style['item-name']}>{item.description}</div>
         </div>
@@ -96,13 +102,13 @@ function ComponentSelect() {
                   [style['active']]: current === item.title
                 })}>
                 <Tooltip placement="right" title={item.title}>
-                  <IconFont type={item.icon}/>
+                  <IconFont type={item.icon} />
                 </Tooltip>
               </div>
             })
           }
         </div>
-        <div className={classNames({[style["list-view"]]: true, [style.hide]: hide, [style.affix]: isAffix})}>
+        <div className={classNames({ [style["list-view"]]: true, [style.hide]: hide, [style.affix]: isAffix })}>
           <Title
             title={current}
             isAffix={isAffix}
@@ -113,17 +119,17 @@ function ComponentSelect() {
             {
               key: '1',
               title: '当前模板组件',
-              node: renderComponents(editState.pageConfig.components)
+              node: renderComponents(components)
             },
-            ...editState.uiConfig.commonComponents.map(item => {
+            ...commonComponents.map(item => {
               return {
                 key: item.groupName || '',
                 title: item.groupName || '',
                 node: renderComponents(item.components || [])
               }
             })
-          ]}/>}
-          {current === '历史记录' && <History/>}
+          ]} />}
+          {current === '历史记录' && <History />}
         </div>
       </div>
     </div>

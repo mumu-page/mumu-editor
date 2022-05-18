@@ -4,7 +4,7 @@ export interface RemoteComponent {
   config: Record<string, any>
   js: string
   css: string
-  schema: Record<string, any>
+  schema: Schema
   props: Record<string, any>
   name: string
   version: string
@@ -16,6 +16,7 @@ export interface Component {
   props: Record<string, string | number | object>
   schema: Schema
   config?: RemoteComponent
+  children?: Component[]
 }
 
 export interface PageConfig {
@@ -25,7 +26,7 @@ export interface PageConfig {
   page: {
     projectName: string
     schema: Schema
-    props:Record<string, any>
+    props: Record<string, any>
   }
 }
 
