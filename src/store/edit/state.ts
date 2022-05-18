@@ -13,6 +13,8 @@ export interface RemoteComponent {
 export interface Component {
   id: string
   name: string
+  description?: string
+  snapshot?: string
   props: Record<string, string | number | object>
   schema: Schema
   config?: RemoteComponent

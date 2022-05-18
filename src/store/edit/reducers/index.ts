@@ -1,9 +1,10 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { EditState } from "../state";
+import { Component, EditState } from "../state";
 import { returnConfig } from "./returnConfig";
 import component from "./component";
 import { handleCurrentComponent } from "@/store/edit/reducers/utils";
-import { ON_GRID_ADD_ROW, ON_GRID_DROP } from "@/constants";
+import { COMPONENT_ELEMENT_ITEM_ID_PREFIX, ON_GRID_ADD_ROW, ON_GRID_DROP } from "@/constants";
+import { uniqueId } from "lodash";
 
 function reset(state: EditState) {
   state.pageConfig.userSelectComponents = []
@@ -45,10 +46,28 @@ function onEvent(state: EditState, action: PayloadAction<any>) {
     }
   }
   if (type === ON_GRID_DROP) {
-    console.log({id, type, data});
+    console.log({ id, type, data });
+    const { index, dragData } = data
     const findComponent = state.pageConfig.userSelectComponents.filter(item => item.id === id)?.[0]
-    console.log('findComponent', findComponent);
-    // findComponent.children
+    if (!findComponent) return
+    const { rowCount, colCount } = findComponent.props || {}
+    const children: Component[] = Array.isArray(findComponent.children) ? findComponent.children : []
+    if (!children.length) {
+      Array(+rowCount * +colCount).fill(1).forEach(() => {
+        children.push({
+          name: 'grid-placeholder',
+          id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uniqueId()}`,
+          props: {},
+          schema: {},
+        })
+      })
+    }
+    try {
+      children[index] = JSON.parse(dragData)
+      findComponent.children = children
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import { EditState } from "@/store/edit/state";
+import { Component, EditState } from "@/store/edit/state";
 import { REMOTE_COMPONENT_LOADER_NAME } from "@/constants";
 import { Schema } from "form-render";
 
@@ -36,3 +36,4 @@ export function handleCurrentComponent(state: EditState, currentIndex: number) {
     }
   }
 }
+
