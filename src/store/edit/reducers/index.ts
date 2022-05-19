@@ -63,7 +63,9 @@ function onEvent(state: EditState, action: PayloadAction<any>) {
       })
     }
     try {
-      children[index] = JSON.parse(dragData)
+      const _dragData = JSON.parse(dragData)
+      _dragData.id = `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uniqueId()}`
+      children[index] = _dragData
       findComponent.children = children
     } catch (error) {
       console.log(error);
