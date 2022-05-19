@@ -3,7 +3,7 @@ import { Component, EditState } from "../state";
 import { returnConfig } from "./returnConfig";
 import component from "./component";
 import { handleCurrentComponent } from "@/store/edit/reducers/utils";
-import { COMPONENT_ELEMENT_ITEM_ID_PREFIX, ON_GRID_ADD_ROW, ON_GRID_DROP } from "@/constants";
+import { COMPONENT_ELEMENT_ITEM_ID_PREFIX, ON_GRID_ADD_ROW, ON_GRID_DROP, ON_GRID_LAYOUT_CHANGE } from "@/constants";
 import { uniqueId } from "lodash";
 
 function reset(state: EditState) {
@@ -46,7 +46,6 @@ function onEvent(state: EditState, action: PayloadAction<any>) {
     }
   }
   if (type === ON_GRID_DROP) {
-    console.log({ id, type, data });
     const { index, dragData } = data
     const findComponent = state.pageConfig.userSelectComponents.filter(item => item.id === id)?.[0]
     if (!findComponent) return
@@ -70,6 +69,11 @@ function onEvent(state: EditState, action: PayloadAction<any>) {
     } catch (error) {
       console.log(error);
     }
+  }
+  if(type === ON_GRID_LAYOUT_CHANGE) {
+    const { layout } = data
+    if (!(typeof state.currentIndex === 'number' && state.currentIndex >= 0)) return
+    state.pageConfig.userSelectComponents[state.currentIndex].props.layout = layout
   }
 }
 

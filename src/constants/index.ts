@@ -34,5 +34,7 @@ export const ON_GRID_ADD_ROW = 'onGridAddRow'
 export const ON_GRID_SELECT_ITEM = 'onGridSelectItem'
 /** 网格布局组件的拖放鼠标松开事件 */
 export const ON_GRID_DROP = 'onGridDrop'
+/** 网格布局组件的布局改变事件 */
+export const ON_GRID_LAYOUT_CHANGE = 'onLayoutChange'
 /** 设置选中组件 */
 export const SET_CURRENTCOMPONENT = 'setCurrentComponent'
