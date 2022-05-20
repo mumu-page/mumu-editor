@@ -3,7 +3,6 @@ import React, { memo, useState } from 'react'
 import IconFont from "@/components/IconFont";
 import classNames from 'classnames';
 import Title from '@/components/Title';
-import { useEditState } from '@/store';
 import Collapse from '@/components/Collapse';
 import { uniqueId } from "lodash";
 import { clone } from '@/utils/utils';
@@ -115,21 +114,23 @@ function ComponentSelect(props: ComponentSelectProps) {
             onClose={() => setHide(true)}
             onFixed={() => setAffix(!isAffix)}
           />
-          {current === '组件' && <Collapse options={[
-            {
-              key: '1',
-              title: '当前模板组件',
-              node: renderComponents(components)
-            },
-            ...commonComponents.map(item => {
-              return {
-                key: item.groupName || '',
-                title: item.groupName || '',
-                node: renderComponents(item.components || [])
-              }
-            })
-          ]} />}
-          {current === '历史记录' && <History />}
+          <div className={style.scroll}>
+            {current === '组件' && <Collapse options={[
+              {
+                key: '1',
+                title: '当前模板组件',
+                node: renderComponents(components)
+              },
+              ...commonComponents.map(item => {
+                return {
+                  key: item.groupName || '',
+                  title: item.groupName || '',
+                  node: renderComponents(item.components || [])
+                }
+              })
+            ]} />}
+            {current === '历史记录' && <History />}
+          </div>
         </div>
       </div>
     </div>

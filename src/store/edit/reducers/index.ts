@@ -70,10 +70,10 @@ function onEvent(state: EditState, action: PayloadAction<any>) {
       console.log(error);
     }
   }
-  if(type === ON_GRID_LAYOUT_CHANGE) {
-    const { layout } = data
-    if (!(typeof state.currentIndex === 'number' && state.currentIndex >= 0)) return
-    state.pageConfig.userSelectComponents[state.currentIndex].props.layout = layout
+  if (type === ON_GRID_LAYOUT_CHANGE) {
+    const { layout, index } = data
+    if (typeof index !== 'number') return
+    state.pageConfig.userSelectComponents[index].props.layout = layout
   }
 }
 

@@ -13,16 +13,17 @@ interface Option {
 
 interface CollapseProps {
   options: Option[]
+  className?: string
 }
 
 function Collapse(props: CollapseProps) {
-  const { options = [] } = props
+  const { options = [], className = "" } = props
   
   return (
     <Collapse1
       bordered
       defaultActiveKey={['1']}
-      className={style["collapse"]}
+      className={`${style.collapse} ${className}`}
     >
       {
         options.map(item => {

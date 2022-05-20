@@ -1,0 +1,15 @@
+.scroll {
+	max-height: calc(100vh - 48px - 50px);
+	overflow-y: auto;
+	overflow-x: hidden;
+
+	&::-webkit-scrollbar {
+		width: 5px;
+		height: 5px;
+		background-color: #f0f2f5;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: rgba(0, 0, 0, .3);
+	}
+}

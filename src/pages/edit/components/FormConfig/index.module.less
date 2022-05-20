@@ -1,7 +1,10 @@
+@import '@/assets/styles/global.module.less';
+
 .form-menu {
   width: 301px;
   background: #fff;
   box-shadow: 3px 0 16px rgba(0, 0, 0, .06);
+
   &.affix {
     position: absolute;
     right: 0;
@@ -10,35 +13,61 @@
     z-index: 9999;
     background-color: #fff;
   }
+
   &.hide {
     display: none;
   }
+
+  .content {
+    height: 100%;
+    overflow-y: auto;
+  }
+
   .formRender {
-    padding: 12px 20px 12px;
-    :global{
+    padding: 12px 20px 20px;
+
+    :global {
       .fr-field:not(:last-child) {
         padding-bottom: 12px;
         margin-bottom: 12px;
         border-bottom: 1px solid #f0f0f0;
       }
+
+      .fr-card-list .fr-card-item>.fr-field {
+        border-bottom: none;
+      }
+
       .fr-field {
         display: flex;
         justify-content: space-between;
       }
+
       .fr-label-title::after {
         display: none;
       }
+
       .fr-label {
         text-align: left;
       }
+
       .error-message {
         display: none;
       }
+
+      .fr-tooltip-container {
+        left: 40px;
+      }
+
+      .fr-tooltip-triangle {
+        left: 25%;
+      }
     }
+
     &.hide {
       display: none;
     }
   }
+
   .empty {
     padding: 20px 0;
   }

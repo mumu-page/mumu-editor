@@ -1,3 +1,5 @@
+@import '@/assets/styles/global.module.less';
+
 :global {
   .mumu-image {
     .ant-image-mask {
@@ -140,18 +142,6 @@
         grid-column-gap: 3px;
         background-color: var(--mm-resize-handle-hover-bg-color);
         padding: 2px;
-        overflow-y: auto;
-        overflow-x: hidden;
-
-        &::-webkit-scrollbar {
-          width: 5px;
-          height: 5px;
-          background-color: #f0f2f5;
-        }
-  
-        &::-webkit-scrollbar-thumb {
-          background-color: rgba(0, 0, 0, .3);
-        }
 
         .mumu-item {
           height: 88px;

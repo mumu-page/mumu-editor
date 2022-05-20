@@ -30,10 +30,18 @@ function FormConfig(props: FormConfigProps) {
   const onMount = () => {
     form.setValues(component?.props)
   }
-
+  console.log(component?.props);
   useEffect(() => {
+    if(!component?.props) return
     form.setValues(component?.props)
   }, [component?.props])
+
+  const watch = {
+    '#': (val: any) => {
+      console.log('表单的实时数据为：', val);
+      // if (Object.keys(val).length) dispatch(changeProps({ ...val, type }))
+    },
+  };
 
   return (
     <>
@@ -45,21 +53,24 @@ function FormConfig(props: FormConfigProps) {
           onFixed={() => setAffix(!isAffix)}
         />
         {!currentComponentSchema && <div className={style.empty}><Empty /></div>}
-        <Collapse options={[
-          {
-            key: '1',
-            title: '字段属性',
-            node: <FormRender
-              labelWidth={90}
-              displayType={'row'}
-              className={style.formRender}
-              onMount={onMount}
-              form={form} removeHiddenData
-              schema={currentComponentSchema || {}}
-              onValuesChange={onValuesChange}
-            />
-          },
-        ]} />
+        {currentComponentSchema && <Collapse
+          className={style.scroll}
+          options={[
+            {
+              key: '1',
+              title: '字段属性',
+              node: <FormRender
+                watch={watch}
+                labelWidth={90}
+                displayType={'row'}
+                className={style.formRender}
+                onMount={onMount}
+                form={form} removeHiddenData
+                schema={currentComponentSchema || {}}
+                onValuesChange={onValuesChange}
+              />
+            },
+          ]} />}
       </div>
       {hide && <Button
         size={'large'}
