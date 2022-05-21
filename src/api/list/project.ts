@@ -4,6 +4,7 @@ import { BaseModel } from '../model';
 
 interface Config {
   config?: any;
+  userSelectComponents?: any;
   templateId: string | number
   templateGit: string
   templateName: string

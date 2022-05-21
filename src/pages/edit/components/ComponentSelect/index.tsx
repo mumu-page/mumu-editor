@@ -3,9 +3,8 @@ import React, { memo, useState } from 'react'
 import IconFont from "@/components/IconFont";
 import classNames from 'classnames';
 import Title from '@/components/Title';
-import Collapse from '@/components/Collapse';
-import { uniqueId } from "lodash";
-import { clone } from '@/utils/utils';
+import MMCollapse from '@/components/Collapse';
+import { clone, uuid } from '@/utils/utils';
 import History from './History';
 import style from './index.module.less'
 import { CommonComponents, Component, RemoteComponent } from '@/store/edit/state';
@@ -54,11 +53,12 @@ function ComponentSelect(props: ComponentSelectProps) {
   ]
 
   const renderComponents = (components: Component[] | RemoteComponent[]) => {
+    if (!components.length) return null
     const _components = clone(components) as any[]
     if (_components.length % 3 !== 0) {
       const len = _components.length % 3
       for (let index = 0; index < (3 - len); index++) {
-        _components.push({ placeholder: true, key: uniqueId() })
+        _components.push({ placeholder: true, key: uuid() })
       }
     }
     return <div className={style["components"]}>
@@ -115,7 +115,7 @@ function ComponentSelect(props: ComponentSelectProps) {
             onFixed={() => setAffix(!isAffix)}
           />
           <div className={style.scroll}>
-            {current === '组件' && <Collapse options={[
+            {current === '组件' && <MMCollapse options={[
               {
                 key: '1',
                 title: '当前模板组件',

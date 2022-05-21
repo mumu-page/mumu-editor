@@ -1,4 +1,4 @@
-import {PageConfig} from "@/store/edit/state";
+import { PageConfig } from "@/store/edit/state";
 import dayJS from "dayjs";
 import tz from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -27,6 +27,8 @@ interface Callback<T> {
   callback: (h: History<T>) => void
 }
 
+/** 历史记录包括： 新增、组件点击、组件属性改变、组件顺序、组件复制、删除 */
+
 class History<T> {
   private readonly stack: (T & HistoryItem)[];
   private _undoStack: (T & HistoryItem)[];
@@ -47,7 +49,7 @@ class History<T> {
   }
 
   onUpdate(name: string, callback: (h: History<T>) => void) {
-    this._callbacks.push({name, callback})
+    this._callbacks.push({ name, callback })
   }
 
   offUpdate(name: string) {

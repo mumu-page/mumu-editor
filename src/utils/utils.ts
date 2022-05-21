@@ -1,5 +1,5 @@
-import {cloneDeep} from "lodash";
-import {PageConfig} from "@/store/edit/state";
+import { cloneDeep } from "lodash";
+import { PageConfig } from "@/store/edit/state";
 
 export const clone = (obj: any) => {
   return cloneDeep(obj);
@@ -16,15 +16,15 @@ export function deepCopy(value: any) {
 export const mergeConfig = (origin: PageConfig, target: PageConfig) => {
   if (!origin.components || !origin.components.length) return target;
   return {
-    ...(origin || {}),
-    ...(target || {}),
+    ...origin,
+    ...target,
     userSelectComponents: target.userSelectComponents.map((co) => {
       const originCo = origin.components.filter((oco) => oco.name === co.name)[0];
       if (originCo) {
         return {
           ...co,
           props: {
-            ...originCo.props || {},
+            ...originCo.props,
             ...co.props,
           },
           schema: originCo.schema
@@ -38,7 +38,7 @@ export const mergeConfig = (origin: PageConfig, target: PageConfig) => {
         return {
           ...co,
           props: {
-            ...originCo.props || {},
+            ...originCo.props,
             ...co.props,
           },
           schema: originCo.schema
@@ -49,10 +49,15 @@ export const mergeConfig = (origin: PageConfig, target: PageConfig) => {
     config: {
       ...target.page,
       props: {
-        ...(origin.page && origin.page.props || {}),
-        ...(target.page && target.page.props || {}),
+        ...origin.page.props,
+        ...target.page.props,
       },
       schema: (origin.page && origin.page) || (target.page && target.page) || {},
     }
   };
+}
+
+export const uuid = () => {
+  // 1590753224242oqgomgkv7tp
+  return new Date().getTime() + Math.random().toString(36).substring(2);
 }

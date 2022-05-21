@@ -1,15 +1,16 @@
 import React, { memo, useEffect, useState } from 'react'
 import FormRender, { useForm } from 'form-render';
 import { useStore } from 'react-redux';
-import { RootStore, useEditState } from '@/store';
+import { RootStore } from '@/store';
 import { changeProps } from '@/store/edit';
 import Title from '@/components/Title';
-import Collapse from '@/components/Collapse';
+import MMCollapse from '@/components/Collapse';
 import classNames from "classnames";
 import { SettingOutlined } from "@ant-design/icons";
-import { Button, Empty } from "antd";
+import { Button } from "antd";
 import { CurrentComponent } from '@/store/edit/state';
 import style from "./index.module.less";
+import imageInput from './mapping/imageInput';
 
 interface FormConfigProps {
   currentComponent: CurrentComponent
@@ -30,16 +31,15 @@ function FormConfig(props: FormConfigProps) {
   const onMount = () => {
     form.setValues(component?.props)
   }
-  console.log(component?.props);
+
   useEffect(() => {
-    if(!component?.props) return
+    if (!component?.props) return
     form.setValues(component?.props)
   }, [component?.props])
 
   const watch = {
     '#': (val: any) => {
-      console.log('表单的实时数据为：', val);
-      // if (Object.keys(val).length) dispatch(changeProps({ ...val, type }))
+      if (Object.keys(val).length) dispatch(changeProps({ ...JSON.parse(JSON.stringify(val)), type }))
     },
   };
 
@@ -52,25 +52,27 @@ function FormConfig(props: FormConfigProps) {
           onClose={() => setHide(true)}
           onFixed={() => setAffix(!isAffix)}
         />
-        {!currentComponentSchema && <div className={style.empty}><Empty /></div>}
-        {currentComponentSchema && <Collapse
+        <MMCollapse
           className={style.scroll}
           options={[
             {
               key: '1',
-              title: '字段属性',
-              node: <FormRender
-                watch={watch}
-                labelWidth={90}
-                displayType={'row'}
-                className={style.formRender}
-                onMount={onMount}
-                form={form} removeHiddenData
-                schema={currentComponentSchema || {}}
-                onValuesChange={onValuesChange}
-              />
+              title: '组件属性',
+              node: currentComponentSchema && Object.keys(currentComponentSchema).length ?
+                <FormRender
+                  watch={watch}
+                  labelWidth={90}
+                  displayType={'row'}
+                  className={style.formRender}
+                  onMount={onMount}
+                  form={form} removeHiddenData
+                  schema={currentComponentSchema || {}}
+                  onValuesChange={onValuesChange}
+                  mapping={{ image: 'imageInput' }}
+                  widgets={{ imageInput }}
+                /> : null
             },
-          ]} />}
+          ]} />
       </div>
       {hide && <Button
         size={'large'}

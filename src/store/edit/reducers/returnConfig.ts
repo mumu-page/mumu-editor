@@ -1,6 +1,6 @@
-import {mergeConfig} from "@/utils/utils";
-import {PayloadAction} from "@reduxjs/toolkit";
-import {CommonComponents, EditState, ReleaseStatus} from "../state";
+import { mergeConfig } from "@/utils/utils";
+import { PayloadAction } from "@reduxjs/toolkit";
+import { CommonComponents, EditState, ReleaseStatus } from "../state";
 
 interface ReturnConfigPayload {
   targetConfig: any
@@ -15,7 +15,7 @@ interface ReturnConfigPayload {
  * @param action
  */
 export function returnConfig(state: EditState, action: PayloadAction<ReturnConfigPayload>) {
-  const {targetConfig, pageData, releaseStatus, commonComponents} = action.payload
+  const { targetConfig, pageData, releaseStatus, commonComponents } = action.payload
   // 保存页面初始值
   if (!state.defaultConfig && !releaseStatus) {
     state.defaultConfig = JSON.parse(JSON.stringify(targetConfig))
@@ -36,7 +36,7 @@ export function returnConfig(state: EditState, action: PayloadAction<ReturnConfi
     }
   }
   // 页面级别的配置，比如 title 之类的
-  targetConfig.page = targetConfig.page || {schema: {}, props: {}};
+  targetConfig.page = targetConfig.page || { schema: {}, props: {} };
   // merge 页面配置信息
   state.pageConfig = {
     remoteComponents: [],
@@ -45,7 +45,7 @@ export function returnConfig(state: EditState, action: PayloadAction<ReturnConfi
   }
   // 确定当前修改的是哪个组件
   const currentIndex = targetConfig.currentIndex || 0;
-  state.currentIndex = currentIndex
+  state.currentId = currentIndex
   state.uiConfig = {
     ...state.uiConfig,
     pageData: pageData || state.uiConfig.pageData,  // 设置页面信息

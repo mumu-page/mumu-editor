@@ -1,24 +1,22 @@
-import {Component, EditState} from "@/store/edit/state";
-import {PayloadAction} from "@reduxjs/toolkit";
-import {uniqueId} from "lodash";
-import {handleCurrentComponent} from "@/store/edit/reducers/utils";
-import {COMPONENT_ELEMENT_ITEM_ID_PREFIX, GLOBAL_COMPONENT_TYPE_NAME, REMOTE_COMPONENT_LOADER_NAME} from "@/constants";
-import {message} from "antd";
-import {deepCopy} from "@/utils/utils";
-import {history} from "@/utils/history";
-
-/** 历史记录包括： 新增、组件点击、组件属性改变、组件顺序、组件复制、删除 */
+import { Component, EditState } from "@/store/edit/state";
+import { PayloadAction } from "@reduxjs/toolkit";
+import { set } from "lodash";
+import { getComponentById, handleCurrentComponent } from "./utils";
+import { COMPONENT_ELEMENT_ITEM_ID_PREFIX, GLOBAL_COMPONENT_TYPE_NAME, REMOTE_COMPONENT_LOADER_NAME } from "@/constants";
+import { message } from "antd";
+import { deepCopy, uuid } from "@/utils/utils";
+import { history } from "@/utils/history";
 
 function addComponent(state: EditState, action: PayloadAction<any>) {
-  const {data, index} = action.payload
-  state.currentIndex = index ? index + 1 : index
+  const { data, currentId, nextId } = action.payload
+  state.currentId = nextId || currentId
   let newComponent: Component
   if (data.type === GLOBAL_COMPONENT_TYPE_NAME) {
     // 远程组件的props和data从组件包中动态获取，不在这里设置
     newComponent = {
       schema: {},
       name: REMOTE_COMPONENT_LOADER_NAME,
-      id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uniqueId()}`,
+      id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uuid()}`,
       props: data.props,
       config: data
     }
@@ -26,9 +24,16 @@ function addComponent(state: EditState, action: PayloadAction<any>) {
     newComponent = {
       name: data.name,
       props: data.props,
-      id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uniqueId()}`,
+      id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uuid()}`,
       schema: {},
     }
+  }
+  const { index = 0, isChild, layer = [] } = getComponentById(state.pageConfig.userSelectComponents, currentId) || {}
+
+  if (isChild) {
+    let path = layer.toString().replace(/,/, '.children.')
+    set(state.pageConfig.userSelectComponents, path, newComponent)
+    return
   }
   if (state.pageConfig.userSelectComponents.length) {
     state.pageConfig.userSelectComponents.splice(index, 0, newComponent)
@@ -42,12 +47,12 @@ function addComponent(state: EditState, action: PayloadAction<any>) {
 }
 
 function changeProps(state: EditState, action: PayloadAction<any>) {
-  const {type} = action.payload
+  const { type } = action.payload
   if (type === '__page') {
 
   } else {
-    if (!(typeof state.currentIndex === 'number' && state.currentIndex >= 0)) return
-    state.pageConfig.userSelectComponents[state.currentIndex]['props'] = action.payload
+    if (!(typeof state.currentId === 'number' && state.currentId >= 0)) return
+    state.pageConfig.userSelectComponents[state.currentId]['props'] = action.payload
   }
   history.push({
     ...state.pageConfig,
@@ -56,14 +61,16 @@ function changeProps(state: EditState, action: PayloadAction<any>) {
 }
 
 function deleteComponent(state: EditState, action: PayloadAction<any>) {
-  const index = action.payload
+  const { currentId, nextId } = action.payload
   // 暂时不让全部删除
   if (state.pageConfig.userSelectComponents.length === 1) {
     message.info(`这是最后一个啦，不能再删啦～`).then()
     return
   }
+  const { index } = getComponentById(state.pageConfig.userSelectComponents, currentId) || {}
+  if (!index) return
   state.pageConfig.userSelectComponents.splice(index, 1);
-  state.currentIndex = index - 1 < 0 ? 0 : index - 1
+  state.currentId = nextId
   history.push({
     ...state.pageConfig,
     actionType: '删除组件',
@@ -71,11 +78,14 @@ function deleteComponent(state: EditState, action: PayloadAction<any>) {
 }
 
 function sortComponent(state: EditState, action: PayloadAction<any>) {
-  const {index, next} = action.payload
+  const { currentId, nextId } = action.payload
+  const { index } = getComponentById(state.pageConfig.userSelectComponents, currentId) || {}
+  const { index: next } = getComponentById(state.pageConfig.userSelectComponents, nextId) || {}
+  if (!index || !next) return
   const tem = state.pageConfig.userSelectComponents[next]
   state.pageConfig.userSelectComponents.splice(next, 1, state.pageConfig.userSelectComponents[index])
   state.pageConfig.userSelectComponents.splice(index, 1, tem)
-  state.currentIndex = next
+  state.currentId = nextId
   history.push({
     ...state.pageConfig,
     actionType: '移动组件',
@@ -83,11 +93,13 @@ function sortComponent(state: EditState, action: PayloadAction<any>) {
 }
 
 function copyComponent(state: EditState, action: PayloadAction<any>) {
-  const {index} = action.payload
+  const { currentId, nextId } = action.payload
+  const { index } = getComponentById(state.pageConfig.userSelectComponents, currentId) || {}
+  if (!index) return
   const newComponent = deepCopy(state.pageConfig.userSelectComponents[index])
-  newComponent.id = `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uniqueId()}`
+  newComponent.id = `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uuid()}`
   state.pageConfig.userSelectComponents.splice(index, 0, newComponent)
-  state.currentIndex = index + 1
+  state.currentId = nextId
   history.push({
     ...state.pageConfig,
     actionType: '复制组件',
@@ -95,9 +107,10 @@ function copyComponent(state: EditState, action: PayloadAction<any>) {
 }
 
 function setCurrentComponent(state: EditState, action: PayloadAction<any>) {
-  const {currentIndex} = action.payload
-  state.currentIndex = currentIndex
-  handleCurrentComponent(state, currentIndex)
+  const { currentId } = action.payload
+  state.currentId = currentId
+  const { index, isChild, layer = [] } = getComponentById(state.pageConfig.userSelectComponents, currentId) || {}
+  handleCurrentComponent({ state, layer, isChild, index })
   history.push({
     ...state.pageConfig,
     actionType: '选中组件',

@@ -3,7 +3,7 @@ import logo from '../../assets/image/logo2.svg';
 import { Link } from 'react-router-dom'
 import classNames from 'classnames';
 import style from './index.module.less'
-import { Button, Radio, RadioChangeEvent } from 'antd';
+import { Button, Divider, Radio, RadioChangeEvent, Space, Typography } from 'antd';
 
 interface MenuItem {
   key: string;
@@ -20,13 +20,13 @@ interface HeaderProps {
   className?: string
   pageTitle?: React.ReactNode
   menus?: MenuItem[]
-  handleSelect?: (menu: MenuItem) => void
+  onClick?: (menu: MenuItem) => void
 }
 
 function Header(props: HeaderProps) {
-  const handleSelect = (menu: MenuItem) => {
+  const onClick = (menu: MenuItem) => {
     menu?.onClick?.(menu)
-    props?.handleSelect?.(menu)
+    props?.onClick?.(menu)
   }
 
   const onChange = (e: RadioChangeEvent) => {
@@ -51,32 +51,29 @@ function Header(props: HeaderProps) {
     const render = (menus: MenuItem[]) => {
       return Array.isArray(menus) && menus.map(item => {
         if (item.children?.length) {
-          return <Radio.Group
+          return <Space
+            split={<Divider type="vertical" />}
             key={item.key}
             className={style.menuItem}
             style={{
               display: 'flex',
               ...(item.style || {})
-            }}
-            onChange={onChange}>
+            }}>
             {item.children.map(child => {
-              return <Radio.Button
-                value={child.key}
-                type="primary"
+              return <Typography.Link
                 key={child.key}
                 style={child.style}
                 className={classNames(child.className)}
-                onClick={() => handleSelect(child)}>{child.label}
-              </Radio.Button>
+                onClick={() => onClick(child)}>{child.label}</Typography.Link>
             })}
-          </Radio.Group>
+          </Space>
         }
         return item.isBtn === undefined ? <Button
           type={item.type}
           key={item?.key}
           style={item.style || { marginLeft: 10 }}
           className={classNames(item.className, style.menuItem)}
-          onClick={() => handleSelect(item)}>{item.label}</Button> :
+          onClick={() => onClick(item)}>{item.label}</Button> :
           <div
             key={item?.key}
             style={item.style || { marginLeft: 10 }}

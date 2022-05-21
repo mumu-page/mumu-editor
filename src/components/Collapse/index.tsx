@@ -1,9 +1,9 @@
 import React from 'react'
-import { Collapse as Collapse1 } from 'antd'
+import { Collapse, Empty } from 'antd'
 import style from "./index.module.less";
 import classNames from 'classnames';
 
-const Panel = Collapse1.Panel
+const Panel = Collapse.Panel
 
 interface Option {
   title: string
@@ -16,11 +16,16 @@ interface CollapseProps {
   className?: string
 }
 
-function Collapse(props: CollapseProps) {
+function MMCollapse(props: CollapseProps) {
   const { options = [], className = "" } = props
-  
+
+  const getPanel = (node: React.ReactNode) => {
+    if (!node) return <div className={style.empty}><Empty /></div>
+    return node
+  }
+
   return (
-    <Collapse1
+    <Collapse
       bordered
       defaultActiveKey={['1']}
       className={`${style.collapse} ${className}`}
@@ -28,14 +33,14 @@ function Collapse(props: CollapseProps) {
       {
         options.map(item => {
           return <Panel className={classNames(style["panel"], 'mumu-panel')} header={item.title} key={item.key}>
-            {item.node}
+            {getPanel(item.node)}
           </Panel>
         })
       }
-    </Collapse1>
+    </Collapse>
   )
 }
 
-Collapse.Panel = Panel
+MMCollapse.Panel = Panel
 
-export default Collapse
+export default MMCollapse

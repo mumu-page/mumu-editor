@@ -65,7 +65,7 @@ export interface UIConfig {
 }
 
 export interface EditState {
-  currentIndex: number | null;
+  currentId: number | null;
   pageConfig: PageConfig;
   editConfig: EditConfig
   uiConfig: UIConfig
@@ -73,7 +73,7 @@ export interface EditState {
 }
 
 export const initialEditState: EditState = {
-  currentIndex: null,
+  currentId: null,
   pageConfig: {
     remoteComponents: [],
     userSelectComponents: [],

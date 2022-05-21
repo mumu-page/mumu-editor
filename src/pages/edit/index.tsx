@@ -62,12 +62,11 @@ function Edit() {
 
   const onIframeLoaded = () => {
     setFrameLoaded(true)
+    setSpinning(false)
     history.push({
       ...editState.pageConfig,
       actionType: '初始化',
     })
-    dispatch(setCurrentComponent({ currentIndex: 0 }))
-    setSpinning(false)
   }
 
   useEffect(() => {
@@ -89,6 +88,7 @@ function Edit() {
           components: item?.config
         }))
       }));
+      dispatch(setCurrentComponent({ currentId: targetConfig?.userSelectComponents?.[0]?.id }))
     });
   }, [])
 
@@ -129,6 +129,7 @@ function Edit() {
           },
           {
             key: 'radio',
+            style: { marginRight: 15 },
             children: [
               {
                 key: 'rollback',

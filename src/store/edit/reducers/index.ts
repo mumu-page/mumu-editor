@@ -4,11 +4,11 @@ import { returnConfig } from "./returnConfig";
 import component from "./component";
 import { handleCurrentComponent } from "@/store/edit/reducers/utils";
 import { COMPONENT_ELEMENT_ITEM_ID_PREFIX, ON_GRID_ADD_ROW, ON_GRID_DROP, ON_GRID_LAYOUT_CHANGE } from "@/constants";
-import { uniqueId } from "lodash";
+import { uuid } from "@/utils/utils";
 
 function reset(state: EditState) {
   state.pageConfig.userSelectComponents = []
-  state.currentIndex = -1
+  state.currentId = -1
 }
 
 function setDragStart(state: EditState, action: PayloadAction<any>) {
@@ -26,21 +26,21 @@ function onRemoteComponentLoad(state: EditState, action: PayloadAction<any>) {
  */
 function onLoad(state: EditState, action: PayloadAction<any>) {
   // 判断父页面是否已经拿到数据
-  if (state.pageConfig.userSelectComponents.length || state.pageConfig.components.length) return
+  // if (state.pageConfig.userSelectComponents.length || state.pageConfig.components.length) return
   state.pageConfig.userSelectComponents = action.payload.components
   state.pageConfig.components = action.payload.components
-  state.currentIndex = 0
-  handleCurrentComponent(state, 0)
+  state.currentId = 0
+  handleCurrentComponent({ state, index: 0 })
 }
 
 function onEvent(state: EditState, action: PayloadAction<any>) {
   const { id, type, data } = action.payload
   if (type === ON_GRID_ADD_ROW) {
-    if (!(typeof state.currentIndex === 'number' && state.currentIndex >= 0)) return
-    const _rowCount = state.pageConfig.userSelectComponents[state.currentIndex].props.rowCount
+    if (!(typeof state.currentId === 'number' && state.currentId >= 0)) return
+    const _rowCount = state.pageConfig.userSelectComponents[state.currentId].props.rowCount
     if (typeof _rowCount !== 'number') return
     const _nextRowCount = _rowCount + 1
-    state.pageConfig.userSelectComponents[state.currentIndex].props.rowCount = _nextRowCount
+    state.pageConfig.userSelectComponents[state.currentId].props.rowCount = _nextRowCount
     if (state.editConfig.currentComponent.component?.props) {
       state.editConfig.currentComponent.component.props.rowCount = _nextRowCount
     }
@@ -55,7 +55,7 @@ function onEvent(state: EditState, action: PayloadAction<any>) {
       Array(+rowCount * +colCount).fill(1).forEach(() => {
         children.push({
           name: 'grid-placeholder',
-          id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uniqueId()}`,
+          id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uuid()}`,
           props: {},
           schema: {},
         })
@@ -63,7 +63,7 @@ function onEvent(state: EditState, action: PayloadAction<any>) {
     }
     try {
       const _dragData = JSON.parse(dragData)
-      _dragData.id = `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uniqueId()}`
+      _dragData.id = `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uuid()}`
       children[index] = _dragData
       findComponent.children = children
     } catch (error) {
