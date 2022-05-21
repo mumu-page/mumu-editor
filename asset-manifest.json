@@ -1,37 +1,16 @@
 {
   "files": {
-    "main.css": "/mumu-editor/static/css/main.7753ef1e.css",
-    "main.js": "/mumu-editor/static/js/main.c57717ac.js",
+    "main.css": "/mumu-editor/static/css/main.99716710.css",
+    "main.js": "/mumu-editor/static/js/main.e90eb9d8.js",
     "static/js/787.5ac8ce23.chunk.js": "/mumu-editor/static/js/787.5ac8ce23.chunk.js",
-    "antd.css": "/mumu-editor/static/css/antd.e2ab0206.css",
-    "antd.js": "/mumu-editor/static/js/antd.7b721e52.js",
-    "form-render.css": "/mumu-editor/static/css/form-render.5d423746.css",
-    "form-render.js": "/mumu-editor/static/js/form-render.95de6366.js",
-    "base.js": "/mumu-editor/static/js/base.16ca9ae9.js",
-    "immer.js": "/mumu-editor/static/js/immer.99d4ae07.js",
-    "redux.js": "/mumu-editor/static/js/redux.e935970f.js",
     "static/media/logo2.svg": "/mumu-editor/static/media/logo2.48d4d68ab1b32b724ac45bbceff44d6e.svg",
     "index.html": "/mumu-editor/index.html",
-    "main.7753ef1e.css.map": "/mumu-editor/static/css/main.7753ef1e.css.map",
-    "main.c57717ac.js.map": "/mumu-editor/static/js/main.c57717ac.js.map",
-    "787.5ac8ce23.chunk.js.map": "/mumu-editor/static/js/787.5ac8ce23.chunk.js.map",
-    "antd.e2ab0206.css.map": "/mumu-editor/static/css/antd.e2ab0206.css.map",
-    "antd.7b721e52.js.map": "/mumu-editor/static/js/antd.7b721e52.js.map",
-    "form-render.5d423746.css.map": "/mumu-editor/static/css/form-render.5d423746.css.map",
-    "form-render.95de6366.js.map": "/mumu-editor/static/js/form-render.95de6366.js.map",
-    "base.16ca9ae9.js.map": "/mumu-editor/static/js/base.16ca9ae9.js.map",
-    "immer.99d4ae07.js.map": "/mumu-editor/static/js/immer.99d4ae07.js.map",
-    "redux.e935970f.js.map": "/mumu-editor/static/js/redux.e935970f.js.map"
+    "main.99716710.css.map": "/mumu-editor/static/css/main.99716710.css.map",
+    "main.e90eb9d8.js.map": "/mumu-editor/static/js/main.e90eb9d8.js.map",
+    "787.5ac8ce23.chunk.js.map": "/mumu-editor/static/js/787.5ac8ce23.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/antd.e2ab0206.css",
-    "static/js/antd.7b721e52.js",
-    "static/css/form-render.5d423746.css",
-    "static/js/form-render.95de6366.js",
-    "static/js/base.16ca9ae9.js",
-    "static/js/immer.99d4ae07.js",
-    "static/js/redux.e935970f.js",
-    "static/css/main.7753ef1e.css",
-    "static/js/main.c57717ac.js"
+    "static/css/main.99716710.css",
+    "static/js/main.e90eb9d8.js"
   ]
 }
