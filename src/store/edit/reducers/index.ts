@@ -26,7 +26,7 @@ function onRemoteComponentLoad(state: EditState, action: PayloadAction<any>) {
  */
 function onLoad(state: EditState, action: PayloadAction<any>) {
   // 判断父页面是否已经拿到数据
-  // if (state.pageConfig.userSelectComponents.length || state.pageConfig.components.length) return
+  if (state.pageConfig.userSelectComponents.length || state.pageConfig.components.length) return
   state.pageConfig.userSelectComponents = action.payload.components
   state.pageConfig.components = action.payload.components
   state.currentId = 0

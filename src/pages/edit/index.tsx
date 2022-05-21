@@ -48,7 +48,7 @@ function Edit() {
     dispatch(reset())
   }
   const setPreview = () => {
-    window.open(`/mumu-editor/build/index.html?isPreview=true&pageId=${params.get('id')}&env=development`)
+    window.open(`/mumu-editor/build/index.html?isPreview=true&pageId=${params.get('id')}&env=production`)
   }
   const setRelease = () => {
     project.release({ id: params.get('id') }).then(res => {
