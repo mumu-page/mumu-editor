@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/mumu-editor/static/css/main.99716710.css",
-    "main.js": "/mumu-editor/static/js/main.51eceb1f.js",
+    "main.css": "/mumu-editor/static/css/main.26412323.css",
+    "main.js": "/mumu-editor/static/js/main.2a04a7df.js",
     "static/js/787.5ac8ce23.chunk.js": "/mumu-editor/static/js/787.5ac8ce23.chunk.js",
     "static/media/logo2.svg": "/mumu-editor/static/media/logo2.48d4d68ab1b32b724ac45bbceff44d6e.svg",
     "index.html": "/mumu-editor/index.html",
-    "main.99716710.css.map": "/mumu-editor/static/css/main.99716710.css.map",
-    "main.51eceb1f.js.map": "/mumu-editor/static/js/main.51eceb1f.js.map",
+    "main.26412323.css.map": "/mumu-editor/static/css/main.26412323.css.map",
+    "main.2a04a7df.js.map": "/mumu-editor/static/js/main.2a04a7df.js.map",
     "787.5ac8ce23.chunk.js.map": "/mumu-editor/static/js/787.5ac8ce23.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.99716710.css",
-    "static/js/main.51eceb1f.js"
+    "static/css/main.26412323.css",
+    "static/js/main.2a04a7df.js"
   ]
 }
