@@ -14,7 +14,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import ComponentSelect from './components/ComponentSelect';
 import { useDiapatch, useEditState } from '@/store';
 import { useEditor } from './hooks';
-import { reset, returnConfig, setCurrentComponent } from '@/store/edit';
+import { reset, returnConfig } from '@/store/edit';
 import FormConfig from './components/FormConfig';
 import { history } from '@/utils/history';
 import IconFont from '@/components/IconFont';
@@ -88,7 +88,6 @@ function Edit() {
           components: item?.config
         }))
       }));
-      dispatch(setCurrentComponent({ currentId: targetConfig?.userSelectComponents?.[0]?.id }))
     });
   }, [])
 

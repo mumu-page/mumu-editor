@@ -10,7 +10,7 @@ interface ReturnConfigPayload {
 }
 
 /**
- * 更新配置, 向子页面通知再回来更新太慢了！！！
+ * 
  * @param state
  * @param action
  */

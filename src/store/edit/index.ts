@@ -10,17 +10,13 @@ export const editSlice = createSlice({
 
 export const {
   returnConfig,
-  addComponent,
   setDragStart,
   changeProps,
   reset,
-  setCurrentComponent,
-  deleteComponent,
-  copyComponent,
-  sortComponent,
   onLoad,
   onRemoteComponentLoad,
-  onEvent
+  onEvent,
+  setConfig,
 } = editSlice.actions
 
 export default editSlice.reducer

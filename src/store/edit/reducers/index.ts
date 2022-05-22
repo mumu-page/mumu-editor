@@ -1,14 +1,13 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { Component, EditState } from "../state";
+import { Component, CurrentComponent, EditState } from "../state";
 import { returnConfig } from "./returnConfig";
-import component from "./component";
-import { handleCurrentComponent } from "@/store/edit/reducers/utils";
-import { COMPONENT_ELEMENT_ITEM_ID_PREFIX, ON_GRID_ADD_ROW, ON_GRID_DROP, ON_GRID_LAYOUT_CHANGE } from "@/constants";
-import { uuid } from "@/utils/utils";
+import { CHANGE_PROPS, COMPONENT_ELEMENT_ITEM_ID_PREFIX, ON_GRID_ADD_ROW, ON_GRID_DROP, ON_GRID_LAYOUT_CHANGE } from "@/constants";
+import { postMsgToChild, uuid } from "@/utils/utils";
+import { history } from "@/utils/history";
 
 function reset(state: EditState) {
   state.pageConfig.userSelectComponents = []
-  state.currentId = -1
+  state.currentId = null
 }
 
 function setDragStart(state: EditState, action: PayloadAction<any>) {
@@ -24,13 +23,18 @@ function onRemoteComponentLoad(state: EditState, action: PayloadAction<any>) {
  * @param state
  * @param action
  */
-function onLoad(state: EditState, action: PayloadAction<{ components: Component[] }>) {
+function onLoad(state: EditState, action: PayloadAction<{ components: Component[], currentId: string }>) {
   // 判断父页面是否已经拿到数据
   // if (state.pageConfig.userSelectComponents.length || state.pageConfig.components.length) return
   state.pageConfig.userSelectComponents = action.payload.components
   state.pageConfig.components = action.payload.components
-  state.currentId = 0
-  handleCurrentComponent({ state, index: 0 })
+  state.currentId = action.payload.currentId
+}
+
+function setConfig(state: EditState, action: PayloadAction<{ components: Component[], currentId: string, currentComponent: CurrentComponent }>) {
+  state.pageConfig.userSelectComponents = action.payload.components
+  state.currentId = action.payload.currentId
+  state.editConfig.currentComponent = action.payload.currentComponent
 }
 
 function onEvent(state: EditState, action: PayloadAction<any>) {
@@ -77,6 +81,21 @@ function onEvent(state: EditState, action: PayloadAction<any>) {
   }
 }
 
+function changeProps(state: EditState, action: PayloadAction<any>) {
+  const { type } = action.payload
+  if (type === '__page') {
+
+  } else {
+    if (!(typeof state.currentId === 'number' && state.currentId >= 0)) return
+    state.pageConfig.userSelectComponents[state.currentId]['props'] = action.payload
+  }
+  postMsgToChild({ type: CHANGE_PROPS, data: { type, props: action.payload } })
+  history.push({
+    ...state.pageConfig,
+    actionType: '更新属性',
+  })
+}
+
 const reducers = {
   returnConfig,
   setDragStart,
@@ -84,7 +103,8 @@ const reducers = {
   onRemoteComponentLoad,
   onLoad,
   onEvent,
-  ...component
+  setConfig,
+  changeProps,
 }
 
 export default reducers

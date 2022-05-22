@@ -66,7 +66,7 @@ export interface UIConfig {
 }
 
 export interface EditState {
-  currentId: number | null;
+  currentId: string | null;
   pageConfig: PageConfig;
   editConfig: EditConfig
   uiConfig: UIConfig
