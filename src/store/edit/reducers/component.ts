@@ -8,15 +8,14 @@ import { deepCopy, uuid } from "@/utils/utils";
 import { history } from "@/utils/history";
 
 function addComponent(state: EditState, action: PayloadAction<any>) {
-  const { data, currentId, nextId } = action.payload
-  state.currentId = nextId || currentId
+  const { data, currentId, dragId, type } = action.payload
+  state.currentId = dragId
   let newComponent: Component
   if (data.type === GLOBAL_COMPONENT_TYPE_NAME) {
-    // 远程组件的props和data从组件包中动态获取，不在这里设置
     newComponent = {
-      schema: {},
+      schema: data.schema,
       name: REMOTE_COMPONENT_LOADER_NAME,
-      id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uuid()}`,
+      id: dragId,
       props: data.props,
       config: data
     }
@@ -24,8 +23,8 @@ function addComponent(state: EditState, action: PayloadAction<any>) {
     newComponent = {
       name: data.name,
       props: data.props,
-      id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uuid()}`,
-      schema: {},
+      id: dragId,
+      schema: data.schema,
     }
   }
   const { index = 0, isChild, layer = [] } = getComponentById(state.pageConfig.userSelectComponents, currentId) || {}
@@ -36,7 +35,7 @@ function addComponent(state: EditState, action: PayloadAction<any>) {
     return
   }
   if (state.pageConfig.userSelectComponents.length) {
-    state.pageConfig.userSelectComponents.splice(index, 0, newComponent)
+    state.pageConfig.userSelectComponents.splice(type === 'top' ? index : index + 1, 0, newComponent)
   } else {
     state.pageConfig.userSelectComponents = [newComponent]
   }

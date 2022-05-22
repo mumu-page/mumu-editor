@@ -8,6 +8,7 @@ import { clone, uuid } from '@/utils/utils';
 import History from './History';
 import style from './index.module.less'
 import { CommonComponents, Component, RemoteComponent } from '@/store/edit/state';
+import { restComponentsId } from './functions';
 
 interface LeftMenu {
   key: string;
@@ -28,6 +29,7 @@ function ComponentSelect(props: ComponentSelectProps) {
   const [current, setCurrent] = useState<Current>('组件')
   const [isAffix, setAffix] = useState(false)
   const [hide, setHide] = useState(false)
+  const [update, setUpdate] = useState(false)
 
   const onDragStart = (e: React.DragEvent<HTMLDivElement>, item?: any) => {
     if (item) {
@@ -54,24 +56,27 @@ function ComponentSelect(props: ComponentSelectProps) {
 
   const renderComponents = (components: Component[] | RemoteComponent[]) => {
     if (!components.length) return null
-    const _components = clone(components) as any[]
+    const _components = restComponentsId(clone(components) as any[]) as any[]
     if (_components.length % 3 !== 0) {
       const len = _components.length % 3
       for (let index = 0; index < (3 - len); index++) {
-        _components.push({ placeholder: true, key: uuid() })
+        _components.push({ placeholder: true, id: uuid() })
       }
     }
     return <div className={style["components"]}>
       {_components.map(item => {
         if (item.placeholder) return <div
           className={classNames(style["mumu-item"], style.flag)}
-          key={item.key}
+          key={item.id}
+          data-id={item.id}
         />
         return <div
           onDragStart={(e) => onDragStart(e, item)}
+          onDragEnd={() => setUpdate(!update)}
           draggable
           className={style["mumu-item"]}
           key={item.name}
+          data-id={item.id}
         >
           <Image
             rootClassName={classNames(style["preview-item"], 'mumu-image')}

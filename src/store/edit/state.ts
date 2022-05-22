@@ -8,6 +8,7 @@ export interface RemoteComponent {
   props: Record<string, any>
   name: string
   version: string
+  id: string
 }
 
 export interface Component {

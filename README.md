@@ -4,7 +4,7 @@
 </div>
 
 [gitpod-image]: https://img.shields.io/badge/Gitpod-ready--to--code-908a85?logo=gitpod
-[gitpod-url]: https://gitpod.io/#https://github.com/r-generator/page
+[gitpod-url]: https://gitpod.io/#https://github.com/mumu-page/mumu-editor
 [npm-image]: http://img.shields.io/npm/v/@r-generator/page.svg
 [npm-url]: https://npmjs.com/package/@r-generator/page
 [download-image]: https://img.shields.io/npm/dm/@r-generator/page.svg
@@ -42,7 +42,8 @@ yarn start
 - [x] 拖拽添加
 - [x] 远程组件
 - [x] 网格布局组件，存在模板项目中
-- [ ] 网格布局组件拖拽释放重新计算Shape样式不正确
+- [x] 网格布局组件拖拽释放重新计算
+- [ ] 网格布局组件添加容器后layout，children重置
 
 ## 关于
 [awesome-lowcode](https://github.com/taowen/awesome-lowcode)
