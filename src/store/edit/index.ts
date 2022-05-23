@@ -11,7 +11,6 @@ export const editSlice = createSlice({
 export const {
   returnConfig,
   setDragStart,
-  changeProps,
   reset,
   onLoad,
   onRemoteComponentLoad,

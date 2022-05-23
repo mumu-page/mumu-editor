@@ -1,31 +1,34 @@
 import React, { memo, useEffect, useState } from 'react'
 import FormRender, { useForm } from 'form-render';
-import { useStore } from 'react-redux';
-import { RootStore } from '@/store';
-import { changeProps } from '@/store/edit';
 import Title from '@/components/Title';
 import MMCollapse from '@/components/Collapse';
 import classNames from "classnames";
 import { SettingOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { CurrentComponent } from '@/store/edit/state';
-import style from "./index.module.less";
 import imageInput from './mapping/imageInput';
+import style from "./index.module.less";
+import { postMsgToChild } from '@/utils/utils';
+import { CHANGE_PROPS } from '@/constants';
 
 interface FormConfigProps {
   currentComponent: CurrentComponent
 }
 
 function FormConfig(props: FormConfigProps) {
-  const { currentComponent } = props
+  const { currentComponent = {} } = props
   const form = useForm();
   const [isAffix, setAffix] = useState(false)
   const [hide, setHide] = useState(false)
-  const { dispatch } = useStore<RootStore>();
   const { component, currentComponentSchema, type } = currentComponent;
 
   const onValuesChange = (_changedValues: any, formData: any) => {
-    dispatch(changeProps({ ...formData, type }))
+    postMsgToChild({
+      type: CHANGE_PROPS, data: {
+        type,
+        props: formData
+      }
+    })
   }
 
   const onMount = () => {
@@ -38,8 +41,15 @@ function FormConfig(props: FormConfigProps) {
   }, [component?.props])
 
   const watch = {
-    '#': (val: any) => {
-      if (Object.keys(val).length) dispatch(changeProps({ ...JSON.parse(JSON.stringify(val)), type }))
+    'layout': (val: any) => {
+      if (val && JSON.stringify(val) !== JSON.stringify(component?.props?.layout)) {
+        postMsgToChild({
+          type: CHANGE_PROPS, data: {
+            type,
+            props: { ...component?.props, layout: JSON.parse(JSON.stringify(val)) }
+          }
+        })
+      }
     },
   };
 

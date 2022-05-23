@@ -1,9 +1,9 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { Component, CurrentComponent, EditState } from "../state";
+import { Component, CurrentComponent, EditState, PageConfig } from "../state";
 import { returnConfig } from "./returnConfig";
 import { CHANGE_PROPS, COMPONENT_ELEMENT_ITEM_ID_PREFIX, ON_GRID_ADD_ROW, ON_GRID_DROP, ON_GRID_LAYOUT_CHANGE } from "@/constants";
 import { postMsgToChild, uuid } from "@/utils/utils";
-import { history } from "@/utils/history";
+import { history, HistoryItem } from "@/utils/history";
 
 function reset(state: EditState) {
   state.pageConfig.userSelectComponents = []
@@ -31,10 +31,16 @@ function onLoad(state: EditState, action: PayloadAction<{ components: Component[
   state.currentId = action.payload.currentId
 }
 
-function setConfig(state: EditState, action: PayloadAction<{ components: Component[], currentId: string, currentComponent: CurrentComponent }>) {
+function setConfig(state: EditState, action: PayloadAction<{
+  components: Component[], 
+  currentId: string, 
+  currentComponent: CurrentComponent,
+  history: PageConfig & HistoryItem
+}>) {
   state.pageConfig.userSelectComponents = action.payload.components
   state.currentId = action.payload.currentId
   state.editConfig.currentComponent = action.payload.currentComponent
+  history.push(action.payload.history)
 }
 
 function onEvent(state: EditState, action: PayloadAction<any>) {
@@ -81,21 +87,6 @@ function onEvent(state: EditState, action: PayloadAction<any>) {
   }
 }
 
-function changeProps(state: EditState, action: PayloadAction<any>) {
-  const { type } = action.payload
-  if (type === '__page') {
-
-  } else {
-    if (!(typeof state.currentId === 'number' && state.currentId >= 0)) return
-    state.pageConfig.userSelectComponents[state.currentId]['props'] = action.payload
-  }
-  postMsgToChild({ type: CHANGE_PROPS, data: { type, props: action.payload } })
-  history.push({
-    ...state.pageConfig,
-    actionType: '更新属性',
-  })
-}
-
 const reducers = {
   returnConfig,
   setDragStart,
@@ -104,7 +95,6 @@ const reducers = {
   onLoad,
   onEvent,
   setConfig,
-  changeProps,
 }
 
 export default reducers
