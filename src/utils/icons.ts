@@ -12,3 +12,4 @@ export {default as PushpinOutlined} from '@ant-design/icons/lib/icons/PushpinOut
 export {default as PushpinFilled} from '@ant-design/icons/lib/icons/PushpinFilled'
 export {default as DashboardOutlined} from '@ant-design/icons/lib/icons/DashboardOutlined'
 export {default as ClearOutlined} from '@ant-design/icons/lib/icons/ClearOutlined'
+export {default as HomeOutlined} from '@ant-design/icons/lib/icons/HomeOutlined'

@@ -78,7 +78,12 @@
 }
 
 .breadcrumb {
-  padding: 4px 10px;
+  padding: 0 10px;
   height: 30px;
   border-bottom: 1px solid var(--mm-panel-border-color);
+  overflow: auto;
+  display: flex;
+  align-items: center;
+
+  .scrollbar(3px, 3px)
 }

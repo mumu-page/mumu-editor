@@ -2,10 +2,13 @@
 	max-height: calc(100vh - 48px - 50px);
 	overflow-y: auto;
 	overflow-x: hidden;
+	.scrollbar()
+}
 
+.scrollbar(@width: 5px, @height: 5px) {
 	&::-webkit-scrollbar {
-		width: 5px;
-		height: 5px;
+		width: @width;
+		height: @height;
 		background-color: #f0f2f5;
 	}
 

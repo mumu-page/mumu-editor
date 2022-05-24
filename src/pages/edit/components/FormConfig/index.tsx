@@ -3,7 +3,7 @@ import FormRender, { useForm } from 'form-render';
 import Title from '@/components/Title';
 import MMCollapse from '@/components/Collapse';
 import classNames from "classnames";
-import { SettingOutlined } from "@ant-design/icons";
+import { HomeOutlined, SettingOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Typography } from "antd";
 import { CurrentComponent } from '@/store/edit/state';
 import imageInput from './mapping/imageInput';
@@ -25,6 +25,8 @@ function FormConfig(props: FormConfigProps) {
   const { component, currentComponentSchema, type, layer = [] } = currentComponent;
 
   const onValuesChange = (_changedValues: any, formData: any) => {
+    console.log('_changedValues', _changedValues);
+
     postMsgToChild({
       type: CHANGE_PROPS, data: {
         type,
@@ -45,13 +47,15 @@ function FormConfig(props: FormConfigProps) {
   const watch = {
     'children': (val: any) => {
       // 排除初次加载长度是1的情况
-      if (!val || (val && val?.length === 1)) return
-      postMsgToChild({
-        type: CHANGE_PROPS, data: {
-          type,
-          props: { ...component?.props, children: JSON.parse(JSON.stringify(val)) }
-        }
-      })
+      if (!val || !Array.isArray(val) || val?.length === 1) return
+      if (val.length !== component?.props.children?.length) {
+        postMsgToChild({
+          type: CHANGE_PROPS, data: {
+            type,
+            props: { ...component?.props, children: JSON.parse(JSON.stringify(val)) }
+          }
+        })
+      }
     },
   };
 
@@ -65,6 +69,9 @@ function FormConfig(props: FormConfigProps) {
           onFixed={() => setAffix(!isAffix)}
         />
         <Breadcrumb className={style.breadcrumb}>
+          <Breadcrumb.Item>
+            <Typography.Link><HomeOutlined /></Typography.Link>
+          </Breadcrumb.Item>
           {layer.map(item => <Breadcrumb.Item>
             <Typography.Link>{item.description}</Typography.Link>
           </Breadcrumb.Item>)}

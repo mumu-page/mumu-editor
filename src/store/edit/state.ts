@@ -16,7 +16,7 @@ export interface Component {
   name: string
   description?: string
   snapshot?: string
-  props: Record<string, string | number | object>
+  props: Record<string, any>
   schema: Schema
   config?: RemoteComponent
   children?: Component[]
