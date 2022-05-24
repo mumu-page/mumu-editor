@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/mumu-editor/static/css/main.b22e2b6f.css",
-    "main.js": "/mumu-editor/static/js/main.788f996c.js",
+    "main.css": "/mumu-editor/static/css/main.f472acb9.css",
+    "main.js": "/mumu-editor/static/js/main.6e68b14a.js",
     "static/js/787.5ac8ce23.chunk.js": "/mumu-editor/static/js/787.5ac8ce23.chunk.js",
-    "static/media/logo2.svg": "/mumu-editor/static/media/logo2.d0db438c0a90dc61ed8a1baadb50603c.svg",
+    "static/media/logo2.svg": "/mumu-editor/static/media/logo2.48d4d68ab1b32b724ac45bbceff44d6e.svg",
     "index.html": "/mumu-editor/index.html",
-    "main.b22e2b6f.css.map": "/mumu-editor/static/css/main.b22e2b6f.css.map",
-    "main.788f996c.js.map": "/mumu-editor/static/js/main.788f996c.js.map",
+    "main.f472acb9.css.map": "/mumu-editor/static/css/main.f472acb9.css.map",
+    "main.6e68b14a.js.map": "/mumu-editor/static/js/main.6e68b14a.js.map",
     "787.5ac8ce23.chunk.js.map": "/mumu-editor/static/js/787.5ac8ce23.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b22e2b6f.css",
-    "static/js/main.788f996c.js"
+    "static/css/main.f472acb9.css",
+    "static/js/main.6e68b14a.js"
   ]
 }
