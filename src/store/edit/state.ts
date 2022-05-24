@@ -37,6 +37,7 @@ export interface CurrentComponent {
   component?: Component;
   currentComponentSchema?: Schema;
   type?: string;
+  layer?: (Component & { index: number })[]
 }
 
 export interface EditConfig {

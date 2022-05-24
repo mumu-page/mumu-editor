@@ -4,7 +4,7 @@ import Title from '@/components/Title';
 import MMCollapse from '@/components/Collapse';
 import classNames from "classnames";
 import { SettingOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Breadcrumb, Button, Typography } from "antd";
 import { CurrentComponent } from '@/store/edit/state';
 import imageInput from './mapping/imageInput';
 import style from "./index.module.less";
@@ -15,12 +15,14 @@ interface FormConfigProps {
   currentComponent: CurrentComponent
 }
 
+const maxHeightStyle = { maxHeight: 'calc(100vh - 48px - 50px - 30px)' }
+
 function FormConfig(props: FormConfigProps) {
   const { currentComponent = {} } = props
   const form = useForm();
   const [isAffix, setAffix] = useState(false)
   const [hide, setHide] = useState(false)
-  const { component, currentComponentSchema, type } = currentComponent;
+  const { component, currentComponentSchema, type, layer = [] } = currentComponent;
 
   const onValuesChange = (_changedValues: any, formData: any) => {
     postMsgToChild({
@@ -41,15 +43,15 @@ function FormConfig(props: FormConfigProps) {
   }, [component?.props])
 
   const watch = {
-    'layout': (val: any) => {
-      if (val && JSON.stringify(val) !== JSON.stringify(component?.props?.layout)) {
-        postMsgToChild({
-          type: CHANGE_PROPS, data: {
-            type,
-            props: { ...component?.props, layout: JSON.parse(JSON.stringify(val)) }
-          }
-        })
-      }
+    'children': (val: any) => {
+      // 排除初次加载长度是1的情况
+      if (!val || (val && val?.length === 1)) return
+      postMsgToChild({
+        type: CHANGE_PROPS, data: {
+          type,
+          props: { ...component?.props, children: JSON.parse(JSON.stringify(val)) }
+        }
+      })
     },
   };
 
@@ -62,8 +64,14 @@ function FormConfig(props: FormConfigProps) {
           onClose={() => setHide(true)}
           onFixed={() => setAffix(!isAffix)}
         />
+        <Breadcrumb className={style.breadcrumb}>
+          {layer.map(item => <Breadcrumb.Item>
+            <Typography.Link>{item.description}</Typography.Link>
+          </Breadcrumb.Item>)}
+        </Breadcrumb>
         <MMCollapse
           className={style.scroll}
+          customStyle={maxHeightStyle}
           options={[
             {
               key: '1',

@@ -14,10 +14,11 @@ interface Option {
 interface CollapseProps {
   options: Option[]
   className?: string
+  customStyle?: { [key: string]: any }
 }
 
 function MMCollapse(props: CollapseProps) {
-  const { options = [], className = "" } = props
+  const { options = [], className = "", customStyle } = props
 
   const getPanel = (node: React.ReactNode) => {
     if (!node) return <div className={style.empty}><Empty /></div>
@@ -28,6 +29,7 @@ function MMCollapse(props: CollapseProps) {
     <Collapse
       bordered
       defaultActiveKey={['1']}
+      style={customStyle}
       className={`${style.collapse} ${className}`}
     >
       {
