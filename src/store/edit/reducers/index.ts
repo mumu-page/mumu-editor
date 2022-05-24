@@ -32,8 +32,8 @@ function onLoad(state: EditState, action: PayloadAction<{ components: Component[
 }
 
 function setConfig(state: EditState, action: PayloadAction<{
-  components: Component[], 
-  currentId: string, 
+  components: Component[],
+  currentId: string,
   currentComponent: CurrentComponent,
   history: PageConfig & HistoryItem
 }>) {
@@ -44,47 +44,11 @@ function setConfig(state: EditState, action: PayloadAction<{
 }
 
 function onEvent(state: EditState, action: PayloadAction<any>) {
-  const { id, type, data } = action.payload
-  if (type === ON_GRID_ADD_ROW) {
-    if (!(typeof state.currentId === 'number' && state.currentId >= 0)) return
-    const _rowCount = state.pageConfig.userSelectComponents[state.currentId].props.rowCount
-    if (typeof _rowCount !== 'number') return
-    const _nextRowCount = _rowCount + 1
-    state.pageConfig.userSelectComponents[state.currentId].props.rowCount = _nextRowCount
-    if (state.editConfig.currentComponent.component?.props) {
-      state.editConfig.currentComponent.component.props.rowCount = _nextRowCount
-    }
-  }
-  if (type === ON_GRID_DROP) {
-    const { index, dragData } = data
-    const findComponent = state.pageConfig.userSelectComponents.filter(item => item.id === id)?.[0]
-    if (!findComponent) return
-    const { rowCount, colCount } = findComponent.props || {}
-    const children: Component[] = Array.isArray(findComponent.children) ? findComponent.children : []
-    if (!children.length) {
-      Array(+rowCount * +colCount).fill(1).forEach(() => {
-        children.push({
-          name: 'grid-placeholder',
-          id: `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uuid()}`,
-          props: {},
-          schema: {},
-        })
-      })
-    }
-    try {
-      const _dragData = JSON.parse(dragData)
-      _dragData.id = `${COMPONENT_ELEMENT_ITEM_ID_PREFIX}${uuid()}`
-      children[index] = _dragData
-      findComponent.children = children
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  if (type === ON_GRID_LAYOUT_CHANGE) {
-    const { layout, index } = data
-    if (typeof index !== 'number') return
-    state.pageConfig.userSelectComponents[index].props.layout = layout
-  }
+
+}
+
+function changePage(state: EditState, action: PayloadAction<any>) {
+  state.pageConfig.page.projectName = action.payload.projectName
 }
 
 const reducers = {
@@ -95,6 +59,7 @@ const reducers = {
   onLoad,
   onEvent,
   setConfig,
+  changePage
 }
 
 export default reducers

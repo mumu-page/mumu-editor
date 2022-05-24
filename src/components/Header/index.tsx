@@ -9,6 +9,7 @@ interface MenuItem {
   key: string;
   isBtn?: boolean,
   label?: string | React.ReactNode
+  icon?: React.ReactNode
   onClick?: (menu: MenuItem) => void
   className?: string
   type?: "link" | "text" | "ghost" | "default" | "primary" | "dashed" | undefined
@@ -68,10 +69,11 @@ function Header(props: HeaderProps) {
             })}
           </Space>
         }
-        return item.isBtn === undefined ? <Button
+        return item.isBtn ? <Button
           type={item.type}
           key={item?.key}
           style={item.style || { marginLeft: 10 }}
+          icon={item.icon}
           className={classNames(item.className, style.menuItem)}
           onClick={() => onClick(item)}>{item.label}</Button> :
           <div

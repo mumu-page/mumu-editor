@@ -13,3 +13,5 @@ export {default as PushpinFilled} from '@ant-design/icons/lib/icons/PushpinFille
 export {default as DashboardOutlined} from '@ant-design/icons/lib/icons/DashboardOutlined'
 export {default as ClearOutlined} from '@ant-design/icons/lib/icons/ClearOutlined'
 export {default as HomeOutlined} from '@ant-design/icons/lib/icons/HomeOutlined'
+export {default as RollbackOutlined} from '@ant-design/icons/lib/icons/RollbackOutlined'
+export {default as LeftCircleOutlined} from '@ant-design/icons/lib/icons/LeftCircleOutlined'

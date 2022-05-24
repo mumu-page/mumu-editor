@@ -5,11 +5,12 @@ import MMCollapse from '@/components/Collapse';
 import classNames from "classnames";
 import { HomeOutlined, SettingOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Typography } from "antd";
-import { CurrentComponent } from '@/store/edit/state';
+import { Component, CurrentComponent } from '@/store/edit/state';
 import imageInput from './mapping/imageInput';
 import style from "./index.module.less";
 import { postMsgToChild } from '@/utils/utils';
-import { CHANGE_PROPS } from '@/constants';
+import { CHANGE_PROPS, SET_CURRENTCOMPONENT } from '@/constants';
+import { useEditState } from '@/store';
 
 interface FormConfigProps {
   currentComponent: CurrentComponent
@@ -22,11 +23,10 @@ function FormConfig(props: FormConfigProps) {
   const form = useForm();
   const [isAffix, setAffix] = useState(false)
   const [hide, setHide] = useState(false)
+  const edit = useEditState()
   const { component, currentComponentSchema, type, layer = [] } = currentComponent;
 
   const onValuesChange = (_changedValues: any, formData: any) => {
-    console.log('_changedValues', _changedValues);
-
     postMsgToChild({
       type: CHANGE_PROPS, data: {
         type,
@@ -36,8 +36,18 @@ function FormConfig(props: FormConfigProps) {
   }
 
   const onMount = () => {
-    form.setValues(component?.props)
+    if (component?.props.home) {
+      form.setValues(edit.pageConfig.page)
+    } else {
+      form.setValues(component?.props)
+    }
   }
+
+  useEffect(() => {
+    if (component?.props.home) {
+      form.setValues(edit.pageConfig.page)
+    }
+  }, [edit.pageConfig.page])
 
   useEffect(() => {
     if (!component?.props) return
@@ -59,6 +69,10 @@ function FormConfig(props: FormConfigProps) {
     },
   };
 
+  const onClick = (item: (Component & { index: number })) => {
+    postMsgToChild({ type: SET_CURRENTCOMPONENT, data: { currentId: item.id } })
+  }
+
   return (
     <>
       <div className={classNames({ [style["form-menu"]]: true, [style.hide]: hide, [style.affix]: isAffix })}>
@@ -68,21 +82,22 @@ function FormConfig(props: FormConfigProps) {
           onClose={() => setHide(true)}
           onFixed={() => setAffix(!isAffix)}
         />
-        <Breadcrumb className={style.breadcrumb}>
-          <Breadcrumb.Item>
-            <Typography.Link><HomeOutlined /></Typography.Link>
-          </Breadcrumb.Item>
-          {layer.map(item => <Breadcrumb.Item>
-            <Typography.Link>{item.description}</Typography.Link>
-          </Breadcrumb.Item>)}
-        </Breadcrumb>
+        <div className={style.breadcrumb}>
+          {
+            layer.length ? <Breadcrumb>
+              {layer.map(item => <Breadcrumb.Item>
+                <Typography.Link onClick={() => onClick(item)}>{item.props.home ? <HomeOutlined /> : item.description}</Typography.Link>
+              </Breadcrumb.Item>)}
+            </Breadcrumb> : <Breadcrumb>正在进行页面修改</Breadcrumb>
+          }
+        </div>
         <MMCollapse
           className={style.scroll}
           customStyle={maxHeightStyle}
           options={[
             {
               key: '1',
-              title: '组件属性',
+              title: layer.length ? '组件属性' : '页面属性',
               node: currentComponentSchema && Object.keys(currentComponentSchema).length ?
                 <FormRender
                   watch={watch}

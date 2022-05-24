@@ -7,14 +7,16 @@ import {
   SaveOutlined,
   EyeOutlined,
   DashboardOutlined,
-  ClearOutlined
+  ClearOutlined,
+  RollbackOutlined,
+  LeftCircleOutlined
 } from "@ant-design/icons";
 import { component, project } from "@/api";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import ComponentSelect from './components/ComponentSelect';
 import { useDiapatch, useEditState } from '@/store';
 import { useEditor } from './hooks';
-import { reset, returnConfig } from '@/store/edit';
+import { changePage, reset, returnConfig } from '@/store/edit';
 import FormConfig from './components/FormConfig';
 import { history } from '@/utils/history';
 import IconFont from '@/components/IconFont';
@@ -25,10 +27,12 @@ function Edit() {
   const editState = useEditState()
   const { editorState, setFrameLoaded, setUrl, setSpinning } = useEditor();
   const [params] = useSearchParams()
+  const navigate = useNavigate();
 
   const getPageSchema = () => {
   }
-  const changeProjectName = () => {
+  const changeProjectName = (projectName: string) => {
+    dispatch(changePage({ projectName }))
   }
   const rollback = () => {
     history.undo()
@@ -132,7 +136,7 @@ function Edit() {
             children: [
               {
                 key: 'rollback',
-                label: <><UndoOutlined /></>,
+                label: <><RollbackOutlined /></>,
                 onClick: rollback
               },
               {
@@ -153,19 +157,26 @@ function Edit() {
             ]
           },
           {
+            key: 'dashboard', isBtn: true,
+            icon: <LeftCircleOutlined />,
+            label: '返回',
+            onClick: () => {
+              navigate('/dashboard')
+            }
+          },
+          {
             key: 'setPreview',
-            label: <><EyeOutlined /></>,
+            isBtn: true,
+            icon: <EyeOutlined />,
+            label: '预览',
             onClick: setPreview,
           },
           {
-            key: 'setRelease',
-            label: <><IconFont type='icon-publish1' /></>,
+            key: 'setRelease', isBtn: true,
+            icon: <IconFont type='icon-publish1' />,
+            label: '发布',
             onClick: setRelease,
             type: 'primary'
-          },
-          {
-            key: 'dashboard',
-            label: <Link to="/dashboard"><DashboardOutlined /></Link>,
           }
         ]}
       />

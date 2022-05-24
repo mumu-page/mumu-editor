@@ -16,6 +16,7 @@ export const {
   onRemoteComponentLoad,
   onEvent,
   setConfig,
+  changePage
 } = editSlice.actions
 
 export default editSlice.reducer
