@@ -18,7 +18,7 @@
 
 > 最近很忙，一有时间就会更新哒～^～
 
-- 预览地址：[Github Page](https://mumu-page.github.io/mumu-editor/) | [国内服务器](https://mumu-page.github.io/mumu-editor/)
+- 预览地址：[Github Page](https://mumu-page.github.io/mumu-editor/) | [国内服务器](https://mumu-page.gitee.io/mumu-editor/)
 - 仓库地址：[Github](https://github.com/mumu-page/mumu-editor) | [Gitee](https://gitee.com/mumu-page/mumu-editor)
 
   
@@ -43,7 +43,8 @@ yarn start
 - [x] 远程组件
 - [x] 网格布局组件，存在模板项目中
 - [x] 网格布局组件拖拽释放重新计算
-- [ ] 网格布局组件添加容器后layout，children重置
+- [x] 网格布局支持子项属性修改
+- [ ] 组件事件配置
 
 ## 关于
 [awesome-lowcode](https://github.com/taowen/awesome-lowcode)
