@@ -3,7 +3,7 @@ import logo from '../../assets/image/logo2.svg';
 import { Link } from 'react-router-dom'
 import classNames from 'classnames';
 import style from './index.module.less'
-import { Button, Divider, Radio, RadioChangeEvent, Space, Typography } from 'antd';
+import { Button, Divider, Space, Typography } from 'antd';
 
 interface MenuItem {
   key: string;
@@ -28,10 +28,6 @@ function Header(props: HeaderProps) {
   const onClick = (menu: MenuItem) => {
     menu?.onClick?.(menu)
     props?.onClick?.(menu)
-  }
-
-  const onChange = (e: RadioChangeEvent) => {
-    // console.log(e.target.value)
   }
 
   const renderMenuItem = (menus: MenuItem[] | undefined) => {

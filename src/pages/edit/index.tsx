@@ -2,17 +2,15 @@ import React, { memo, useEffect } from 'react'
 import { Header } from '@/components'
 import { message, Slider, Spin, Typography } from "antd";
 import {
-  UndoOutlined,
   RedoOutlined,
   SaveOutlined,
   EyeOutlined,
-  DashboardOutlined,
   ClearOutlined,
   RollbackOutlined,
   LeftCircleOutlined
 } from "@ant-design/icons";
 import { component, project } from "@/api";
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import ComponentSelect from './components/ComponentSelect';
 import { useDiapatch, useEditState } from '@/store';
 import { useEditor } from './hooks';
@@ -93,7 +91,8 @@ function Edit() {
         }))
       }));
     });
-  }, [])
+    // dispatch 是固定引用
+  }, [dispatch, params, setUrl])
 
   return (
     <div>

@@ -1,8 +1,6 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { Component, CurrentComponent, EditState, PageConfig } from "../state";
 import { returnConfig } from "./returnConfig";
-import { CHANGE_PROPS, COMPONENT_ELEMENT_ITEM_ID_PREFIX, ON_GRID_ADD_ROW, ON_GRID_DROP, ON_GRID_LAYOUT_CHANGE } from "@/constants";
-import { postMsgToChild, uuid } from "@/utils/utils";
 import { history, HistoryItem } from "@/utils/history";
 
 function reset(state: EditState) {

@@ -47,22 +47,23 @@ function FormConfig(props: FormConfigProps) {
     if (component?.props.home) {
       form.setValues(edit.pageConfig.page)
     }
-  }, [edit.pageConfig.page])
+  }, [component?.props.home, edit.pageConfig.page, form])
 
   useEffect(() => {
     if (!component?.props) return
     form.setValues(component?.props)
-  }, [component?.props])
+  }, [component?.props, form])
 
   const watch = {
     'children': (val: any) => {
       // 排除初次加载长度是1的情况
       if (!val || !Array.isArray(val) || val?.length === 1) return
       if (val.length !== component?.props.children?.length) {
+        let children = JSON.parse(JSON.stringify(val))
         postMsgToChild({
           type: CHANGE_PROPS, data: {
             type,
-            props: { ...component?.props, children: JSON.parse(JSON.stringify(val)) }
+            props: { ...component?.props, children }
           }
         })
       }
