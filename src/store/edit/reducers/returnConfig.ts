@@ -7,6 +7,7 @@ interface ReturnConfigPayload {
   pageData?: any
   releaseStatus?: ReleaseStatus
   commonComponents?: CommonComponents[]
+  isLoad: boolean
 }
 
 /**
@@ -15,7 +16,7 @@ interface ReturnConfigPayload {
  * @param action
  */
 export function returnConfig(state: EditState, action: PayloadAction<ReturnConfigPayload>) {
-  const { targetConfig, pageData, releaseStatus, commonComponents } = action.payload
+  const { targetConfig, pageData, releaseStatus, commonComponents, isLoad } = action.payload
   // 保存页面初始值
   if (!state.defaultConfig && !releaseStatus) {
     state.defaultConfig = JSON.parse(JSON.stringify(targetConfig))
@@ -58,4 +59,6 @@ export function returnConfig(state: EditState, action: PayloadAction<ReturnConfi
     ...state.editConfig,
     currentIndex
   }
+
+  state.isLoad = isLoad
 }

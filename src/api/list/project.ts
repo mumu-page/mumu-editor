@@ -1,6 +1,7 @@
 import instance from '../request';
 import { Response } from '@/utils/response'
 import { BaseModel } from '../model';
+import { PageConfig } from '@/store/edit/state';
 
 interface Config {
   config?: any;
@@ -25,7 +26,7 @@ export interface Project extends BaseModel {
   id: number
   templateId: number
   name: string
-  pageConfig: Config
+  pageConfig: PageConfig
   releaseInfo: string
   version: string
   desc: string

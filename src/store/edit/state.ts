@@ -67,6 +67,7 @@ export interface UIConfig {
 }
 
 export interface EditState {
+  isLoad: boolean
   currentId: string | null;
   pageConfig: PageConfig;
   editConfig: EditConfig
@@ -75,6 +76,7 @@ export interface EditState {
 }
 
 export const initialEditState: EditState = {
+  isLoad: false, // 初始化加载
   currentId: null,
   pageConfig: {
     remoteComponents: [],

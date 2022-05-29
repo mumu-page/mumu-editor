@@ -23,10 +23,14 @@ function onRemoteComponentLoad(state: EditState, action: PayloadAction<any>) {
  */
 function onLoad(state: EditState, action: PayloadAction<{ components: Component[], currentId: string }>) {
   // 判断父页面是否已经拿到数据
-  // if (state.pageConfig.userSelectComponents.length || state.pageConfig.components.length) return
+  if (state.pageConfig.userSelectComponents.length || state.pageConfig.components.length) return
   state.pageConfig.userSelectComponents = action.payload.components
   state.pageConfig.components = action.payload.components
   state.currentId = action.payload.currentId
+  history.push({
+    ...state.pageConfig,
+    actionType: '初始化',
+  })
 }
 
 function setConfig(state: EditState, action: PayloadAction<{
@@ -35,6 +39,7 @@ function setConfig(state: EditState, action: PayloadAction<{
   currentComponent: CurrentComponent,
   history: PageConfig & HistoryItem
 }>) {
+  if (!state.isLoad) return
   state.pageConfig.userSelectComponents = action.payload.components
   state.currentId = action.payload.currentId
   state.editConfig.currentComponent = action.payload.currentComponent

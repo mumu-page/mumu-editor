@@ -94,7 +94,7 @@ function List() {
                     return <ListAD.Item
                         actions={[<Link to={`/edit?id=${item.id}&pageId=${item.gitConfig.id}`}>编辑</Link>]}>
                         <ListAD.Item.Meta
-                            title={item.pageConfig.config.projectName}
+                            title={item.pageConfig.page.projectName}
                             description={renderDescription(item)}>
                         </ListAD.Item.Meta>
                     </ListAD.Item>

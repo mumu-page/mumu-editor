@@ -19,6 +19,11 @@ import FormConfig from './components/FormConfig';
 import { history } from '@/utils/history';
 import IconFont from '@/components/IconFont';
 import style from './index.module.less'
+import { postMsgToChild } from '@/utils/utils';
+import { SET_IFRAME_COMPONENTS } from '@/constants';
+
+
+let fn: (() => void) | null = function () { }
 
 function Edit() {
   const dispatch = useDiapatch();
@@ -65,9 +70,8 @@ function Edit() {
   const onIframeLoaded = () => {
     setFrameLoaded(true)
     setSpinning(false)
-    history.push({
-      ...editState.pageConfig,
-      actionType: '初始化',
+    setTimeout(() => {
+      fn?.()
     })
   }
 
@@ -79,10 +83,8 @@ function Edit() {
       const targetConfig = result[0].pageConfig || {};
       setUrl(`/mumu-editor/build/index.html?isEdit=true`)
       dispatch(returnConfig({
-        targetConfig: {
-          ...targetConfig,
-          page: targetConfig.config // 兼容
-        },
+        isLoad: true,
+        targetConfig,
         pageData: result[0],
         // releaseStatus: {}, // result[0].releaseInfo,
         commonComponents: componentRes?.map((item: { description: any; config: any; }) => ({
@@ -90,9 +92,19 @@ function Edit() {
           components: item?.config
         }))
       }));
+      fn = () => postMsgToChild({
+        type: SET_IFRAME_COMPONENTS,
+        data: { components: targetConfig.userSelectComponents, projectName: targetConfig.page?.projectName }
+      })
+      history.push({
+        ...targetConfig,
+        actionType: '初始化',
+      })
     });
-    // dispatch 是固定引用
-  }, [dispatch, params, setUrl])
+    return () => {
+      fn = null
+    }
+  }, [])
 
   return (
     <div>
